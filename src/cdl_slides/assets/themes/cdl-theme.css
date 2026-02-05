@@ -437,7 +437,7 @@ table {
     border-spacing: 0;
     border-collapse: collapse;
     margin: 0.5em auto 0;
-    font-size: 0.7em;
+    font-size: 0.6em;
     font-family: 'Avenir LT Std', 'Avenir', 'Avenir Next', 'Noto Sans SC', sans-serif;
     border: 3px solid #0a2518;
     width: 95%;
@@ -3690,18 +3690,18 @@ section.scale-50 .diagram-container, section.scale-50 .chart-container {
 }
 
 /* Tables inside scale classes */
-section.scale-100 table { font-size: calc(35px * 0.7 * 1.0) !important; }
-section.scale-95 table { font-size: calc(35px * 0.7 * 0.95) !important; }
-section.scale-90 table { font-size: calc(35px * 0.7 * 0.9) !important; }
-section.scale-85 table { font-size: calc(35px * 0.7 * 0.85) !important; }
-section.scale-80 table { font-size: calc(35px * 0.7 * 0.8) !important; }
-section.scale-78 table { font-size: calc(35px * 0.7 * 0.78) !important; }
-section.scale-75 table { font-size: calc(35px * 0.7 * 0.75) !important; }
-section.scale-70 table { font-size: calc(35px * 0.7 * 0.7) !important; }
-section.scale-65 table { font-size: calc(35px * 0.7 * 0.65) !important; }
-section.scale-60 table { font-size: calc(35px * 0.7 * 0.6) !important; }
-section.scale-55 table { font-size: calc(35px * 0.7 * 0.55) !important; }
-section.scale-50 table { font-size: calc(35px * 0.7 * 0.5) !important; }
+section.scale-100 table { font-size: calc(35px * 0.6 * 1.0) !important; }
+section.scale-95 table { font-size: calc(35px * 0.6 * 0.95) !important; }
+section.scale-90 table { font-size: calc(35px * 0.6 * 0.9) !important; }
+section.scale-85 table { font-size: calc(35px * 0.6 * 0.85) !important; }
+section.scale-80 table { font-size: calc(35px * 0.6 * 0.8) !important; }
+section.scale-78 table { font-size: calc(35px * 0.6 * 0.78) !important; }
+section.scale-75 table { font-size: calc(35px * 0.6 * 0.75) !important; }
+section.scale-70 table { font-size: calc(35px * 0.6 * 0.7) !important; }
+section.scale-65 table { font-size: calc(35px * 0.6 * 0.65) !important; }
+section.scale-60 table { font-size: calc(35px * 0.6 * 0.6) !important; }
+section.scale-55 table { font-size: calc(35px * 0.6 * 0.55) !important; }
+section.scale-50 table { font-size: calc(35px * 0.6 * 0.5) !important; }
 
 /* Table-compact class for very dense tables */
 section.table-compact table {
@@ -3790,9 +3790,9 @@ section[style*="--slide-scale"] pre {
     font-size: calc(22pt * var(--slide-scale)) !important;
 }
 
-/* Tables scale uniformly - preserve 0.7x ratio to body text */
+/* Tables scale uniformly - preserve 0.6x ratio to body text */
 section[style*="--slide-scale"] table {
-    font-size: calc(35px * 0.7 * var(--slide-scale)) !important;
+    font-size: calc(35px * 0.6 * var(--slide-scale)) !important;
 }
 
 /* RIGID ELEMENTS: Images MUST preserve aspect ratio

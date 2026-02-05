@@ -6,7 +6,7 @@ transition: fade 0.25s
 author: Contextual Dynamics Lab
 ---
 
-# Getting Started with CDL Slides
+# Getting started with CDL slides
 ### A tour of every feature in the CDL slide theme
 
 Contextual Dynamics Lab
@@ -14,7 +14,7 @@ Dartmouth College
 
 ---
 
-# Simple Bullet Points
+# Simple bullet points
 
 - This slide demonstrates basic bullet points
 - Each bullet appears on its own line
@@ -25,7 +25,7 @@ Dartmouth College
 
 ---
 
-# Text Emphasis and Formatting
+# Text emphasis and formatting
 
 - Use **bold** for strong emphasis
 - Use *italics* for subtle emphasis
@@ -36,7 +36,7 @@ Dartmouth College
 
 ---
 
-# Callout Boxes: Note
+# Callout boxes: note
 
 <div class="note-box" data-title="What are callout boxes?">
 
@@ -49,9 +49,9 @@ Callout boxes are styled containers for important information. This is a **note 
 
 ---
 
-# Callout Boxes: Tip and Warning
+# Callout boxes: tip and warning
 
-<div class="tip-box" data-title="Pro Tip">
+<div class="tip-box" data-title="Pro tip">
 
 Use tip boxes to highlight best practices, shortcuts, or recommendations that help the audience.
 
@@ -65,7 +65,7 @@ Use warning boxes for common pitfalls, important caveats, or things that might g
 
 ---
 
-# Callout Boxes: Definition, Example, Important
+# Callout boxes: definition, example, important
 
 <div class="definition-box" data-title="CDL Slides">
 
@@ -79,21 +79,21 @@ A Python package for compiling Markdown into beautiful, CDL-themed Marp presenta
 
 </div>
 
-<div class="important-box" data-title="Key Requirement">
+<div class="important-box" data-title="Key requirement">
 
-Marp CLI must be installed separately: `npm install -g @marp-team/marp-cli`
+Marp CLI is automatically installed on first compile — no setup needed.
 
 </div>
 
 ---
 
-# Two-Column Layout
+# Two-column layout
 <!-- _class: scale-90 -->
 
 <div style="display: flex; gap: 1.5em;">
 <div style="flex: 1;">
 
-**Left Column**
+**Left column**
 - First advantage
 - Second advantage
 - Third advantage
@@ -107,7 +107,7 @@ Flex layouts work great for comparisons.
 </div>
 <div style="flex: 1;">
 
-**Right Column**
+**Right column**
 - First consideration
 - Second consideration
 - Third consideration
@@ -123,7 +123,7 @@ Keep columns roughly balanced in content.
 
 ---
 
-# Code Example
+# Code example
 
 ```python
 from cdl_slides.compiler import compile_presentation
@@ -140,7 +140,7 @@ for f in results["files"]:
 
 ---
 
-# Long Code Block (Auto-Split Demo)
+# Long code block (auto-split demo)
 
 ```python
 import numpy as np
@@ -190,9 +190,14 @@ def analyze_embeddings(texts, model, n_components=2):
 
 ---
 
-# Math Support (KaTeX)
+# Math support (KaTeX)
+<!-- _class: scale-85 -->
 
-Inline math: the famous equation $E = mc^2$ relates energy and mass.
+<div class="example-box" data-title="Inline math">
+
+The famous equation $E = mc^2$ relates energy and mass.
+
+</div>
 
 Display math for the attention mechanism:
 
@@ -210,7 +215,7 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
-# Simple Table
+# Simple table
 
 | Method | Speed | Quality | OOV Handling |
 |--------|-------|---------|--------------|
@@ -222,7 +227,7 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
-# Long Table (Auto-Split Demo)
+# Long table (auto-split demo)
 
 | Feature | Python | JavaScript | Rust | Go | Ruby | Julia |
 |---------|--------|-----------|------|-----|------|-------|
@@ -241,23 +246,29 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
-# Flow Diagrams
+# Flow diagrams
+<!-- _class: scale-80 -->
 
 ```flow
 [Markdown:blue] --> [Preprocess:teal] --> [Marp CLI:green] --> [Output:orange]
 ```
 <!-- caption: The CDL Slides compilation pipeline -->
 
-<div class="note-box" data-title="Syntax">
+Syntax for flow diagrams:
 
-Use ```` ```flow ```` blocks with `[Label:color] --> [Label:color]` syntax.
-Available colors: green, blue, navy, teal, orange, red, violet, yellow, gray.
+````
+```flow
+[Input:blue] --> [Process:green] --> [Output:orange]
+```
+<!-- caption: Optional caption text -->
+````
 
-</div>
+Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `yellow`, `gray`.
 
 ---
 
-# Emoji Figures
+# Emoji figures
+<!-- _class: scale-80 -->
 
 <div class="emoji-figure">
   <div class="emoji-col">
@@ -272,21 +283,22 @@ Available colors: green, blue, navy, teal, orange, red, violet, yellow, gray.
     <span class="emoji emoji-xl emoji-bg emoji-bg-orange">🎯</span>
     <span class="label">Present</span>
   </div>
+</div>
+
+```html
+<div class="emoji-figure">
   <div class="emoji-col">
-    <span class="emoji emoji-xl emoji-bg emoji-bg-purple">🔄</span>
-    <span class="label">Iterate</span>
+    <span class="emoji emoji-xl emoji-bg emoji-bg-navy">📝</span>
+    <span class="label">Write</span>
   </div>
 </div>
+```
 
-<div class="tip-box" data-title="Emoji backgrounds">
-
-Available: `emoji-bg-navy`, `emoji-bg-green`, `emoji-bg-blue`, `emoji-bg-orange`, `emoji-bg-purple`, `emoji-bg-teal`.
-
-</div>
+Sizes: `emoji-sm`, `emoji-md`, `emoji-lg`, `emoji-xl`. Backgrounds: `emoji-bg-navy`, `emoji-bg-green`, `emoji-bg-orange`, `emoji-bg-purple`, `emoji-bg-teal`. Omit `emoji-bg` classes for no background.
 
 ---
 
-# Scale Directives
+# Scale directives
 <!-- _class: scale-80 -->
 
 When slides have dense content, use scale directives to fit everything.
@@ -318,20 +330,24 @@ Notice how more content fits compared to default 100% scaling.
 
 ---
 
-# Output Formats
-<!-- _class: scale-90 -->
+<!-- _class: scale-80 -->
+# Output formats
 
-```flow
-[Markdown:blue] --> [HTML:green] --> [PDF:orange] --> [PPTX:violet]
+CDL Slides compiles Markdown into multiple presentation formats:
+
+| Format | Flag | Use case |
+|--------|------|----------|
+| HTML | `--format html` | Interactive browser slides |
+| PDF | `--format pdf` | Printable, shareable documents |
+| PPTX | `--format pptx` | Editable PowerPoint files |
+| Both | `--format both` | HTML + PDF (default) |
+
+<div class="tip-box" data-title="Quick start">
+
+```bash
+cdl-slides compile slides.md              # HTML + PDF (default)
+cdl-slides compile slides.md -f pptx      # PowerPoint only
 ```
-<!-- caption: Supported output formats -->
-
-<div class="tip-box" data-title="CLI flags">
-
-- `--format html` for HTML slides
-- `--format pdf` for printable PDF
-- `--format pptx` for PowerPoint
-- `--format both` for HTML + PDF (default)
 
 </div>
 

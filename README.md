@@ -114,7 +114,7 @@ Options:
   -o, --output PATH      Output file or directory (default: same dir as input)
   -f, --format TEXT       Output format: html, pdf, pptx, both (default: both)
   -l, --lines INTEGER     Max code lines per slide before splitting (default: 30)
-  -r, --rows INTEGER      Max table rows per slide before splitting (default: 6)
+  -r, --rows INTEGER      Max table rows per slide before splitting (default: 8)
   --no-split              Disable auto-splitting of code blocks and tables
   --keep-temp             Keep temporary processed files for debugging
   -t, --theme-dir PATH    Custom theme directory (overrides bundled CDL theme)
@@ -137,7 +137,7 @@ cdl-slides compile slides.md --format pptx
 cdl-slides compile slides.md --output ./build/
 
 # Compile with custom code splitting threshold
-cdl-slides compile slides.md --lines 15 --rows 6
+cdl-slides compile slides.md --lines 15 --rows 5
 ```
 
 ### `cdl-slides init`
@@ -283,7 +283,7 @@ Code blocks are automatically:
 
 ### Tables
 
-Markdown tables are automatically split across slides if they exceed `--rows` threshold (default: 6 data rows).
+Markdown tables are automatically split across slides if they exceed `--rows` threshold (default: 8 data rows).
 
 ### Arrow Syntax
 

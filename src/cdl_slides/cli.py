@@ -82,7 +82,7 @@ def main() -> None:
 )
 @click.option("--lines", "-l", "max_lines", type=int, default=30, show_default=True, help="Max code lines per slide.")
 @click.option(
-    "--rows", "-r", "max_table_rows", type=int, default=6, show_default=True, help="Max table rows per slide."
+    "--rows", "-r", "max_table_rows", type=int, default=8, show_default=True, help="Max table rows per slide."
 )
 @click.option("--no-split", is_flag=True, default=False, help="Disable auto-splitting of code blocks and tables.")
 @click.option("--keep-temp", is_flag=True, default=False, help="Keep temporary processed files for debugging.")
@@ -176,3 +176,25 @@ def version() -> None:
         click.echo(click.style("Marp CLI: not found (will auto-install on first compile)", fg="yellow"))
         if info["source"] == "npx_available":
             click.echo("  npx detected — can use @marp-team/marp-cli via npx")
+
+
+@main.command()
+def setup() -> None:
+    """Download and install Marp CLI (standalone binary, no npm required)."""
+    from cdl_slides.marp_cli import get_marp_version_info, resolve_marp_cli
+
+    info = get_marp_version_info()
+    if info["installed"]:
+        source_label = {"system": "system", "cached": "auto-installed"}.get(info["source"], info["source"])
+        click.echo(click.style(f"Marp CLI already available: {info['path']} ({source_label})", fg="green"))
+        return
+
+    click.echo("Downloading Marp CLI standalone binary...")
+    result = resolve_marp_cli()
+    if result:
+        path_str = result if isinstance(result, str) else " ".join(result)
+        click.echo(click.style(f"Marp CLI installed: {path_str}", fg="green"))
+    else:
+        click.echo(click.style("Failed to install Marp CLI.", fg="red"), err=True)
+        click.echo("Try installing manually: npm install -g @marp-team/marp-cli", err=True)
+        sys.exit(1)

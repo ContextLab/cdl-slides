@@ -87,7 +87,7 @@ def compile_presentation(
     output_file: Optional[Path] = None,
     output_format: str = "both",
     max_lines: int = 30,
-    max_table_rows: int = 6,
+    max_table_rows: int = 8,
     no_split: bool = False,
     keep_temp: bool = False,
     theme_dir: Optional[Path] = None,

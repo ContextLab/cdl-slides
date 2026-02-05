@@ -896,7 +896,7 @@ def compute_available_code_lines(slide_content: str, default_max: int = 20) -> i
         other_height += CONTENT_WEIGHTS["flow_diagram"]
 
     available_height = effective_budget - other_height
-    available_lines = int((available_height / CONTENT_WEIGHTS["code_block_line"]) * 0.9)
+    available_lines = int((available_height / CONTENT_WEIGHTS["code_block_line"]) * 0.85)
 
     min_lines = 8
     max_lines = int(default_max * scale_factor)
@@ -1220,7 +1220,7 @@ def process_markdown(
     input_file: str,
     output_file: str,
     max_lines: int = 30,
-    max_table_rows: int = 6,
+    max_table_rows: int = 8,
     no_split: bool = False,
 ) -> dict:
     """
