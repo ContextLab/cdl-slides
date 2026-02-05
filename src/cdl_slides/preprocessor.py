@@ -942,7 +942,7 @@ def analyze_slide_content(slide_content: str) -> dict:
     scale_match = SCALE_CLASS_PATTERN.search(slide_content)
     if scale_match:
         metrics["has_scale_class"] = True
-        metrics["existing_scale_class"] = scale_match.group(1)
+        metrics["existing_scale_class"] = scale_match.group(1).strip()
 
     # Count callout boxes
     callout_matches = CALLOUT_BOX_PATTERN.findall(slide_content)
@@ -1219,8 +1219,8 @@ def analyze_and_warn_slides(content, filename="unknown"):
 def process_markdown(
     input_file: str,
     output_file: str,
-    max_lines: int = 20,
-    max_table_rows: int = 8,
+    max_lines: int = 30,
+    max_table_rows: int = 6,
     no_split: bool = False,
 ) -> dict:
     """

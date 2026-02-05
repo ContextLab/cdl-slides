@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from cdl_slides.assets import (
+    copy_assets_alongside_output,
     get_js_dir,
     get_marp_install_instructions,
     prepare_theme_for_compilation,
@@ -53,10 +54,12 @@ def _build_marp_command(
     """Build the Marp CLI command for a given output format."""
     cmd = marp_cmd + [str(input_file), "--theme-set", str(theme_dir), "--html"]
 
+    cmd.append("--allow-local-files")
+
     if fmt == "pdf":
-        cmd.extend(["--pdf", "--allow-local-files"])
+        cmd.append("--pdf")
     elif fmt == "pptx":
-        cmd.extend(["--pptx", "--allow-local-files"])
+        cmd.append("--pptx")
 
     cmd.extend(["-o", str(output_file)])
     return cmd
@@ -83,8 +86,8 @@ def compile_presentation(
     input_file: Path,
     output_file: Optional[Path] = None,
     output_format: str = "both",
-    max_lines: int = 20,
-    max_table_rows: int = 8,
+    max_lines: int = 30,
+    max_table_rows: int = 6,
     no_split: bool = False,
     keep_temp: bool = False,
     theme_dir: Optional[Path] = None,
@@ -179,6 +182,7 @@ def compile_presentation(
 
             if fmt == "html" and out_path.exists():
                 _inject_js_into_html(out_path)
+                copy_assets_alongside_output(out_path)
 
             if out_path.exists():
                 results["files"].append(  # type: ignore[union-attr]

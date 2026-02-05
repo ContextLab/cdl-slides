@@ -7,6 +7,7 @@ import pytest
 
 from cdl_slides.compiler import (
     CompilationError,
+    _build_marp_command,
     _expand_formats,
     _inject_js_into_html,
     _resolve_output_path,
@@ -103,3 +104,20 @@ class TestInjectJsIntoHtml:
         assert "<script>" in content
         assert "</head>" in content
         assert "</body>" in content
+
+
+class TestBuildMarpCommandAllowLocalFiles:
+    def test_html_includes_allow_local_files(self, tmp_path):
+        cmd = _build_marp_command(["marp"], tmp_path / "in.md", tmp_path / "out.html", tmp_path, "html")
+        assert "--allow-local-files" in cmd
+        assert "--pdf" not in cmd
+
+    def test_pdf_includes_allow_local_files(self, tmp_path):
+        cmd = _build_marp_command(["marp"], tmp_path / "in.md", tmp_path / "out.pdf", tmp_path, "pdf")
+        assert "--allow-local-files" in cmd
+        assert "--pdf" in cmd
+
+    def test_pptx_includes_allow_local_files(self, tmp_path):
+        cmd = _build_marp_command(["marp"], tmp_path / "in.md", tmp_path / "out.pptx", tmp_path, "pptx")
+        assert "--allow-local-files" in cmd
+        assert "--pptx" in cmd

@@ -221,7 +221,6 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 | GPT | Slow | Excellent | Good |
 
 ---
-<!-- _class: scale-85 -->
 
 # Long Table (Auto-Split Demo)
 
@@ -319,38 +318,18 @@ Notice how more content fits compared to default 100% scaling.
 
 ---
 
-# Arrow Syntax
-
-Arrows can be embedded inline: A --[80]-> B --[lg]-> C
-
-<div class="definition-box" data-title="Arrow specifications">
-
-- `--[80]->` sets pixel width (80px)
-- `--[lg]->` uses named size (sm, md, lg, xl)
-- `--[100,lg]->` combines width and size class
-
-</div>
-
----
-
 # Output Formats
+<!-- _class: scale-90 -->
 
 ```flow
-[Markdown:blue] --> [HTML:green]
+[Markdown:blue] --> [HTML:green] --> [PDF:orange] --> [PPTX:violet]
 ```
-
-```flow
-[Markdown:blue] --> [PDF:orange]
-```
-
-```flow
-[Markdown:blue] --> [PPTX:violet]
-```
+<!-- caption: Supported output formats -->
 
 <div class="tip-box" data-title="CLI flags">
 
-- `--format html` for HTML only
-- `--format pdf` for PDF only
+- `--format html` for HTML slides
+- `--format pdf` for printable PDF
 - `--format pptx` for PowerPoint
 - `--format both` for HTML + PDF (default)
 

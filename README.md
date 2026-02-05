@@ -4,13 +4,21 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 
 ## Theme Gallery
 
-| Title Slide | Callout Boxes | Code Highlighting |
-|:-----------:|:-------------:|:-----------------:|
-| ![Title](docs/screenshots/01-title-slide.png) | ![Callouts](docs/screenshots/02-callout-boxes.png) | ![Code](docs/screenshots/05-code-example.png) |
+| Title Slide | Callout Boxes | Tip & Warning |
+|:-----------:|:-------------:|:-------------:|
+| ![Title](docs/screenshots/01-title-slide.png) | ![Callouts](docs/screenshots/02-callout-boxes.png) | ![Tip & Warning](docs/screenshots/03-callout-tip-warning.png) |
 
-| Math (KaTeX) | Flow Diagrams | Emoji Figures |
-|:------------:|:-------------:|:-------------:|
-| ![Math](docs/screenshots/06-math-katex.png) | ![Flow](docs/screenshots/07-flow-diagram.png) | ![Emoji](docs/screenshots/08-emoji-figures.png) |
+| Definition, Example & Important | Code Highlighting | Math (KaTeX) |
+|:-------------------------------:|:-----------------:|:------------:|
+| ![Def/Ex/Imp](docs/screenshots/04-callout-def-ex-imp.png) | ![Code](docs/screenshots/05-code-example.png) | ![Math](docs/screenshots/06-math-katex.png) |
+
+| Flow Diagrams | Emoji Figures | Two-Column Layout |
+|:-------------:|:-------------:|:-----------------:|
+| ![Flow](docs/screenshots/07-flow-diagram.png) | ![Emoji](docs/screenshots/08-emoji-figures.png) | ![Two-Column](docs/screenshots/09-two-column.png) |
+
+| Simple Table | Output Formats |
+|:------------:|:--------------:|
+| ![Table](docs/screenshots/10-simple-table.png) | ![Formats](docs/screenshots/11-output-formats.png) |
 
 ## Features
 
@@ -105,8 +113,8 @@ Usage: cdl-slides compile [OPTIONS] INPUT_FILE
 Options:
   -o, --output PATH      Output file or directory (default: same dir as input)
   -f, --format TEXT       Output format: html, pdf, pptx, both (default: both)
-  -l, --lines INTEGER     Max code lines per slide before splitting (default: 20)
-  -r, --rows INTEGER      Max table rows per slide before splitting (default: 8)
+  -l, --lines INTEGER     Max code lines per slide before splitting (default: 30)
+  -r, --rows INTEGER      Max table rows per slide before splitting (default: 6)
   --no-split              Disable auto-splitting of code blocks and tables
   --keep-temp             Keep temporary processed files for debugging
   -t, --theme-dir PATH    Custom theme directory (overrides bundled CDL theme)
@@ -271,11 +279,11 @@ $$\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$
 Code blocks are automatically:
 - Syntax highlighted (via Pygments)
 - Line numbered
-- Split across slides if they exceed `--lines` threshold (default: 20)
+- Split across slides if they exceed `--lines` threshold (default: 30)
 
 ### Tables
 
-Markdown tables are automatically split across slides if they exceed `--rows` threshold (default: 8 data rows).
+Markdown tables are automatically split across slides if they exceed `--rows` threshold (default: 6 data rows).
 
 ### Arrow Syntax
 

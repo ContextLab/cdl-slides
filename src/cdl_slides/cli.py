@@ -80,9 +80,9 @@ def main() -> None:
     show_default=True,
     help="Output format.",
 )
-@click.option("--lines", "-l", "max_lines", type=int, default=20, show_default=True, help="Max code lines per slide.")
+@click.option("--lines", "-l", "max_lines", type=int, default=30, show_default=True, help="Max code lines per slide.")
 @click.option(
-    "--rows", "-r", "max_table_rows", type=int, default=8, show_default=True, help="Max table rows per slide."
+    "--rows", "-r", "max_table_rows", type=int, default=6, show_default=True, help="Max table rows per slide."
 )
 @click.option("--no-split", is_flag=True, default=False, help="Disable auto-splitting of code blocks and tables.")
 @click.option("--keep-temp", is_flag=True, default=False, help="Keep temporary processed files for debugging.")

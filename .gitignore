@@ -212,3 +212,11 @@ cdl-theme-*/
 *.marp_processed_*.md
 .sisyphus/
 notes/
+
+# Compiled example output (regenerate with: cdl-slides compile examples/sample_presentation.md)
+examples/sample_presentation.html
+examples/themes/
+examples/images/
+
+# macOS
+.DS_Store
