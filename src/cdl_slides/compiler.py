@@ -10,11 +10,11 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from cdl_slides.assets import (
-    detect_marp_cli,
     get_js_dir,
     get_marp_install_instructions,
     prepare_theme_for_compilation,
 )
+from cdl_slides.marp_cli import resolve_marp_cli
 
 
 class CompilationError(Exception):
@@ -44,14 +44,14 @@ def _inject_js_into_html(html_path: Path) -> None:
 
 
 def _build_marp_command(
-    marp_path: Path,
+    marp_cmd: list,
     input_file: Path,
     output_file: Path,
     theme_dir: Path,
     fmt: str,
 ) -> List[str]:
     """Build the Marp CLI command for a given output format."""
-    cmd = [str(marp_path), str(input_file), "--theme-set", str(theme_dir), "--html"]
+    cmd = marp_cmd + [str(input_file), "--theme-set", str(theme_dir), "--html"]
 
     if fmt == "pdf":
         cmd.extend(["--pdf", "--allow-local-files"])
@@ -115,9 +115,13 @@ def compile_presentation(
     if not input_file.is_file():
         raise CompilationError(f"Not a file: {input_file}")
 
-    marp_path = detect_marp_cli()
-    if marp_path is None:
+    marp_resolved = resolve_marp_cli()
+    if marp_resolved is None:
         raise CompilationError(get_marp_install_instructions())
+
+    # resolve_marp_cli returns either a string (binary path) or list (npx command parts)
+    marp_is_npx = isinstance(marp_resolved, list)
+    marp_path = Path(marp_resolved[0]) if marp_is_npx else Path(marp_resolved)
 
     formats = _expand_formats(output_format)
 
@@ -159,7 +163,8 @@ def compile_presentation(
 
         for fmt in formats:
             out_path = _resolve_output_path(input_file, output_file, fmt)
-            cmd = _build_marp_command(marp_path, temp_md_path, out_path, theme_dir, fmt)
+            marp_cmd = list(marp_resolved) if marp_is_npx else [str(marp_path)]
+            cmd = _build_marp_command(marp_cmd, temp_md_path, out_path, theme_dir, fmt)
 
             proc = subprocess.run(cmd, capture_output=True, text=True)
 

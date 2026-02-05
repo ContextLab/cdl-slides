@@ -162,13 +162,17 @@ def init(directory: Path) -> None:
 @main.command()
 def version() -> None:
     """Show version info and Marp CLI status."""
-    from cdl_slides.assets import detect_marp_cli
+    from cdl_slides.marp_cli import get_marp_version_info
 
     click.echo(f"cdl-slides {__version__}")
 
-    marp = detect_marp_cli()
-    if marp:
-        click.echo(click.style(f"Marp CLI: {marp}", fg="green"))
+    info = get_marp_version_info()
+    if info["installed"]:
+        source_label = {"system": "system", "cached": "auto-installed"}.get(info["source"], info["source"])
+        click.echo(click.style(f"Marp CLI: {info['path']} ({source_label})", fg="green"))
+        if info["version"]:
+            click.echo(f"  Version: {info['version']}")
     else:
-        click.echo(click.style("Marp CLI: not found", fg="red"))
-        click.echo("Install with: npm install -g @marp-team/marp-cli")
+        click.echo(click.style("Marp CLI: not found (will auto-install on first compile)", fg="yellow"))
+        if info["source"] == "npx_available":
+            click.echo("  npx detected — can use @marp-team/marp-cli via npx")

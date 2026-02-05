@@ -2,9 +2,20 @@
 
 Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) presentations. Includes the full Contextual Dynamics Lab slide theme with bundled fonts, images, and CSS.
 
+## Theme Gallery
+
+| Title Slide | Callout Boxes | Code Highlighting |
+|:-----------:|:-------------:|:-----------------:|
+| ![Title](docs/screenshots/01-title-slide.png) | ![Callouts](docs/screenshots/02-callout-boxes.png) | ![Code](docs/screenshots/05-code-example.png) |
+
+| Math (KaTeX) | Flow Diagrams | Emoji Figures |
+|:------------:|:-------------:|:-------------:|
+| ![Math](docs/screenshots/06-math-katex.png) | ![Flow](docs/screenshots/07-flow-diagram.png) | ![Emoji](docs/screenshots/08-emoji-figures.png) |
+
 ## Features
 
 - **Cross-platform**: Works on macOS, Windows, and Linux
+- **Zero-config Marp CLI**: Automatically downloads the Marp CLI standalone binary on first use — no Node.js required
 - **Multiple output formats**: HTML, PDF, and PPTX
 - **Bundled theme**: Complete CDL/Dartmouth-branded theme with custom fonts, colors, and layouts
 - **Smart preprocessing**: Auto-splits long code blocks and tables across slides
@@ -14,26 +25,13 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Math support**: KaTeX for inline and display equations
 - **Callout boxes**: Note, tip, warning, definition, example, and important boxes
 
-## Prerequisites
-
-**Marp CLI** is required for compilation. Install one of these ways:
-
-```bash
-# Via npm (recommended)
-npm install -g @marp-team/marp-cli
-
-# Via Homebrew (macOS)
-brew install marp-cli
-
-# Via standalone binary
-# Download from: https://github.com/marp-team/marp-cli/releases
-```
-
 ## Installation
 
 ```bash
 pip install cdl-slides
 ```
+
+That's it. Marp CLI is automatically downloaded on first compile if not already installed.
 
 Or install from source:
 
@@ -41,6 +39,20 @@ Or install from source:
 git clone https://github.com/ContextLab/cdl-slides.git
 cd cdl-slides
 pip install -e .
+```
+
+### Marp CLI Resolution
+
+`cdl-slides` finds or installs Marp CLI automatically in this order:
+
+1. **System PATH** — uses your existing `marp` install (npm, brew, etc.)
+2. **Cached binary** — standalone binary downloaded on first use (~`~/Library/Caches/cdl-slides/` on macOS, `~/.cache/cdl-slides/` on Linux, `AppData\Local\cdl-slides\` on Windows)
+3. **npx fallback** — runs `@marp-team/marp-cli` via npx if Node.js is available
+
+To check your Marp CLI status:
+
+```bash
+cdl-slides version
 ```
 
 ## Quick Start

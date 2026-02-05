@@ -54,7 +54,7 @@ class TestCompileNoMarpCli:
     def test_raises_when_marp_not_found(self, tmp_path):
         md_file = tmp_path / "test.md"
         md_file.write_text("---\nmarp: true\ntheme: cdl-theme\n---\n\n# Slide\n")
-        with patch("cdl_slides.compiler.detect_marp_cli", return_value=None):
+        with patch("cdl_slides.compiler.resolve_marp_cli", return_value=None):
             with pytest.raises(CompilationError, match="Marp CLI"):
                 compile_presentation(md_file)
 

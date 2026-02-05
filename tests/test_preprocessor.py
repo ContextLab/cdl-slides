@@ -1,20 +1,16 @@
 """Tests for cdl_slides.preprocessor."""
 
-import shutil
-from pathlib import Path
-
 import pytest
 
 from cdl_slides.preprocessor import (
+    PYGMENTS_AVAILABLE,
     analyze_slide_content,
     determine_scale_class,
-    generate_flow_svg,
     highlight_code_line,
     parse_flow_node,
     process_arrow_syntax,
     process_flow_blocks,
     process_markdown,
-    PYGMENTS_AVAILABLE,
 )
 
 

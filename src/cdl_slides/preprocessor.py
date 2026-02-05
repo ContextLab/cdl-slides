@@ -40,8 +40,8 @@ from html import escape
 # Pygments for syntax highlighting
 try:
     from pygments import highlight
-    from pygments.lexers import get_lexer_by_name, guess_lexer, TextLexer
     from pygments.formatters import HtmlFormatter
+    from pygments.lexers import TextLexer, get_lexer_by_name
     from pygments.util import ClassNotFound
 
     PYGMENTS_AVAILABLE = True
@@ -231,8 +231,6 @@ def parse_flow_line(line: str) -> list:
     # Pattern to match nodes [text] or [text:color]
     node_pattern = r"\[([^\]]+)\]"
     # Pattern to match arrows
-    arrow_h_pattern = r"-->"  # Horizontal arrow
-    arrow_v_pattern = r"==>"  # Vertical arrow
 
     # Tokenize the line
     pos = 0
@@ -325,7 +323,6 @@ def generate_flow_svg(flow_lines: list, caption: "str | None" = None) -> str:
     min_node_width = 120
     node_height = 70
     node_padding = 40  # Extra padding for text (increased from 35 to prevent clipping)
-    node_spacing = 70  # Space between nodes (including arrow)
     arrow_width = 50  # Width of arrow
 
     # Calculate node widths based on text
@@ -375,7 +372,6 @@ def generate_flow_svg(flow_lines: list, caption: "str | None" = None) -> str:
 
     # Render each row
     y_offset = svg_border + node_height // 2
-    global_node_idx = 0
 
     for row_idx, row_elements in enumerate(all_elements):
         # Center the row horizontally within the viewBox
@@ -989,7 +985,7 @@ def analyze_slide_content(slide_content: str) -> dict:
                     box_section = slide_content[box_pos : box_pos + 2000]
                     if "|" in box_section and "---" in box_section:
                         metrics["table_in_callout"] = True
-                        metrics["overflow_warnings"].append(f"TABLE INSIDE CALLOUT BOX detected - high overflow risk")
+                        metrics["overflow_warnings"].append("TABLE INSIDE CALLOUT BOX detected - high overflow risk")
                         break
 
     # Check for emoji figures
@@ -1354,14 +1350,12 @@ def process_markdown(
                 cont_max = pending_split_directive[1] if pending_split_directive[1] is not None else first_max
                 effective_max_lines = first_max
                 pending_split_directive = None
-                use_variable_step = first_max != cont_max
             else:
                 slide_content = "\n".join(lines[current_slide_start:i])
                 effective_max_lines = (
                     compute_available_code_lines(slide_content, max_lines) if not no_split else max_lines
                 )
                 cont_max = effective_max_lines
-                use_variable_step = False
 
             if not no_split and len(code_lines_buffer) > effective_max_lines:
                 result_lines = result_lines[:code_block_start_idx]
