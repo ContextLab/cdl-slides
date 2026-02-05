@@ -93,28 +93,24 @@ Marp CLI is automatically installed on first compile — no setup needed.
 <div style="display: flex; gap: 1.5em;">
 <div style="flex: 1;">
 
-**Left column**
+<div class="tip-box" data-title="Advantages">
+
 - First advantage
 - Second advantage
 - Third advantage
-
-<div class="tip-box" data-title="Tip">
-
-Flex layouts work great for comparisons.
+- Flex layouts work great for comparisons
 
 </div>
 
 </div>
 <div style="flex: 1;">
 
-**Right column**
+<div class="warning-box" data-title="Considerations">
+
 - First consideration
 - Second consideration
 - Third consideration
-
-<div class="warning-box" data-title="Note">
-
-Keep columns roughly balanced in content.
+- Keep columns roughly balanced in content
 
 </div>
 
@@ -150,42 +146,32 @@ import matplotlib.pyplot as plt
 
 def analyze_embeddings(texts, model, n_components=2):
     """Analyze word embeddings using PCA dimensionality reduction."""
-    # Generate embeddings for all input texts
     embeddings = []
     for text in texts:
         tokens = model.tokenize(text)
         embedding = model.encode(tokens)
         embeddings.append(embedding.mean(axis=0))
 
-    # Convert to numpy array
     X = np.array(embeddings)
-
-    # Standardize features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # Apply PCA
     pca = PCA(n_components=n_components)
     X_reduced = pca.fit_transform(X_scaled)
-
-    # Calculate explained variance
     explained_var = pca.explained_variance_ratio_
-    total_var = sum(explained_var)
 
     # Visualize results
     fig, ax = plt.subplots(figsize=(10, 8))
     scatter = ax.scatter(
-        X_reduced[:, 0],
-        X_reduced[:, 1],
-        c=range(len(texts)),
-        cmap="viridis",
-        alpha=0.7,
+        X_reduced[:, 0], X_reduced[:, 1],
+        c=range(len(texts)), cmap="viridis", alpha=0.7,
     )
     ax.set_xlabel(f"PC1 ({explained_var[0]:.1%} variance)")
     ax.set_ylabel(f"PC2 ({explained_var[1]:.1%} variance)")
-    ax.set_title(f"Embedding Space (Total: {total_var:.1%})")
     plt.colorbar(scatter, label="Text index")
-    return X_reduced, explained_var
+    plt.tight_layout()
+
+    return X_reduced, explained_var, fig
 ```
 
 ---
@@ -215,6 +201,7 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
+<!-- _class: scale-80 -->
 # Simple table
 
 | Method | Speed | Quality | OOV Handling |
@@ -227,6 +214,7 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
+<!-- _class: scale-90 -->
 # Long table (auto-split demo)
 
 | Feature | Python | JavaScript | Rust | Go | Ruby | Julia |
@@ -247,28 +235,24 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 ---
 
 # Flow diagrams
-<!-- _class: scale-80 -->
 
 ```flow
 [Markdown:blue] --> [Preprocess:teal] --> [Marp CLI:green] --> [Output:orange]
 ```
 <!-- caption: The CDL Slides compilation pipeline -->
 
-Syntax for flow diagrams:
+<div class="example-box" data-title="Source for this diagram">
 
-````
-```flow
-[Input:blue] --> [Process:green] --> [Output:orange]
-```
-<!-- caption: Optional caption text -->
-````
+<pre style="margin: 0.3em 0; font-size: 0.75em; white-space: pre-wrap;">&#96;&#96;&#96;flow
+[Markdown:blue] --&gt; [Preprocess:teal] --&gt; [Marp CLI:green] --&gt; [Output:orange]
+&#96;&#96;&#96;
+&lt;!-- caption: The CDL Slides compilation pipeline --&gt;</pre>
 
-Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `yellow`, `gray`.
+</div>
 
 ---
 
 # Emoji figures
-<!-- _class: scale-80 -->
 
 <div class="emoji-figure">
   <div class="emoji-col">
@@ -285,16 +269,11 @@ Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `y
   </div>
 </div>
 
-```html
-<div class="emoji-figure">
-  <div class="emoji-col">
-    <span class="emoji emoji-xl emoji-bg emoji-bg-navy">📝</span>
-    <span class="label">Write</span>
-  </div>
-</div>
-```
+<div class="tip-box" data-title="Options">
 
-Sizes: `emoji-sm`, `emoji-md`, `emoji-lg`, `emoji-xl`. Backgrounds: `emoji-bg-navy`, `emoji-bg-green`, `emoji-bg-orange`, `emoji-bg-purple`, `emoji-bg-teal`. Omit `emoji-bg` classes for no background.
+Sizes: `emoji-sm`, `emoji-md`, `emoji-lg`, `emoji-xl`. Backgrounds: `emoji-bg-navy`, `emoji-bg-green`, `emoji-bg-orange`, `emoji-bg-purple`, `emoji-bg-teal`.
+
+</div>
 
 ---
 
@@ -306,18 +285,24 @@ When slides have dense content, use scale directives to fit everything.
 <div style="display: flex; gap: 1.5em;">
 <div style="flex: 1;">
 
-**Manual scaling**
+<div class="example-box" data-title="Manual scaling">
+
 - `<!-- _class: scale-80 -->` reduces to 80%
 - Range: `scale-50` to `scale-95`
 - Place directive at start of slide
 
 </div>
+
+</div>
 <div style="flex: 1;">
 
-**Auto-scaling**
+<div class="example-box" data-title="Auto-scaling">
+
 - The preprocessor detects overflow
 - Automatically injects scale classes
 - Manual overrides take priority
+
+</div>
 
 </div>
 </div>

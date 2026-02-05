@@ -114,7 +114,7 @@ Options:
   -o, --output PATH      Output file or directory (default: same dir as input)
   -f, --format TEXT       Output format: html, pdf, pptx, both (default: both)
   -l, --lines INTEGER     Max code lines per slide before splitting (default: 30)
-  -r, --rows INTEGER      Max table rows per slide before splitting (default: 8)
+  -r, --rows INTEGER      Max table rows per slide before splitting (default: 10)
   --no-split              Disable auto-splitting of code blocks and tables
   --keep-temp             Keep temporary processed files for debugging
   -t, --theme-dir PATH    Custom theme directory (overrides bundled CDL theme)
@@ -205,20 +205,34 @@ Critical information.
 
 ### Two-Column Layouts
 
+For two-column content, wrap each column's content in a callout box for best results:
+
 ```html
 <div style="display: flex; gap: 1.5em;">
 <div style="flex: 1;">
 
-**Left column** content with Markdown.
+<div class="example-box" data-title="Left topic">
+
+- First point
+- Second point
+
+</div>
 
 </div>
 <div style="flex: 1;">
 
-**Right column** content with Markdown.
+<div class="example-box" data-title="Right topic">
+
+- First point
+- Second point
+
+</div>
 
 </div>
 </div>
 ```
+
+Any box type works (`tip-box`, `warning-box`, `note-box`, etc.). The boxes give columns clear visual boundaries and headers.
 
 ### Flow Diagrams
 
@@ -283,7 +297,7 @@ Code blocks are automatically:
 
 ### Tables
 
-Markdown tables are automatically split across slides if they exceed `--rows` threshold (default: 8 data rows).
+Markdown tables are automatically split across slides if they exceed `--rows` threshold (default: 10 data rows).
 
 ### Arrow Syntax
 

@@ -1220,7 +1220,7 @@ def process_markdown(
     input_file: str,
     output_file: str,
     max_lines: int = 30,
-    max_table_rows: int = 8,
+    max_table_rows: int = 10,
     no_split: bool = False,
 ) -> dict:
     """
