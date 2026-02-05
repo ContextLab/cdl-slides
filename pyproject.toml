@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=68.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cdl-slides"
+version = "0.1.0"
+description = "Compile Markdown files into CDL-themed Marp presentations"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Contextual Dynamics Lab", email = "contextualdynamics@gmail.com"},
+]
+keywords = ["marp", "slides", "presentation", "markdown", "CDL", "Dartmouth"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+dependencies = [
+    "click>=8.0",
+    "pygments>=2.15",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Homepage = "https://www.context-lab.com"
+Repository = "https://github.com/ContextLab/cdl-slides"
+Issues = "https://github.com/ContextLab/cdl-slides/issues"
+
+[project.scripts]
+cdl-slides = "cdl_slides.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cdl_slides = [
+    "assets/themes/*.css",
+    "assets/themes/*.svg",
+    "assets/themes/*.png",
+    "assets/fonts/*.otf",
+    "assets/fonts/*.ttf",
+    "assets/images/*.svg",
+    "assets/js/*.js",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
