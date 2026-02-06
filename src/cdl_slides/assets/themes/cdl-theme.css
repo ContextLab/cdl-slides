@@ -943,7 +943,7 @@ section:not(.lead):not(#\31) p,
 section:not(.lead):not(#\31) blockquote,
 section:not(.lead):not(#\31) table,
 section:not(.lead):not(#\31) pre,
-section:not(.lead):not(#\31) div:not(.callout):not(.note-box):not(.example-box):not(.warning-box):not(.tip-box):not(.important-box):not(.definition-box) {
+section:not(.lead):not(#\31) div:not(.callout):not(.note-box):not(.example-box):not(.warning-box):not(.tip-box):not(.important-box):not(.definition-box):not(:has(.callout)):not(:has(.note-box)):not(:has(.example-box)):not(:has(.warning-box)):not(:has(.tip-box)):not(:has(.important-box)):not(:has(.definition-box)) {
     font-size: 1.19em;
 }
 

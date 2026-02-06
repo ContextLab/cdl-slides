@@ -213,8 +213,7 @@ cdl-theme-*/
 .sisyphus/
 notes/
 
-# Compiled example output (regenerate with: cdl-slides compile examples/sample_presentation.md)
-examples/sample_presentation.html
+# Compiled example output (themes/images are copied during compile)
 examples/themes/
 examples/images/
 

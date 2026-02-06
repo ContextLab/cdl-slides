@@ -254,11 +254,12 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 # Manim animations (optional)
 
-Embed animated math visualizations with manim code blocks:
+<div style="display: flex; gap: 1.5em;">
+<div style="flex: 1.3;">
 
 ```manim
 # scene: WaveAnimation
-# height: 400
+# height: 260
 # quality: l
 
 class WaveAnimation(Scene):
@@ -267,33 +268,60 @@ class WaveAnimation(Scene):
         wave = axes.plot(lambda x: np.sin(x), color=BLUE)
         label = MathTex(r"y = \sin(x)")
         label.next_to(axes, UP)
-
         self.play(Create(axes), Write(label))
         self.play(Create(wave), run_time=2)
-        self.wait()
 ```
 
-<div class="note-box" data-title="Requires manim">
+</div>
+<div style="flex: 0.7;">
 
-Install with `pip install cdl-slides[animations]` to enable manim support.
+<div class="note-box" data-title="Setup">
 
+`pip install cdl-slides[animations]`
+
+</div>
+
+<div class="example-box" data-title="Syntax">
+
+<code>```manim</code> with `# height:`, `# quality:`
+
+</div>
+
+</div>
 </div>
 
 ---
 
 # Animate DSL
 
-Simplified syntax for math animations:
+<div style="display: flex; gap: 1.5em;">
+<div style="flex: 1.3;">
 
 ```animate
-height: 400
+height: 260
 quality: low
-write equation "\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}" as integral at center
+write equation "\\int_0^\\infty e^{-x^2} dx" as integral at center
 wait 0.5
 fade-in integral
 ```
 
-The animate DSL transpiles to manim code automatically.
+</div>
+<div style="flex: 0.7;">
+
+<div class="tip-box" data-title="Simplified">
+
+No Python needed! Transpiles to manim.
+
+</div>
+
+<div class="example-box" data-title="Syntax">
+
+<code>```animate</code> with `write`, `fade-in`, `wait`
+
+</div>
+
+</div>
+</div>
 
 ---
 

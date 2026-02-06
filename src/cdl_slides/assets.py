@@ -236,7 +236,8 @@ def copy_assets_alongside_output(output_html: Path, source_dir: Optional[Path] =
             shutil.copytree(src_images, dst_images)
 
     # Copy animations/ (manim-generated GIFs) if source differs from output
-    if source_dir is not None and source_dir != output_dir:
+    # Resolve both paths to handle mixed relative/absolute comparisons
+    if source_dir is not None and source_dir.resolve() != output_dir.resolve():
         src_animations = source_dir / "animations"
         if src_animations.is_dir() and any(src_animations.iterdir()):
             dst_animations = output_dir / "animations"
