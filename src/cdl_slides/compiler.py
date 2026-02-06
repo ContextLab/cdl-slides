@@ -91,6 +91,7 @@ def compile_presentation(
     no_split: bool = False,
     keep_temp: bool = False,
     theme_dir: Optional[Path] = None,
+    skip_animations: bool = False,
 ) -> dict:
     """Compile a Markdown file into a CDL-themed Marp presentation.
 
@@ -156,6 +157,7 @@ def compile_presentation(
             max_lines=max_lines,
             max_table_rows=max_table_rows,
             no_split=no_split,
+            skip_animations=skip_animations,
         )
 
         results: Dict[str, object] = {

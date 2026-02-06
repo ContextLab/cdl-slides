@@ -45,8 +45,19 @@ try:
 except ImportError:
     pass
 
-# Check for FFmpeg availability
-FFMPEG_AVAILABLE = shutil.which("ffmpeg") is not None
+# Check for FFmpeg availability via imageio-ffmpeg (bundled) or system PATH
+FFMPEG_PATH: Optional[str] = None
+FFMPEG_AVAILABLE = False
+try:
+    import imageio_ffmpeg
+
+    FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
+    FFMPEG_AVAILABLE = True
+except (ImportError, RuntimeError):
+    _system_ffmpeg = shutil.which("ffmpeg")
+    if _system_ffmpeg:
+        FFMPEG_PATH = _system_ffmpeg
+        FFMPEG_AVAILABLE = True
 
 
 def check_dependencies() -> Tuple[bool, list]:
@@ -59,7 +70,7 @@ def check_dependencies() -> Tuple[bool, list]:
     if not MANIM_AVAILABLE:
         missing.append("manim (pip install manim)")
     if not FFMPEG_AVAILABLE:
-        missing.append("ffmpeg (brew install ffmpeg / apt install ffmpeg)")
+        missing.append("ffmpeg (pip install imageio-ffmpeg)")
     if not PIL_AVAILABLE:
         missing.append("Pillow (pip install Pillow)")
     return len(missing) == 0, missing
@@ -293,10 +304,11 @@ def convert_mp4_to_gif(
     palette_path = gif_path.with_suffix(".palette.png")
 
     try:
+        ffmpeg_cmd = FFMPEG_PATH or "ffmpeg"
         # Step 1: Generate palette with transparency support
         vf_palette = f"fps={fps},scale={scale_width}:-1:flags=lanczos,palettegen=reserve_transparent=1:stats_mode=diff"
         subprocess.run(
-            ["ffmpeg", "-y", "-i", str(mp4_path), "-vf", vf_palette, str(palette_path)],
+            [ffmpeg_cmd, "-y", "-i", str(mp4_path), "-vf", vf_palette, str(palette_path)],
             capture_output=True,
             check=True,
         )
@@ -307,7 +319,7 @@ def convert_mp4_to_gif(
         )
         subprocess.run(
             [
-                "ffmpeg",
+                ffmpeg_cmd,
                 "-y",
                 "-i",
                 str(mp4_path),

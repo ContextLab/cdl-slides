@@ -93,6 +93,12 @@ def main() -> None:
     default=None,
     help="Custom theme directory.",
 )
+@click.option(
+    "--no-animations",
+    is_flag=True,
+    default=False,
+    help="Skip processing of manim and animate blocks (useful for CI).",
+)
 def compile(
     input_file: Path,
     output: Optional[Path],
@@ -102,6 +108,7 @@ def compile(
     no_split: bool,
     keep_temp: bool,
     theme_dir: Optional[Path],
+    no_animations: bool,
 ) -> None:
     """Compile a Markdown file into a CDL-themed Marp presentation."""
     from cdl_slides.compiler import CompilationError, compile_presentation
@@ -118,6 +125,7 @@ def compile(
             no_split=no_split,
             keep_temp=keep_temp,
             theme_dir=theme_dir,
+            skip_animations=no_animations,
         )
     except FileNotFoundError as exc:
         click.echo(click.style(f"Error: {exc}", fg="red"), err=True)

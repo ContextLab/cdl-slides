@@ -1327,6 +1327,7 @@ def process_markdown(
     max_lines: int = 30,
     max_table_rows: int = 10,
     no_split: bool = False,
+    skip_animations: bool = False,
 ) -> dict:
     """
     Process a markdown file for Marp presentation.
@@ -1359,13 +1360,18 @@ def process_markdown(
     content, flow_diagrams_processed = process_flow_blocks(content)
 
     # Process animate DSL blocks (transpiles to manim blocks)
-    content, animate_blocks_transpiled = process_animate_blocks(content)
+    # Skip if --no-animations flag is set
+    if skip_animations:
+        animate_blocks_transpiled = 0
+        manim_animations_rendered = 0
+    else:
+        content, animate_blocks_transpiled = process_animate_blocks(content)
 
-    # Process manim animation blocks (renders to GIF files in animations/ subfolder)
-    from pathlib import Path
+        # Process manim animation blocks (renders to GIF files in animations/ subfolder)
+        from pathlib import Path
 
-    output_dir = str(Path(output_file).parent)
-    content, manim_animations_rendered = process_manim_blocks(content, output_dir)
+        output_dir = str(Path(output_file).parent)
+        content, manim_animations_rendered = process_manim_blocks(content, output_dir)
 
     # Parse the file into lines
     lines = content.split("\n")

@@ -252,7 +252,7 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
-# Manim animations (optional)
+# Manim animations
 <!-- _class: scale-85 -->
 
 <div style="display: flex; gap: 1.5em;">
@@ -276,20 +276,22 @@ class WaveAnimation(Scene):
 </div>
 <div style="flex: 1;">
 
-<div class="note-box" data-title="Setup">
+<div class="note-box" data-title="How it works">
 
-`pip install cdl-slides[animations]`
+CDL-slides automatically transpiles ` ```manim ` blocks to Python, renders to MP4, and converts to transparent GIF. No manual steps needed!
 
 </div>
 
-<div class="example-box" data-title="Markdown syntax">
+<div class="example-box" data-title="Markdown source">
 
-<pre style="margin: 0; font-size: 0.7em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;manim
+<pre style="margin: 0; font-size: 0.65em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;manim
 # scene: WaveAnimation
 # height: 380
 class WaveAnimation(Scene):
     def construct(self):
-        ...
+        axes = Axes(...)
+        wave = axes.plot(np.sin)
+        self.play(Create(axes))
 &#96;&#96;&#96;</pre>
 
 </div>
@@ -316,19 +318,19 @@ fade-in integral
 </div>
 <div style="flex: 1;">
 
-<div class="tip-box" data-title="Simplified">
+<div class="note-box" data-title="DSL features">
 
-No Python needed! Transpiles to manim.
+No Python needed! Also supports: `create circle/square/arrow`, `transform A -> B`, positions like `above/below/left-of`. See [README](https://github.com/ContextLab/cdl-slides#animate-dsl-simplified-animation-syntax).
 
 </div>
 
-<div class="example-box" data-title="Markdown syntax">
+<div class="example-box" data-title="Markdown source">
 
-<pre style="margin: 0; font-size: 0.7em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;animate
+<pre style="margin: 0; font-size: 0.65em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;animate
 height: 380
-write equation "E = mc^2" as eq
+write equation "..." as integral
 wait 0.5
-fade-in eq
+fade-in integral
 &#96;&#96;&#96;</pre>
 
 </div>

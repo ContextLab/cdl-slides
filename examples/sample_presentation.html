@@ -1102,22 +1102,24 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
 </div>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="16" data-class="scale-85" data-theme="cdl-theme" lang="en-US" class="scale-85" style="--class:scale-85;--theme:cdl-theme;" data-transition-back="{&quot;name&quot;:&quot;fade&quot;,&quot;duration&quot;:&quot;0.25s&quot;,&quot;builtinFallback&quot;:true}" data-transition="{&quot;name&quot;:&quot;fade&quot;,&quot;duration&quot;:&quot;0.25s&quot;,&quot;builtinFallback&quot;:true}">
-<h1 id="manim-animations-optional">Manim animations (optional)</h1>
+<h1 id="manim-animations">Manim animations</h1>
 <div style="display: flex; gap: 1.5em;">
 <div style="flex: 1;">
 <p><img src="animations/WaveAnimation_51150ee0.gif" alt="" style="height:380px;" /></p>
 </div>
 <div style="flex: 1;">
-<div class="note-box" data-title="Setup">
-<p><code>pip install cdl-slides[animations]</code></p>
+<div class="note-box" data-title="How it works">
+<p>CDL-slides automatically transpiles <code>```manim</code> blocks to Python, renders to MP4, and converts to transparent GIF. No manual steps needed!</p>
 </div>
-<div class="example-box" data-title="Markdown syntax">
-<pre style="margin: 0; font-size: 0.7em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;manim
+<div class="example-box" data-title="Markdown source">
+<pre style="margin: 0; font-size: 0.65em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;manim
 # scene: WaveAnimation
 # height: 380
 class WaveAnimation(Scene):
     def construct(self):
-        ...
+        axes = Axes(...)
+        wave = axes.plot(np.sin)
+        self.play(Create(axes))
 &#96;&#96;&#96;</pre>
 </div>
 </div>
@@ -1130,15 +1132,15 @@ class WaveAnimation(Scene):
 <p><img src="animations/AnimateScene_c963e8d5.gif" alt="" style="height:380px;" /></p>
 </div>
 <div style="flex: 1;">
-<div class="tip-box" data-title="Simplified">
-<p>No Python needed! Transpiles to manim.</p>
+<div class="note-box" data-title="DSL features">
+<p>No Python needed! Also supports: <code>create circle/square/arrow</code>, <code>transform A -&gt; B</code>, positions like <code>above/below/left-of</code>. See <a href="https://github.com/ContextLab/cdl-slides#animate-dsl-simplified-animation-syntax">README</a>.</p>
 </div>
-<div class="example-box" data-title="Markdown syntax">
-<pre style="margin: 0; font-size: 0.7em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;animate
+<div class="example-box" data-title="Markdown source">
+<pre style="margin: 0; font-size: 0.65em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;animate
 height: 380
-write equation "E = mc^2" as eq
+write equation "..." as integral
 wait 0.5
-fade-in eq
+fade-in integral
 &#96;&#96;&#96;</pre>
 </div>
 </div>

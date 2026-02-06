@@ -32,7 +32,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Bundled theme**: Complete CDL/Dartmouth-branded theme with custom fonts, colors, and layouts
 - **Smart preprocessing**: Auto-splits long code blocks and tables across slides
 - **Flow diagrams**: Simple ```` ```flow ```` syntax for pipeline diagrams
-- **Manim animations**: Embed animated equations and visualizations with ```` ```manim ```` blocks (optional)
+- **Manim animations**: Embed animated equations and visualizations with ```` ```manim ```` blocks (included by default)
 - **Auto-scaling**: Automatically adjusts font size for dense slides
 - **Syntax highlighting**: Code blocks with line numbers via Pygments
 - **Math support**: KaTeX for inline and display equations
@@ -252,17 +252,11 @@ Use the ```` ```flow ```` syntax for simple pipeline diagrams:
 
 Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `yellow`, `gray`.
 
-### Manim Animations (Optional)
+### Manim Animations
 
 Embed animated math visualizations using [Manim Community](https://www.manim.community/). Animations are rendered to transparent GIFs and embedded in slides.
 
-**Installation:**
-
-```bash
-pip install cdl-slides[animations]
-```
-
-This installs `manim` and `Pillow`. You also need `ffmpeg` installed on your system.
+Animation support is included by default when you install `cdl-slides`. FFmpeg is bundled automatically via `imageio-ffmpeg` — no system installation required.
 
 **Usage:**
 
@@ -344,7 +338,7 @@ fade-in eq1
 
 **Available colors:** blue, red, green, yellow, orange, white, black
 
-Note: The animate DSL requires the same `cdl-slides[animations]` install as manim blocks.
+Note: The animate DSL is included by default with `cdl-slides` — no extra installation needed.
 
 ### Scale Directives
 

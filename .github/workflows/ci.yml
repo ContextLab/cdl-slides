@@ -78,13 +78,13 @@ jobs:
         run: pip install -e .
 
       - name: Compile sample presentation (HTML)
-        run: cdl-slides compile examples/sample_presentation.md --format html
+        run: cdl-slides compile examples/sample_presentation.md --format html --no-animations
 
       - name: Verify HTML output exists
         run: test -f examples/sample_presentation.html
 
       - name: Compile sample presentation (PDF)
-        run: cdl-slides compile examples/sample_presentation.md --format pdf
+        run: cdl-slides compile examples/sample_presentation.md --format pdf --no-animations
 
       - name: Verify PDF output exists
         run: test -f examples/sample_presentation.pdf
