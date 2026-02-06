@@ -281,6 +281,22 @@ Install with `pip install cdl-slides[animations]` to enable manim support.
 
 ---
 
+# Animate DSL
+
+Simplified syntax for math animations:
+
+```animate
+height: 400
+quality: low
+write equation "\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2}" as integral at center
+wait 0.5
+fade-in integral
+```
+
+The animate DSL transpiles to manim code automatically.
+
+---
+
 # Emoji figures
 
 <div class="emoji-figure">

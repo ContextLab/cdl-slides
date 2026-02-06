@@ -289,6 +289,59 @@ The preprocessor automatically:
 
 Rendered GIFs are cached by content hash, so unchanged animations won't re-render.
 
+### Animate DSL (Simplified Animation Syntax)
+
+The animate DSL provides a simpler alternative to writing raw manim Python code. It uses a declarative syntax that gets transpiled to manim automatically.
+
+````markdown
+```animate
+height: 400
+write equation "E = mc^2" as eq1 at center
+wait 0.5
+fade-in eq1
+```
+````
+
+**Metadata options:**
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| height | 500 | Image height in pixels |
+| quality | high | Render quality (low/medium/high) |
+
+**Object commands:**
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `write equation "LaTeX" as NAME` | Create LaTeX equation | `write equation "E = mc^2" as eq1` |
+| `write text "string" as NAME` | Create text object | `write text "Hello" as title` |
+| `create circle color=COLOR as NAME` | Create colored circle | `create circle color=blue as c1` |
+| `create square color=COLOR as NAME` | Create colored square | `create square color=red as s1` |
+| `create arrow color=COLOR as NAME` | Create colored arrow | `create arrow color=green as a1` |
+
+**Animation commands:**
+
+| Command | Description |
+|---------|-------------|
+| `fade-in NAME` | Fade in an object |
+| `fade-out NAME` | Fade out an object |
+| `transform NAME1 -> NAME2` | Transform one object into another |
+| `wait SECONDS` | Wait for specified duration |
+
+**Position modifiers:**
+
+| Modifier | Description |
+|----------|-------------|
+| `at center` | Place at screen center |
+| `above NAME` | Place above another object |
+| `below NAME` | Place below another object |
+| `left-of NAME` | Place to the left of another object |
+| `right-of NAME` | Place to the right of another object |
+
+**Available colors:** blue, red, green, yellow, orange, white, black
+
+Note: The animate DSL requires the same `cdl-slides[animations]` install as manim blocks.
+
 ### Scale Directives
 
 For dense slides, use scale directives to adjust font size:
