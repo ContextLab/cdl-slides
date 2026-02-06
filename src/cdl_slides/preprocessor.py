@@ -60,6 +60,17 @@ except ImportError:
     render_manim_block = None
     generate_warning_html = None
 
+# Animate DSL parser and transpiler
+try:
+    from cdl_slides.animate_parser import parse_animate_block
+    from cdl_slides.animate_transpiler import transpile_to_manim
+
+    ANIMATE_DSL_AVAILABLE = True
+except ImportError:
+    ANIMATE_DSL_AVAILABLE = False
+    parse_animate_block = None
+    transpile_to_manim = None
+
 
 # =============================================================================
 # FLOW DIAGRAM GENERATION
@@ -523,6 +534,43 @@ def process_manim_blocks(content: str, output_dir: str) -> tuple:
 
     processed = re.sub(manim_pattern, replace_manim_block, content, flags=re.DOTALL)
     return processed, animations_rendered
+
+
+def process_animate_blocks(content: str) -> tuple:
+    """
+    Process ```animate code blocks and transpile them to ```manim blocks.
+
+    The animate DSL provides a user-friendly syntax for creating animations
+    that gets transpiled to manim Python code for rendering.
+
+    Args:
+        content: The full markdown content
+
+    Returns:
+        Tuple of (processed_content, number_of_blocks_transpiled)
+    """
+    if not ANIMATE_DSL_AVAILABLE or parse_animate_block is None or transpile_to_manim is None:
+        return content, 0
+
+    animate_pattern = r"```animate\n(.*?)```"
+    blocks_transpiled = 0
+
+    def replace_animate_block(match):
+        nonlocal blocks_transpiled
+        animate_content = match.group(1)
+
+        try:
+            ast = parse_animate_block(animate_content)
+            manim_code = transpile_to_manim(ast)
+            blocks_transpiled += 1
+            return f"```manim\n{manim_code}```"
+        except Exception as e:
+            if generate_warning_html is not None:
+                return generate_warning_html(f"Animate DSL error: {e}")
+            return f"<!-- animate transpilation failed: {e} -->\n```\n{animate_content}```"
+
+    processed = re.sub(animate_pattern, replace_animate_block, content, flags=re.DOTALL)
+    return processed, blocks_transpiled
 
 
 def parse_markdown_table(lines: list) -> "dict | None":
@@ -1310,6 +1358,9 @@ def process_markdown(
     # Process flow diagram blocks first (before line-by-line processing)
     content, flow_diagrams_processed = process_flow_blocks(content)
 
+    # Process animate DSL blocks (transpiles to manim blocks)
+    content, animate_blocks_transpiled = process_animate_blocks(content)
+
     # Process manim animation blocks (renders to GIF files in animations/ subfolder)
     from pathlib import Path
 
@@ -1366,6 +1417,7 @@ def process_markdown(
         "slides_added": 0,
         "arrows_processed": 0,
         "flow_diagrams_processed": flow_diagrams_processed,
+        "animate_blocks_transpiled": animate_blocks_transpiled,
         "manim_animations_rendered": manim_animations_rendered,
         "split_directives_found": 0,
         "overflow_warnings": len([w for w in overflow_warnings if "overflow" in w.lower() or "exceeds" in w.lower()]),
@@ -1686,6 +1738,8 @@ def main():
             print(f"Arrows processed: {stats['arrows_processed']}")
         if stats["flow_diagrams_processed"] > 0:
             print(f"Flow diagrams generated: {stats['flow_diagrams_processed']}")
+        if stats.get("animate_blocks_transpiled", 0) > 0:
+            print(f"Animate blocks transpiled: {stats['animate_blocks_transpiled']}")
         if stats.get("manim_animations_rendered", 0) > 0:
             print(f"Manim animations rendered: {stats['manim_animations_rendered']}")
         if stats.get("scale_classes_injected", 0) > 0:
