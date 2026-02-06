@@ -385,9 +385,8 @@ class TestProcessAnimateBlocks:
         src = work_dir / "test.md"
         src.write_text(content, encoding="utf-8")
         output = work_dir / "output.md"
-        stats = process_markdown(str(src), str(output))
+        process_markdown(str(src), str(output))
         result = output.read_text(encoding="utf-8")
-        # After transpilation, should contain manim block or image reference
         assert "```manim" in result or "![height:" in result or "warning-box" in result
 
     @pytest.mark.skipif(
@@ -398,16 +397,14 @@ class TestProcessAnimateBlocks:
         """Test full pipeline: animate → manim → GIF."""
         src = copy_fixture_to_work("animate_simple.md")
         output = work_dir / "output.md"
-        stats = process_markdown(str(src), str(output))
+        process_markdown(str(src), str(output))
         result = output.read_text(encoding="utf-8")
-        # Check for GIF in animations/ folder or image reference
         assert "![height:" in result or "warning-box" in result
 
     def test_malformed_animate_produces_warning(self, copy_fixture_to_work, work_dir):
         """Test that syntax errors produce warning box."""
         src = copy_fixture_to_work("animate_malformed.md")
         output = work_dir / "output.md"
-        stats = process_markdown(str(src), str(output))
+        process_markdown(str(src), str(output))
         result = output.read_text(encoding="utf-8")
-        # Malformed blocks should produce warning boxes
         assert "warning-box" in result or "```animate" in result
