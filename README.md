@@ -28,6 +28,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Bundled theme**: Complete CDL/Dartmouth-branded theme with custom fonts, colors, and layouts
 - **Smart preprocessing**: Auto-splits long code blocks and tables across slides
 - **Flow diagrams**: Simple ```` ```flow ```` syntax for pipeline diagrams
+- **Manim animations**: Embed animated equations and visualizations with ```` ```manim ```` blocks (optional)
 - **Auto-scaling**: Automatically adjusts font size for dense slides
 - **Syntax highlighting**: Code blocks with line numbers via Pygments
 - **Math support**: KaTeX for inline and display equations
@@ -246,6 +247,47 @@ Use the ```` ```flow ```` syntax for simple pipeline diagrams:
 ````
 
 Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `yellow`, `gray`.
+
+### Manim Animations (Optional)
+
+Embed animated math visualizations using [Manim Community](https://www.manim.community/). Animations are rendered to transparent GIFs and embedded in slides.
+
+**Installation:**
+
+```bash
+pip install cdl-slides[animations]
+```
+
+This installs `manim` and `Pillow`. You also need `ffmpeg` installed on your system.
+
+**Usage:**
+
+````markdown
+```manim
+# scene: MyAnimation
+# height: 500
+
+class MyAnimation(Scene):
+    def construct(self):
+        eq = MathTex(r"E = mc^2")
+        self.play(Write(eq))
+        self.wait()
+```
+````
+
+**Metadata comments** (all optional):
+- `# scene: SceneName` — override the scene class name
+- `# height: 500` — image height in pixels (default: 500)
+- `# quality: l/m/h/p` — render quality: low/medium/high/production (default: h)
+- `# fps: 24` — frames per second (default: 24)
+
+The preprocessor automatically:
+1. Extracts the manim code block
+2. Renders to MP4 with a white background
+3. Converts to GIF with transparent background
+4. Replaces the code block with `![height:N](animations/scene.gif)`
+
+Rendered GIFs are cached by content hash, so unchanged animations won't re-render.
 
 ### Scale Directives
 
