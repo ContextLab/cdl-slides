@@ -32,7 +32,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Bundled theme**: Complete CDL/Dartmouth-branded theme with custom fonts, colors, and layouts
 - **Smart preprocessing**: Auto-splits long code blocks and tables across slides
 - **Flow diagrams**: Simple ```` ```flow ```` syntax for pipeline diagrams
-- **Manim animations**: Embed animated equations and visualizations with ```` ```manim ```` blocks (included by default)
+- **Manim animations**: Embed animated equations and visualizations with ```` ```manim ```` blocks (optional)
 - **Auto-scaling**: Automatically adjusts font size for dense slides
 - **Syntax highlighting**: Code blocks with line numbers via Pygments
 - **Math support**: KaTeX for inline and display equations
@@ -46,12 +46,21 @@ pip install cdl-slides
 
 That's it. Marp CLI is automatically downloaded on first compile if not already installed.
 
+For **manim animations** (optional), install with the animations extra:
+
+```bash
+pip install cdl-slides[animations]
+```
+
+This installs manim and bundled ffmpeg. Note: manim requires system libraries (pango, cairo) on Linux — see [manim installation docs](https://docs.manim.community/en/stable/installation.html) if you encounter issues.
+
 Or install from source:
 
 ```bash
 git clone https://github.com/ContextLab/cdl-slides.git
 cd cdl-slides
-pip install -e .
+pip install -e .            # Basic install
+pip install -e ".[animations]"  # With animation support
 ```
 
 ### Marp CLI Resolution
@@ -256,7 +265,9 @@ Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `y
 
 Embed animated math visualizations using [Manim Community](https://www.manim.community/). Animations are rendered to transparent GIFs and embedded in slides.
 
-Animation support is included by default when you install `cdl-slides`. FFmpeg is bundled automatically via `imageio-ffmpeg` — no system installation required.
+**Requires:** `pip install cdl-slides[animations]`
+
+FFmpeg is bundled automatically via `imageio-ffmpeg` — no system ffmpeg installation required.
 
 **Usage:**
 
@@ -338,7 +349,7 @@ fade-in eq1
 
 **Available colors:** blue, red, green, yellow, orange, white, black
 
-Note: The animate DSL is included by default with `cdl-slides` — no extra installation needed.
+**Requires:** `pip install cdl-slides[animations]`
 
 ### Scale Directives
 

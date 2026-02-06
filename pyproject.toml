@@ -30,10 +30,6 @@ classifiers = [
 dependencies = [
     "click>=8.0",
     "pygments>=2.15",
-    # Animation support (included by default)
-    "manim>=0.18.0",
-    "Pillow>=9.0",
-    "imageio-ffmpeg>=0.5.1",  # Bundled ffmpeg binary
 ]
 
 [project.optional-dependencies]
@@ -41,8 +37,11 @@ dev = [
     "pytest>=7.0",
     "ruff>=0.4",
 ]
-# Kept for backwards compatibility - animations now included by default
-animations = []
+animations = [
+    "manim>=0.18.0",
+    "Pillow>=9.0",
+    "imageio-ffmpeg>=0.5.1",
+]
 
 [project.urls]
 Homepage = "https://www.context-lab.com"
