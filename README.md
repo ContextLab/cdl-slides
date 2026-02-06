@@ -12,17 +12,13 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 |:-------------------------------:|:-----------------:|:------------:|
 | ![Def/Ex/Imp](docs/screenshots/04-callout-def-ex-imp.png) | ![Code](docs/screenshots/05-code-example.png) | ![Math](docs/screenshots/06-math-katex.png) |
 
-| Manim Animations | Animate DSL | Flow Diagrams |
-|:----------------:|:-----------:|:-------------:|
-| ![Manim](docs/screenshots/12-manim-animation.png) | ![Animate](docs/screenshots/13-animate-dsl.png) | ![Flow](docs/screenshots/07-flow-diagram.png) |
+| Manim Animations | Flow Diagrams | Emoji Figures |
+|:----------------:|:-------------:|:-------------:|
+| ![Manim](docs/screenshots/12-manim-animation.png) | ![Flow](docs/screenshots/07-flow-diagram.png) | ![Emoji](docs/screenshots/08-emoji-figures.png) |
 
-| Emoji Figures | Two-Column Layout | Simple Table |
-|:-------------:|:-----------------:|:------------:|
-| ![Emoji](docs/screenshots/08-emoji-figures.png) | ![Two-Column](docs/screenshots/09-two-column.png) | ![Table](docs/screenshots/10-simple-table.png) |
-
-| Output Formats |
-|:--------------:|
-| ![Formats](docs/screenshots/11-output-formats.png) |
+| Two-Column Layout | Simple Table | Output Formats |
+|:-----------------:|:------------:|:--------------:|
+| ![Two-Column](docs/screenshots/09-two-column.png) | ![Table](docs/screenshots/10-simple-table.png) | ![Formats](docs/screenshots/11-output-formats.png) |
 
 ## Table of contents
 
