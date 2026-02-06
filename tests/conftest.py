@@ -60,6 +60,26 @@ def manim_complex_md(fixtures_dir):
 
 
 @pytest.fixture
+def animate_simple_md(fixtures_dir):
+    return fixtures_dir / "animate_simple.md"
+
+
+@pytest.fixture
+def animate_positioning_md(fixtures_dir):
+    return fixtures_dir / "animate_positioning.md"
+
+
+@pytest.fixture
+def animate_multi_animation_md(fixtures_dir):
+    return fixtures_dir / "animate_multi_animation.md"
+
+
+@pytest.fixture
+def animate_malformed_md(fixtures_dir):
+    return fixtures_dir / "animate_malformed.md"
+
+
+@pytest.fixture
 def work_dir(tmp_path):
     work = tmp_path / "work"
     work.mkdir()
