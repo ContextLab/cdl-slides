@@ -1105,21 +1105,23 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
 <h1 id="manim-animations">Manim animations</h1>
 <div style="display: flex; gap: 1.5em; align-items: center;">
 <div style="flex: 1;">
-<img src="animations/AnimateScene_2b2c6d76.gif" class="manim-animation" style="max-height: 400px;" />
+<img src="animations/AnimateScene_7ddc19c0.gif" class="manim-animation" style="max-height: 400px;" />
 </div>
 <div style="flex: 1;">
 <div class="note-box" data-title="How it works" style="font-size: 0.5em;">
 <p><a href="https://www.manim.community/">Manim</a> renders math animations to GIF. Use <strong>animate</strong> code blocks.</p>
 </div>
 <div class="example-box" data-title="DSL Code" style="font-size: 0.45em;">
-<pre><code class="language-text has-line-numbers" data-start-line="1">
-<span class="line"><span class="line-num">1</span><span class="line-code">create axes ... as ax</span></span>
-<span class="line"><span class="line-num">2</span><span class="line-code">draw ax</span></span>
-<span class="line"><span class="line-num">3</span><span class="line-code">plot &quot;np.sin(x)&quot; on ax as wave</span></span>
-<span class="line"><span class="line-num">4</span><span class="line-code">draw wave</span></span>
-<span class="line"><span class="line-num">5</span><span class="line-code">write equation &quot;y = ...&quot; as label above ax</span></span>
-<span class="line"><span class="line-num">6</span><span class="line-code">fade-in label</span></span>
-</code></pre>
+<pre style="margin: 0.3em 0; white-space: pre-wrap;">&#96;&#96;&#96;animate
+height: 400
+width: 600
+create axes x=[0,6.28,1.57] y=[-1.5,1.5,0.5] as ax
+draw ax
+plot "np.sin(x)" on ax color=river-blue stroke=6 as wave
+draw wave
+write equation "y = \sin(x)" as label above ax
+fade-in label
+&#96;&#96;&#96;</pre>
 </div>
 </div>
 </div>
@@ -1128,7 +1130,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
 <h1 id="animate-dsl-simplified-syntax">Animate DSL (simplified syntax)</h1>
 <div style="display: flex; gap: 1em; align-items: flex-start;">
 <div style="flex: 1;">
-<img src="animations/AnimateScene_b950a283.gif" class="manim-animation" style="max-height: 350px;" />
+<img src="animations/AnimateScene_0ddd03e0.gif" class="manim-animation" style="max-height: 350px;" />
 </div>
 <div style="flex: 1;">
 <div class="note-box" data-title="Key features" style="font-size: 0.5em;">
@@ -1139,12 +1141,15 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
 </ul>
 <p>See <a href="https://github.com/ContextLab/cdl-slides#animate-dsl-simplified-animation-syntax">README</a> for full docs.</p>
 </div>
-<div class="example-box" data-title="Syntax" style="font-size: 0.45em;">
-<pre><code class="language-text has-line-numbers" data-start-line="1">
-<span class="line"><span class="line-num">1</span><span class="line-code">write equation &quot;LATEX&quot; as NAME</span></span>
-<span class="line"><span class="line-num">2</span><span class="line-code">wait SECONDS</span></span>
-<span class="line"><span class="line-num">3</span><span class="line-code">fade-in NAME</span></span>
-</code></pre>
+<div class="example-box" data-title="DSL Code" style="font-size: 0.45em;">
+<pre style="margin: 0.3em 0; white-space: pre-wrap;">&#96;&#96;&#96;animate
+height: 350
+width: 600
+scale: 2.5
+write equation "\int_0^\infty e^{-x^2} dx" as eq at center
+wait 0.5
+fade-in eq
+&#96;&#96;&#96;</pre>
 </div>
 </div>
 </div>

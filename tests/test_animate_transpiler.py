@@ -151,13 +151,13 @@ class TestGenerateAnimationCode:
         cmd = {"type": "write", "object": {"kind": "equation", "content": "E = mc^2", "name": "eq1"}}
         registry = {"eq1": "eq1"}
         result = generate_animation_code(cmd, registry)
-        assert result == "self.play(Write(eq1))"
+        assert result == ""
 
     def test_create_animation(self):
         cmd = {"type": "create", "object": {"kind": "circle", "params": {"color": "blue"}, "name": "c1"}}
         registry = {"c1": "c1"}
         result = generate_animation_code(cmd, registry)
-        assert result == "self.play(Create(c1))"
+        assert result == ""
 
     def test_fade_in_animation(self):
         cmd = {"type": "fade-in", "target": "c1"}
@@ -212,7 +212,6 @@ class TestTranspileToManim:
         assert "def construct(self):" in result
         assert 'eq1 = MathTex(r"E = mc^2")' in result
         assert "eq1.move_to(ORIGIN)" in result
-        assert "self.play(Write(eq1))" in result
 
     def test_multiple_commands(self):
         ast = {
@@ -230,7 +229,6 @@ class TestTranspileToManim:
         result = transpile_to_manim(ast)
 
         assert 'eq1 = MathTex(r"E = mc^2")' in result
-        assert "self.play(Write(eq1))" in result
         assert "self.wait(0.5)" in result
         assert "self.play(FadeIn(c1))" in result
 
@@ -254,7 +252,6 @@ class TestTranspileToManim:
 
         assert "c1 = Circle(color=BLUE)" in result
         assert "c1.next_to(eq1, RIGHT)" in result
-        assert "self.play(Create(c1))" in result
 
     def test_transform_animation(self):
         ast = {
@@ -322,7 +319,6 @@ class TestTranspileToManim:
         result = transpile_to_manim(ast)
 
         assert 't1 = Text("Hello World")' in result
-        assert "self.play(Write(t1))" in result
 
     def test_square_and_arrow(self):
         ast = {
@@ -354,8 +350,6 @@ class TestTranspileToManim:
         result = transpile_to_manim(ast)
 
         assert 'eq1 = MathTex(r"x")' in result
-        assert "self.play(Write(eq1))" in result
-        # Should NOT have move_to since no position specified
         assert "move_to" not in result
 
     def test_indentation_is_correct(self):
@@ -428,9 +422,8 @@ class TestGeneratePlotCode:
     def test_plot_code(self):
         cmd = {"type": "plot", "formula": "np.sin(x)", "axes": "ax", "color": "blue", "name": "wave"}
         result = generate_plot_code(cmd, {})
-        assert len(result) == 2
+        assert len(result) == 1
         assert "wave = ax.plot(lambda x: np.sin(x), color=BLUE)" in result[0]
-        assert "self.play(Create(wave))" in result[1]
 
 
 class TestGenerateDrawAnimation:
@@ -458,7 +451,6 @@ class TestTranspileAxesAndPlot:
         }
         result = transpile_to_manim(ast)
         assert "ax = Axes(" in result
-        assert "self.play(Create(ax))" in result
 
     def test_plot_on_axes(self):
         ast = {
@@ -478,7 +470,6 @@ class TestTranspileAxesAndPlot:
         result = transpile_to_manim(ast)
         assert "ax = Axes(" in result
         assert "wave = ax.plot(lambda x: np.sin(x), color=BLUE)" in result
-        assert "self.play(Create(wave))" in result
 
     def test_draw_command(self):
         ast = {

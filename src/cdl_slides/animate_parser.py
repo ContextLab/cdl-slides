@@ -129,19 +129,25 @@ def parse_command(line: str) -> dict[str, Any] | None:
 
 
 def _parse_plot_command(rest: str) -> dict[str, Any]:
-    """Parse: plot "formula" on axes_name color=X as name"""
-    if match := re.match(r'^"([^"]+)"\s+on\s+(\w+)(?:\s+color=(\w+))?\s+as\s+(\w+)', rest):
+    """Parse: plot "formula" on axes_name color=X stroke=N as name"""
+    if match := re.match(
+        r'^"([^"]+)"\s+on\s+(\w+)(?:\s+color=([\w-]+))?(?:\s+stroke=(\d+(?:\.\d+)?))?\s+as\s+(\w+)', rest
+    ):
         formula = match.group(1)
         axes_name = match.group(2)
         color = match.group(3) if match.group(3) else "blue"
-        name = match.group(4)
-        return {
+        stroke = float(match.group(4)) if match.group(4) else None
+        name = match.group(5)
+        result: dict[str, Any] = {
             "type": "plot",
             "formula": formula,
             "axes": axes_name,
             "color": color,
             "name": name,
         }
+        if stroke is not None:
+            result["stroke_width"] = stroke
+        return result
     return {}
 
 

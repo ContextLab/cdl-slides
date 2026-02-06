@@ -12,6 +12,10 @@ COLOR_MAP = {
     "orange": "ORANGE",
     "white": "WHITE",
     "black": "BLACK",
+    "navy": '"#000080"',
+    "purple": "PURPLE",
+    "teal": "TEAL",
+    "river-blue": '"#267aba"',
 }
 
 POSITION_DIRECTIONS = {
@@ -98,19 +102,10 @@ def generate_animation_code(cmd: dict[str, Any], registry: dict[str, str]) -> st
     cmd_type = cmd.get("type")
 
     if cmd_type == "write":
-        obj = cmd.get("object", {})
-        name = obj.get("name")
-        return f"self.play(Write({name}))"
+        return ""
 
     if cmd_type == "create":
-        obj = cmd.get("object", {})
-        name = obj.get("name")
-        kind = obj.get("kind")
-        if kind == "axes":
-            return f"self.play(Create({name}))"
-        if kind == "graph":
-            return f"self.play(Create({name}))"
-        return f"self.play(Create({name}))"
+        return ""
 
     if cmd_type == "fade-in":
         target = cmd.get("target")
@@ -146,13 +141,14 @@ def generate_plot_code(cmd: dict[str, Any], registry: dict[str, str]) -> list[st
     formula = cmd.get("formula", "x")
     axes_name = cmd.get("axes")
     color = cmd.get("color", "blue")
+    stroke_width = cmd.get("stroke_width")
     name = cmd.get("name")
     manim_color = COLOR_MAP.get(color, "BLUE")
 
     registry[name] = name
+    stroke_arg = f", stroke_width={stroke_width}" if stroke_width else ""
     return [
-        f"{name} = {axes_name}.plot(lambda x: {formula}, color={manim_color})",
-        f"self.play(Create({name}))",
+        f"{name} = {axes_name}.plot(lambda x: {formula}, color={manim_color}{stroke_arg})",
     ]
 
 

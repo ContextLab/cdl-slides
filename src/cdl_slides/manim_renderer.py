@@ -348,6 +348,25 @@ def convert_mp4_to_gif(
             palette_path.unlink()
 
 
+def _remove_gif_loop_extension(gif_path: Path) -> None:
+    """Remove NETSCAPE2.0 extension from GIF so it plays once and stops."""
+    with open(gif_path, "rb") as f:
+        data = f.read()
+
+    netscape_marker = b"NETSCAPE2.0"
+    idx = data.find(netscape_marker)
+    if idx == -1:
+        return
+
+    # Extension block: 0x21 0xFF 0x0B "NETSCAPE2.0" 0x03 0x01 [loop_lo] [loop_hi] 0x00
+    block_start = idx - 3
+    block_end = idx + len(netscape_marker) + 5
+    new_data = data[:block_start] + data[block_end:]
+
+    with open(gif_path, "wb") as f:
+        f.write(new_data)
+
+
 def postprocess_gif(gif_path: Path, loop_count: int = 1) -> bool:
     """Post-process GIF: ensure white→transparent and set loop count.
 
@@ -385,20 +404,18 @@ def postprocess_gif(gif_path: Path, loop_count: int = 1) -> bool:
             frames.append(frame)
             durations.append(img.info.get("duration", 40))
 
-        # Save with specified loop count
-        # Note: loop=0 means infinite, loop=N means play N+1 times
-        # To play exactly once, we omit the loop parameter (no NETSCAPE extension)
         save_kwargs = {
             "save_all": True,
             "append_images": frames[1:],
             "duration": durations,
-            "disposal": 2,  # Restore to background between frames
+            "disposal": 2,
+            "loop": 0,
         }
-        if loop_count == 0:
-            save_kwargs["loop"] = 0  # Infinite loop
-        # For loop_count >= 1, omit loop param to play exactly once (no looping)
 
         frames[0].save(gif_path, **save_kwargs)
+
+        if loop_count >= 1:
+            _remove_gif_loop_extension(gif_path)
 
         return True
 

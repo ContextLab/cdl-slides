@@ -263,7 +263,7 @@ height: 400
 width: 600
 create axes x=[0,6.28,1.57] y=[-1.5,1.5,0.5] as ax
 draw ax
-plot "np.sin(x)" on ax color=blue as wave
+plot "np.sin(x)" on ax color=river-blue stroke=6 as wave
 draw wave
 write equation "y = \sin(x)" as label above ax
 fade-in label
@@ -280,14 +280,16 @@ fade-in label
 
 <div class="example-box" data-title="DSL Code" style="font-size: 0.45em;">
 
-```text
-create axes ... as ax
+<pre style="margin: 0.3em 0; white-space: pre-wrap;">&#96;&#96;&#96;animate
+height: 400
+width: 600
+create axes x=[0,6.28,1.57] y=[-1.5,1.5,0.5] as ax
 draw ax
-plot "np.sin(x)" on ax as wave
+plot "np.sin(x)" on ax color=river-blue stroke=6 as wave
 draw wave
-write equation "y = ..." as label above ax
+write equation "y = \sin(x)" as label above ax
 fade-in label
-```
+&#96;&#96;&#96;</pre>
 
 </div>
 
@@ -324,13 +326,16 @@ See [README](https://github.com/ContextLab/cdl-slides#animate-dsl-simplified-ani
 
 </div>
 
-<div class="example-box" data-title="Syntax" style="font-size: 0.45em;">
+<div class="example-box" data-title="DSL Code" style="font-size: 0.45em;">
 
-```text
-write equation "LATEX" as NAME
-wait SECONDS
-fade-in NAME
-```
+<pre style="margin: 0.3em 0; white-space: pre-wrap;">&#96;&#96;&#96;animate
+height: 350
+width: 600
+scale: 2.5
+write equation "\int_0^\infty e^{-x^2} dx" as eq at center
+wait 0.5
+fade-in eq
+&#96;&#96;&#96;</pre>
 
 </div>
 
