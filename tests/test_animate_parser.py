@@ -331,3 +331,81 @@ quality: low"""
         assert result["metadata"]["height"] == 600
         assert result["metadata"]["quality"] == "low"
         assert result["commands"] == []
+
+
+class TestParseAxes:
+    def test_axes_basic(self):
+        spec = parse_object_spec("axes x=[-3,3] y=[-1,1] as ax")
+        assert spec["kind"] == "axes"
+        assert spec["params"]["x_range"] == [-3.0, 3.0]
+        assert spec["params"]["y_range"] == [-1.0, 1.0]
+        assert spec["name"] == "ax"
+
+    def test_axes_with_steps(self):
+        spec = parse_object_spec("axes x=[-3,3,1] y=[-2,2,0.5] as myaxes")
+        assert spec["kind"] == "axes"
+        assert spec["params"]["x_range"] == [-3.0, 3.0, 1.0]
+        assert spec["params"]["y_range"] == [-2.0, 2.0, 0.5]
+        assert spec["name"] == "myaxes"
+
+    def test_create_axes_command(self):
+        cmd = parse_command("create axes x=[-3,3] y=[-1,1] as ax")
+        assert cmd["type"] == "create"
+        assert cmd["object"]["kind"] == "axes"
+        assert cmd["object"]["params"]["x_range"] == [-3.0, 3.0]
+
+
+class TestParseGraph:
+    def test_graph_basic(self):
+        spec = parse_object_spec('graph "np.sin(x)" x=[-3,3] as wave')
+        assert spec["kind"] == "graph"
+        assert spec["params"]["formula"] == "np.sin(x)"
+        assert spec["params"]["x_range"] == [-3.0, 3.0]
+        assert spec["params"]["color"] == "blue"
+        assert spec["name"] == "wave"
+
+    def test_graph_with_color(self):
+        spec = parse_object_spec('graph "x**2" x=[-2,2] color=red as parabola')
+        assert spec["kind"] == "graph"
+        assert spec["params"]["formula"] == "x**2"
+        assert spec["params"]["color"] == "red"
+        assert spec["name"] == "parabola"
+
+
+class TestParsePlot:
+    def test_plot_basic(self):
+        cmd = parse_command('plot "np.sin(x)" on ax as wave')
+        assert cmd["type"] == "plot"
+        assert cmd["formula"] == "np.sin(x)"
+        assert cmd["axes"] == "ax"
+        assert cmd["color"] == "blue"
+        assert cmd["name"] == "wave"
+
+    def test_plot_with_color(self):
+        cmd = parse_command('plot "x**2" on myaxes color=red as parabola')
+        assert cmd["type"] == "plot"
+        assert cmd["formula"] == "x**2"
+        assert cmd["axes"] == "myaxes"
+        assert cmd["color"] == "red"
+        assert cmd["name"] == "parabola"
+
+
+class TestParseDraw:
+    def test_draw_command(self):
+        cmd = parse_command("draw ax")
+        assert cmd["type"] == "draw"
+        assert cmd["target"] == "ax"
+
+
+class TestParseManim:
+    def test_manim_basic(self):
+        cmd = parse_command("manim Dot().move_to(ORIGIN) as dot")
+        assert cmd["type"] == "manim"
+        assert cmd["code"] == "Dot().move_to(ORIGIN)"
+        assert cmd["name"] == "dot"
+
+    def test_manim_complex(self):
+        cmd = parse_command('manim ax.get_axis_labels(x_label="t", y_label="y") as labels')
+        assert cmd["type"] == "manim"
+        assert cmd["code"] == 'ax.get_axis_labels(x_label="t", y_label="y")'
+        assert cmd["name"] == "labels"

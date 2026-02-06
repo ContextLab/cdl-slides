@@ -253,46 +253,41 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 ---
 
 # Manim animations
-<!-- _class: scale-85 -->
+<!-- _class: scale-90 -->
 
-<div style="display: flex; gap: 1.5em;">
+<div style="display: flex; gap: 1.5em; align-items: center;">
 <div style="flex: 1;">
 
-```manim
-# scene: WaveAnimation
-# height: 380
-# quality: l
-
-class WaveAnimation(Scene):
-    def construct(self):
-        axes = Axes(x_range=[0, 4*PI], y_range=[-1.5, 1.5])
-        wave = axes.plot(lambda x: np.sin(x), color=BLUE)
-        label = MathTex(r"y = \sin(x)")
-        label.next_to(axes, UP)
-        self.play(Create(axes), Write(label))
-        self.play(Create(wave), run_time=2)
+```animate
+height: 400
+width: 600
+create axes x=[0,6.28,1.57] y=[-1.5,1.5,0.5] as ax
+draw ax
+plot "np.sin(x)" on ax color=blue as wave
+draw wave
+write equation "y = \sin(x)" as label above ax
+fade-in label
 ```
 
 </div>
 <div style="flex: 1;">
 
-<div class="note-box" data-title="How it works">
+<div class="note-box" data-title="How it works" style="font-size: 0.7em;">
 
-CDL-slides automatically transpiles ` ```manim ` blocks to Python, renders to MP4, and converts to transparent GIF. No manual steps needed!
+[Manim](https://www.manim.community/) renders math animations to GIF. Use **animate** code blocks.
 
 </div>
 
-<div class="example-box" data-title="Markdown source">
+<div class="example-box" data-title="DSL Code" style="font-size: 0.6em;">
 
-<pre style="margin: 0; font-size: 0.65em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;manim
-# scene: WaveAnimation
-# height: 380
-class WaveAnimation(Scene):
-    def construct(self):
-        axes = Axes(...)
-        wave = axes.plot(np.sin)
-        self.play(Create(axes))
-&#96;&#96;&#96;</pre>
+```text
+create axes ... as ax
+draw ax
+plot "np.sin(x)" on ax as wave
+draw wave
+write equation "y = ..." as label above ax
+fade-in label
+```
 
 </div>
 
@@ -301,37 +296,41 @@ class WaveAnimation(Scene):
 
 ---
 
-# Animate DSL
+# Animate DSL (simplified syntax)
 <!-- _class: scale-85 -->
 
-<div style="display: flex; gap: 1.5em;">
+<div style="display: flex; gap: 1em; align-items: flex-start;">
 <div style="flex: 1;">
 
 ```animate
-height: 380
-quality: low
-write equation "\\int_0^\\infty e^{-x^2} dx" as integral at center
+height: 350
+width: 600
+scale: 2.5
+write equation "\\int_0^\\infty e^{-x^2} dx" as eq at center
 wait 0.5
-fade-in integral
+fade-in eq
 ```
 
 </div>
 <div style="flex: 1;">
 
-<div class="note-box" data-title="DSL features">
+<div class="note-box" data-title="Key features" style="font-size: 0.5em;">
 
-No Python needed! Also supports: `create circle/square/arrow`, `transform A -> B`, positions like `above/below/left-of`. See [README](https://github.com/ContextLab/cdl-slides#animate-dsl-simplified-animation-syntax).
+- `create axes`, `plot` — graphs
+- `write equation/text` — math/text
+- `fade-in/out`, `transform` — animate
+
+See [README](https://github.com/ContextLab/cdl-slides#animate-dsl-simplified-animation-syntax) for full docs.
 
 </div>
 
-<div class="example-box" data-title="Markdown source">
+<div class="example-box" data-title="Syntax" style="font-size: 0.45em;">
 
-<pre style="margin: 0; font-size: 0.65em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;animate
-height: 380
-write equation "..." as integral
-wait 0.5
-fade-in integral
-&#96;&#96;&#96;</pre>
+```text
+write equation "LATEX" as NAME
+wait SECONDS
+fade-in NAME
+```
 
 </div>
 

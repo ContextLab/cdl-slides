@@ -4004,3 +4004,60 @@ ul.decision-list li::before {
     font-weight: bold;
     font-size: 1.1em;
 }
+
+/* ============================================
+   MANIM ANIMATION STYLING
+   Ensures GIFs preserve aspect ratio when embedded
+   ============================================ */
+.manim-animation {
+    display: block;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ============================================
+   EXAMPLE-BOX CODE STYLING
+   Allow smaller code display in callout boxes
+   Override !important rules from section pre
+   ============================================ */
+.example-box pre,
+.note-box pre,
+.tip-box pre,
+.warning-box pre,
+.definition-box pre,
+.important-box pre {
+    font-size: 0.65em !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    padding: 0.3em !important;
+    background: transparent !important;
+    border: none !important;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* ============================================
+   ANIMATION SLIDE LAYOUT
+   Ensure animations display at proper size and center content vertically
+   ============================================ */
+img.manim-animation {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+section.scale-85 > h1:first-child,
+section.scale-80 > h1:first-child,
+section.scale-75 > h1:first-child {
+    margin-top: 0.5em !important;
+}
+
+section.scale-85 > div[style*="display: flex"],
+section.scale-80 > div[style*="display: flex"],
+section.scale-75 > div[style*="display: flex"] {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+}

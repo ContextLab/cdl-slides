@@ -355,7 +355,7 @@ class TestProcessManimBlocks:
         if MANIM_AVAILABLE:
             assert stats["manim_animations_rendered"] >= 1
             assert "```manim" not in result
-            assert "![height:" in result or "warning-box" in result
+            assert "![height:" in result or "manim-animation" in result or "warning-box" in result
         else:
             assert stats["manim_animations_rendered"] == 0
             assert "```manim" in result
@@ -387,7 +387,7 @@ class TestProcessAnimateBlocks:
         output = work_dir / "output.md"
         process_markdown(str(src), str(output))
         result = output.read_text(encoding="utf-8")
-        assert "```manim" in result or "![height:" in result or "warning-box" in result
+        assert "```manim" in result or "![height:" in result or "manim-animation" in result or "warning-box" in result
 
     @pytest.mark.skipif(
         not pytest.importorskip("manim", minversion=None),
@@ -399,7 +399,7 @@ class TestProcessAnimateBlocks:
         output = work_dir / "output.md"
         process_markdown(str(src), str(output))
         result = output.read_text(encoding="utf-8")
-        assert "![height:" in result or "warning-box" in result
+        assert "![height:" in result or "manim-animation" in result or "warning-box" in result
 
     def test_malformed_animate_produces_warning(self, copy_fixture_to_work, work_dir):
         """Test that syntax errors produce warning box."""

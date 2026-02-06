@@ -87,6 +87,7 @@ def parse_manim_metadata(code: str) -> dict:
     Supported metadata:
         # scene: SceneName
         # height: 500
+        # width: 960
         # quality: l/m/h/p (low/medium/high/production)
         # fps: 24
 
@@ -96,7 +97,8 @@ def parse_manim_metadata(code: str) -> dict:
     metadata = {
         "scene": None,
         "height": 500,
-        "quality": "h",  # high quality by default
+        "width": None,
+        "quality": "h",
         "fps": 24,
         "code": code,
     }
@@ -105,11 +107,12 @@ def parse_manim_metadata(code: str) -> dict:
     code_lines = []
 
     for line in lines:
-        # Check for metadata comments
         if match := re.match(r"^\s*#\s*scene:\s*(\w+)\s*$", line, re.IGNORECASE):
             metadata["scene"] = match.group(1)
         elif match := re.match(r"^\s*#\s*height:\s*(\d+)\s*$", line, re.IGNORECASE):
             metadata["height"] = int(match.group(1))
+        elif match := re.match(r"^\s*#\s*width:\s*(\d+)\s*$", line, re.IGNORECASE):
+            metadata["width"] = int(match.group(1))
         elif match := re.match(r"^\s*#\s*quality:\s*([lmhp])\s*$", line, re.IGNORECASE):
             metadata["quality"] = match.group(1).lower()
         elif match := re.match(r"^\s*#\s*fps:\s*(\d+)\s*$", line, re.IGNORECASE):
@@ -383,14 +386,19 @@ def postprocess_gif(gif_path: Path, loop_count: int = 1) -> bool:
             durations.append(img.info.get("duration", 40))
 
         # Save with specified loop count
-        frames[0].save(
-            gif_path,
-            save_all=True,
-            append_images=frames[1:],
-            duration=durations,
-            loop=loop_count,
-            disposal=2,  # Restore to background between frames
-        )
+        # Note: loop=0 means infinite, loop=N means play N+1 times
+        # To play exactly once, we omit the loop parameter (no NETSCAPE extension)
+        save_kwargs = {
+            "save_all": True,
+            "append_images": frames[1:],
+            "duration": durations,
+            "disposal": 2,  # Restore to background between frames
+        }
+        if loop_count == 0:
+            save_kwargs["loop"] = 0  # Infinite loop
+        # For loop_count >= 1, omit loop param to play exactly once (no looping)
+
+        frames[0].save(gif_path, **save_kwargs)
 
         return True
 
@@ -424,7 +432,7 @@ def render_manim_block(
     quality: str = "h",
     fps: int = 24,
     use_cache: bool = True,
-) -> Optional[Tuple[Path, int]]:
+) -> Optional[Tuple[Path, int, Optional[int]]]:
     """Render a manim code block to a transparent GIF.
 
     Full pipeline:
@@ -453,55 +461,47 @@ def render_manim_block(
         print(f"Manim dependencies missing: {', '.join(missing)}", file=sys.stderr)
         return None
 
-    # Parse metadata
     metadata = parse_manim_metadata(code)
     clean_code = metadata["code"]
     height = metadata.get("height", height)
+    width = metadata.get("width")
     quality = metadata.get("quality", quality)
     fps = metadata.get("fps", fps)
 
-    # Determine scene name
     if metadata["scene"]:
         scene_name = metadata["scene"]
     elif scene_name is None:
         scene_name = extract_scene_class_name(clean_code)
 
     if not scene_name:
-        # Generate name from content hash
         scene_name = f"Scene_{get_content_hash(clean_code)}"
 
-    # Check cache
     content_hash = get_content_hash(code)
     if use_cache:
         cached = is_cached(output_dir, content_hash, scene_name)
         if cached:
-            return (cached, height)
+            return (cached, height, width)
 
-    # Create complete render script
     render_code = create_render_script(clean_code, scene_name)
 
-    # Ensure output directory exists
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Render to MP4
     mp4_path = render_to_mp4(render_code, scene_name, output_dir, quality, fps)
     if not mp4_path:
         return None
 
-    # Convert to GIF
     gif_path = get_cache_path(output_dir, content_hash, scene_name)
-    if not convert_mp4_to_gif(mp4_path, gif_path, fps):
+    scale_width = width if width else 960
+    if not convert_mp4_to_gif(mp4_path, gif_path, fps, scale_width):
         return None
 
-    # Post-process (white→transparent, play once)
     postprocess_gif(gif_path, loop_count=1)
 
-    # Clean up MP4
     if mp4_path.exists():
         mp4_path.unlink()
 
-    return (gif_path, height)
+    return (gif_path, height, width)
 
 
 def generate_warning_html(message: str) -> str:

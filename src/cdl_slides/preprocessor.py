@@ -525,38 +525,79 @@ def process_manim_blocks(content: str, output_dir: str) -> tuple:
                 return generate_warning_html("Manim rendering failed")
             return f"<!-- manim rendering failed -->\n```python\n{code}```"
 
-        gif_path, height = result
+        gif_path, height, width = result
         animations_rendered += 1
 
         rel_path = os.path.relpath(gif_path, output_dir)
 
-        return f"![height:{height}]({rel_path})"
+        return f'<img src="{rel_path}" class="manim-animation" style="max-height: {height}px;">'
 
     processed = re.sub(manim_pattern, replace_manim_block, content, flags=re.DOTALL)
     return processed, animations_rendered
 
 
+def _find_protected_ranges(content: str) -> list[tuple[int, int]]:
+    """Find char ranges where animate blocks should NOT be processed (inside other code blocks)."""
+    protected = []
+    lines = content.split("\n")
+    pos = 0
+    in_block = False
+    block_start = 0
+    block_fence = ""
+    block_fence_len = 0
+    is_animate_block = False
+
+    for line in lines:
+        line_start = pos
+        pos += len(line) + 1
+
+        fence_match = re.match(r"^(`{3,}|~{3,})(\w*)(.*)$", line)
+        if fence_match:
+            fence_chars = fence_match.group(1)
+            lang = fence_match.group(2)
+            fence_len = len(fence_chars)
+
+            if not in_block:
+                in_block = True
+                block_start = line_start
+                block_fence = fence_chars[0]
+                block_fence_len = fence_len
+                is_animate_block = lang == "animate"
+            elif line.strip() == block_fence * block_fence_len or (
+                line.strip().startswith(block_fence * block_fence_len) and len(line.strip()) == block_fence_len
+            ):
+                if not is_animate_block:
+                    protected.append((block_start, pos))
+                in_block = False
+                block_fence = ""
+                block_fence_len = 0
+                is_animate_block = False
+
+    return protected
+
+
+def _is_inside_protected_range(pos: int, protected: list[tuple[int, int]]) -> bool:
+    for start, end in protected:
+        if start <= pos < end:
+            return True
+    return False
+
+
 def process_animate_blocks(content: str) -> tuple:
-    """
-    Process ```animate code blocks and transpile them to ```manim blocks.
-
-    The animate DSL provides a user-friendly syntax for creating animations
-    that gets transpiled to manim Python code for rendering.
-
-    Args:
-        content: The full markdown content
-
-    Returns:
-        Tuple of (processed_content, number_of_blocks_transpiled)
-    """
+    """Process ```animate blocks, skipping those nested inside other code blocks."""
     if not ANIMATE_DSL_AVAILABLE or parse_animate_block is None or transpile_to_manim is None:
         return content, 0
 
+    protected_ranges = _find_protected_ranges(content)
     animate_pattern = r"```animate\n(.*?)```"
     blocks_transpiled = 0
 
     def replace_animate_block(match):
         nonlocal blocks_transpiled
+
+        if _is_inside_protected_range(match.start(), protected_ranges):
+            return match.group(0)
+
         animate_content = match.group(1)
 
         try:

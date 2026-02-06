@@ -4,6 +4,7 @@ from cdl_slides.animate_transpiler import (
     generate_animation_code,
     generate_metadata_comments,
     generate_object_code,
+    generate_plot_code,
     generate_position_code,
     transpile_to_manim,
 )
@@ -383,3 +384,117 @@ class TestTranspileToManim:
                         assert next_line.startswith("        "), f"Expected 8-space indent, got: {next_line!r}"
                 break
         assert construct_found, "construct method not found"
+
+
+class TestGenerateAxesCode:
+    def test_axes_object(self):
+        obj = {
+            "kind": "axes",
+            "params": {"x_range": [-3.0, 3.0], "y_range": [-1.0, 1.0], "x_length": 6, "y_length": 4},
+            "name": "ax",
+        }
+        result = generate_object_code(obj, {})
+        assert "ax = Axes(" in result
+        assert "x_range=[-3.0, 3.0]" in result
+        assert "y_range=[-1.0, 1.0]" in result
+        assert "x_length=6" in result
+        assert "y_length=4" in result
+
+    def test_axes_with_steps(self):
+        obj = {
+            "kind": "axes",
+            "params": {"x_range": [-3.0, 3.0, 1.0], "y_range": [-2.0, 2.0, 0.5], "x_length": 6, "y_length": 4},
+            "name": "myaxes",
+        }
+        result = generate_object_code(obj, {})
+        assert "myaxes = Axes(" in result
+        assert "x_range=[-3.0, 3.0, 1.0]" in result
+
+
+class TestGenerateGraphCode:
+    def test_graph_object(self):
+        obj = {
+            "kind": "graph",
+            "params": {"formula": "np.sin(x)", "x_range": [-3.0, 3.0], "color": "blue"},
+            "name": "wave",
+        }
+        result = generate_object_code(obj, {})
+        assert "wave = FunctionGraph(lambda x: np.sin(x)" in result
+        assert "x_range=[-3.0, 3.0]" in result
+        assert "color=BLUE" in result
+
+
+class TestGeneratePlotCode:
+    def test_plot_code(self):
+        cmd = {"type": "plot", "formula": "np.sin(x)", "axes": "ax", "color": "blue", "name": "wave"}
+        result = generate_plot_code(cmd, {})
+        assert len(result) == 2
+        assert "wave = ax.plot(lambda x: np.sin(x), color=BLUE)" in result[0]
+        assert "self.play(Create(wave))" in result[1]
+
+
+class TestGenerateDrawAnimation:
+    def test_draw_animation(self):
+        cmd = {"type": "draw", "target": "ax"}
+        registry = {"ax": "ax"}
+        result = generate_animation_code(cmd, registry)
+        assert result == "self.play(Create(ax))"
+
+
+class TestTranspileAxesAndPlot:
+    def test_axes_creation(self):
+        ast = {
+            "metadata": {"height": 400, "quality": "high"},
+            "commands": [
+                {
+                    "type": "create",
+                    "object": {
+                        "kind": "axes",
+                        "params": {"x_range": [-3.0, 3.0], "y_range": [-1.0, 1.0], "x_length": 6, "y_length": 4},
+                        "name": "ax",
+                    },
+                }
+            ],
+        }
+        result = transpile_to_manim(ast)
+        assert "ax = Axes(" in result
+        assert "self.play(Create(ax))" in result
+
+    def test_plot_on_axes(self):
+        ast = {
+            "metadata": {"height": 400, "quality": "high"},
+            "commands": [
+                {
+                    "type": "create",
+                    "object": {
+                        "kind": "axes",
+                        "params": {"x_range": [-3.0, 3.0], "y_range": [-1.0, 1.0], "x_length": 6, "y_length": 4},
+                        "name": "ax",
+                    },
+                },
+                {"type": "plot", "formula": "np.sin(x)", "axes": "ax", "color": "blue", "name": "wave"},
+            ],
+        }
+        result = transpile_to_manim(ast)
+        assert "ax = Axes(" in result
+        assert "wave = ax.plot(lambda x: np.sin(x), color=BLUE)" in result
+        assert "self.play(Create(wave))" in result
+
+    def test_draw_command(self):
+        ast = {
+            "metadata": {"height": 400, "quality": "high"},
+            "commands": [
+                {
+                    "type": "create",
+                    "object": {
+                        "kind": "axes",
+                        "params": {"x_range": [-3.0, 3.0], "y_range": [-1.0, 1.0], "x_length": 6, "y_length": 4},
+                        "name": "ax",
+                    },
+                },
+                {"type": "draw", "target": "ax"},
+            ],
+        }
+        result = transpile_to_manim(ast)
+        assert "ax = Axes(" in result
+        assert "self.play(Create(ax))" in result

@@ -2,7 +2,7 @@
 
 Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) presentations. Includes the full Contextual Dynamics Lab slide theme with bundled fonts, images, and CSS.
 
-## Theme Gallery
+## Theme gallery
 
 | Title Slide | Callout Boxes | Tip & Warning |
 |:-----------:|:-------------:|:-------------:|
@@ -23,6 +23,29 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 | Output Formats |
 |:--------------:|
 | ![Formats](docs/screenshots/11-output-formats.png) |
+
+## Table of contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [CLI reference](#cli-reference)
+- [Slide authoring guide](#slide-authoring-guide)
+  - [Front matter](#front-matter)
+  - [Callout boxes](#callout-boxes)
+  - [Two-column layouts](#two-column-layouts)
+  - [Flow diagrams](#flow-diagrams)
+  - [Manim animations](#manim-animations)
+  - [Animate DSL](#animate-dsl-simplified-animation-syntax)
+  - [Scale directives](#scale-directives)
+  - [Emoji figures](#emoji-figures)
+  - [Math (KaTeX)](#math-katex)
+  - [Code blocks](#code-blocks)
+  - [Tables](#tables)
+  - [Arrow syntax](#arrow-syntax)
+- [Bundled fonts](#bundled-fonts)
+- [Development](#development)
+- [License](#license)
 
 ## Features
 
@@ -63,7 +86,7 @@ pip install -e .            # Basic install
 pip install -e ".[animations]"  # With animation support
 ```
 
-### Marp CLI Resolution
+### Marp CLI resolution
 
 `cdl-slides` finds or installs Marp CLI automatically in this order:
 
@@ -77,7 +100,7 @@ To check your Marp CLI status:
 cdl-slides version
 ```
 
-## Quick Start
+## Quick start
 
 1. Create a Markdown file with CDL theme front matter:
 
@@ -115,7 +138,7 @@ cdl-slides compile my_presentation.md
    - `my_presentation.html`
    - `my_presentation.pdf`
 
-## CLI Reference
+## CLI reference
 
 ### `cdl-slides compile`
 
@@ -171,7 +194,7 @@ Show version and Marp CLI status.
 cdl-slides version
 ```
 
-## Slide Authoring Guide
+## Slide authoring guide
 
 ### Front Matter
 
@@ -263,7 +286,7 @@ Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `y
 
 ### Manim Animations
 
-Embed animated math visualizations using [Manim Community](https://www.manim.community/). Animations are rendered to transparent GIFs and embedded in slides.
+Embed animated math visualizations using the **Animate DSL** — a simple, declarative syntax that compiles to [Manim Community](https://www.manim.community/). Animations are rendered to transparent GIFs and embedded in slides.
 
 **Requires:** `pip install cdl-slides[animations]`
 
@@ -272,35 +295,21 @@ FFmpeg is bundled automatically via `imageio-ffmpeg` — no system ffmpeg instal
 **Usage:**
 
 ````markdown
-```manim
-# scene: MyAnimation
-# height: 500
-
-class MyAnimation(Scene):
-    def construct(self):
-        eq = MathTex(r"E = mc^2")
-        self.play(Write(eq))
-        self.wait()
+```animate
+height: 400
+write equation "E = mc^2" as eq at center
+wait 0.5
+fade-in eq
 ```
 ````
 
-**Metadata comments** (all optional):
-- `# scene: SceneName` — override the scene class name
-- `# height: 500` — image height in pixels (default: 500)
-- `# quality: l/m/h/p` — render quality: low/medium/high/production (default: h)
-- `# fps: 24` — frames per second (default: 24)
-
-The preprocessor automatically:
-1. Extracts the manim code block
-2. Renders to MP4 with a white background
-3. Converts to GIF with transparent background
-4. Replaces the code block with `![height:N](animations/scene.gif)`
-
-Rendered GIFs are cached by content hash, so unchanged animations won't re-render.
+The preprocessor automatically renders to GIF and embeds in your slide. Rendered GIFs are cached by content hash, so unchanged animations won't re-render.
 
 ### Animate DSL (Simplified Animation Syntax)
 
 The animate DSL provides a simpler alternative to writing raw manim Python code. It uses a declarative syntax that gets transpiled to manim automatically.
+
+**Basic equation example:**
 
 ````markdown
 ```animate
@@ -311,12 +320,24 @@ fade-in eq1
 ```
 ````
 
+**Graph/plot example:**
+
+````markdown
+```animate
+height: 400
+create axes x=[0,6.28,1.57] y=[-1.5,1.5,0.5] as ax
+plot "np.sin(x)" on ax color=blue as wave
+```
+````
+
 **Metadata options:**
 
 | Option | Default | Description |
 |--------|---------|-------------|
 | height | 500 | Image height in pixels |
+| width | 960 | Image width in pixels |
 | quality | high | Render quality (low/medium/high) |
+| scale | 1.0 | Scale factor for equations and text (e.g., 2.5 for larger) |
 
 **Object commands:**
 
@@ -327,6 +348,14 @@ fade-in eq1
 | `create circle color=COLOR as NAME` | Create colored circle | `create circle color=blue as c1` |
 | `create square color=COLOR as NAME` | Create colored square | `create square color=red as s1` |
 | `create arrow color=COLOR as NAME` | Create colored arrow | `create arrow color=green as a1` |
+| `create axes x=[min,max,step] y=[min,max,step] as NAME` | Create coordinate axes | `create axes x=[-3,3,1] y=[-1,1,0.5] as ax` |
+| `create graph "formula" x=[min,max] color=COLOR as NAME` | Create standalone function graph | `create graph "x**2" x=[-2,2] color=red as parabola` |
+
+**Plot commands:**
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `plot "formula" on AXES color=COLOR as NAME` | Plot function on existing axes | `plot "np.sin(x)" on ax color=blue as wave` |
 
 **Animation commands:**
 
@@ -334,8 +363,15 @@ fade-in eq1
 |---------|-------------|
 | `fade-in NAME` | Fade in an object |
 | `fade-out NAME` | Fade out an object |
+| `draw NAME` | Draw/create an object (for axes, graphs) |
 | `transform NAME1 -> NAME2` | Transform one object into another |
 | `wait SECONDS` | Wait for specified duration |
+
+**Generic manim escape (for advanced use):**
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `manim <python_code> as NAME` | Execute any manim code | `manim Dot().move_to(ax.c2p(1,1)) as dot` |
 
 **Position modifiers:**
 
