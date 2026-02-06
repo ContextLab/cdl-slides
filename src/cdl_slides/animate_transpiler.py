@@ -68,7 +68,11 @@ def generate_object_code(obj: dict[str, Any], registry: dict[str, str], scale: f
         y_range = params.get("y_range", [-2, 2, 1])
         x_length = params.get("x_length", 6)
         y_length = params.get("y_length", 4)
-        return f'{name} = Axes(x_range={x_range}, y_range={y_range}, x_length={x_length}, y_length={y_length}, axis_config={{"include_numbers": True}})'
+        cfg = '{"include_numbers": True}'
+        return (
+            f"{name} = Axes(x_range={x_range}, y_range={y_range}, "
+            f"x_length={x_length}, y_length={y_length}, axis_config={cfg})"
+        )
 
     if kind == "graph":
         params = obj.get("params", {})
