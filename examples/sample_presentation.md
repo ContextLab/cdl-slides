@@ -272,13 +272,13 @@ fade-in label
 </div>
 <div style="flex: 1;">
 
-<div class="note-box" data-title="How it works" style="font-size: 0.7em;">
+<div class="note-box" data-title="How it works" style="font-size: 0.5em;">
 
 [Manim](https://www.manim.community/) renders math animations to GIF. Use **animate** code blocks.
 
 </div>
 
-<div class="example-box" data-title="DSL Code" style="font-size: 0.6em;">
+<div class="example-box" data-title="DSL Code" style="font-size: 0.45em;">
 
 ```text
 create axes ... as ax
