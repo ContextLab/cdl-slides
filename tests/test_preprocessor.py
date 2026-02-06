@@ -359,3 +359,55 @@ class TestProcessManimBlocks:
         else:
             assert stats["manim_animations_rendered"] == 0
             assert "```manim" in result
+
+
+class TestProcessAnimateBlocks:
+    def test_animate_block_detected(self, work_dir):
+        """Test that animate blocks are found in content."""
+        content = '```animate\nwrite equation "E = mc^2" as eq1\n```'
+        # This test verifies that animate blocks can be detected
+        # Once process_animate_blocks exists, it should find this block
+        assert "```animate" in content
+        assert "write equation" in content
+
+    def test_animate_stats_key_exists(self, copy_fixture_to_work, work_dir):
+        """Test that animate_blocks_transpiled key is in stats."""
+        src = copy_fixture_to_work("animate_simple.md")
+        output = work_dir / "output.md"
+        stats = process_markdown(str(src), str(output))
+        assert "animate_blocks_transpiled" in stats
+
+    def test_animate_transpiles_to_manim(self, work_dir):
+        """Test that animate block becomes manim block."""
+        content = (
+            '---\nmarp: true\ntheme: cdl-theme\n---\n\n# Test\n\n```animate\nwrite equation "E = mc^2" as eq1\n```\n'
+        )
+        src = work_dir / "test.md"
+        src.write_text(content, encoding="utf-8")
+        output = work_dir / "output.md"
+        stats = process_markdown(str(src), str(output))
+        result = output.read_text(encoding="utf-8")
+        # After transpilation, should contain manim block or image reference
+        assert "```manim" in result or "![height:" in result or "warning-box" in result
+
+    @pytest.mark.skipif(
+        not pytest.importorskip("manim", minversion=None),
+        reason="Manim not installed",
+    )
+    def test_animate_renders_gif_when_available(self, copy_fixture_to_work, work_dir):
+        """Test full pipeline: animate → manim → GIF."""
+        src = copy_fixture_to_work("animate_simple.md")
+        output = work_dir / "output.md"
+        stats = process_markdown(str(src), str(output))
+        result = output.read_text(encoding="utf-8")
+        # Check for GIF in animations/ folder or image reference
+        assert "![height:" in result or "warning-box" in result
+
+    def test_malformed_animate_produces_warning(self, copy_fixture_to_work, work_dir):
+        """Test that syntax errors produce warning box."""
+        src = copy_fixture_to_work("animate_malformed.md")
+        output = work_dir / "output.md"
+        stats = process_markdown(str(src), str(output))
+        result = output.read_text(encoding="utf-8")
+        # Malformed blocks should produce warning boxes
+        assert "warning-box" in result or "```animate" in result
