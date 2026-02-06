@@ -48,6 +48,18 @@ try:
 except ImportError:
     PYGMENTS_AVAILABLE = False
 
+# Manim for animation rendering
+try:
+    from cdl_slides.manim_renderer import (
+        MANIM_AVAILABLE,
+        generate_warning_html,
+        render_manim_block,
+    )
+except ImportError:
+    MANIM_AVAILABLE = False
+    render_manim_block = None
+    generate_warning_html = None
+
 
 # =============================================================================
 # FLOW DIAGRAM GENERATION
@@ -466,6 +478,51 @@ def process_flow_blocks(content: str) -> tuple:
 
     processed = re.sub(flow_pattern, replace_flow_block, content, flags=re.DOTALL)
     return processed, diagrams_processed
+
+
+def process_manim_blocks(content: str, output_dir: str) -> tuple:
+    """
+    Process ```manim code blocks and render them to GIF animations.
+
+    Args:
+        content: The full markdown content
+        output_dir: Directory to save generated GIF files (animations/ subfolder)
+
+    Returns:
+        Tuple of (processed_content, number_of_animations_rendered)
+    """
+    if not MANIM_AVAILABLE or render_manim_block is None:
+        return content, 0
+
+    import os
+    from pathlib import Path
+
+    manim_pattern = r"```manim\n(.*?)```"
+    animations_rendered = 0
+
+    animations_dir = Path(output_dir) / "animations"
+    animations_dir.mkdir(parents=True, exist_ok=True)
+
+    def replace_manim_block(match):
+        nonlocal animations_rendered
+        code = match.group(1)
+
+        result = render_manim_block(code, animations_dir)
+
+        if result is None:
+            if generate_warning_html is not None:
+                return generate_warning_html("Manim rendering failed")
+            return f"<!-- manim rendering failed -->\n```python\n{code}```"
+
+        gif_path, height = result
+        animations_rendered += 1
+
+        rel_path = os.path.relpath(gif_path, output_dir)
+
+        return f"![height:{height}]({rel_path})"
+
+    processed = re.sub(manim_pattern, replace_manim_block, content, flags=re.DOTALL)
+    return processed, animations_rendered
 
 
 def parse_markdown_table(lines: list) -> "dict | None":
@@ -1253,6 +1310,12 @@ def process_markdown(
     # Process flow diagram blocks first (before line-by-line processing)
     content, flow_diagrams_processed = process_flow_blocks(content)
 
+    # Process manim animation blocks (renders to GIF files in animations/ subfolder)
+    from pathlib import Path
+
+    output_dir = str(Path(output_file).parent)
+    content, manim_animations_rendered = process_manim_blocks(content, output_dir)
+
     # Parse the file into lines
     lines = content.split("\n")
     result_lines = []
@@ -1303,6 +1366,7 @@ def process_markdown(
         "slides_added": 0,
         "arrows_processed": 0,
         "flow_diagrams_processed": flow_diagrams_processed,
+        "manim_animations_rendered": manim_animations_rendered,
         "split_directives_found": 0,
         "overflow_warnings": len([w for w in overflow_warnings if "overflow" in w.lower() or "exceeds" in w.lower()]),
         "scale_classes_injected": len([w for w in overflow_warnings if "Auto-injecting" in w]),
@@ -1622,6 +1686,8 @@ def main():
             print(f"Arrows processed: {stats['arrows_processed']}")
         if stats["flow_diagrams_processed"] > 0:
             print(f"Flow diagrams generated: {stats['flow_diagrams_processed']}")
+        if stats.get("manim_animations_rendered", 0) > 0:
+            print(f"Manim animations rendered: {stats['manim_animations_rendered']}")
         if stats.get("scale_classes_injected", 0) > 0:
             print(f"Scale classes auto-injected: {stats['scale_classes_injected']}")
         if stats.get("overflow_warnings", 0) > 0:

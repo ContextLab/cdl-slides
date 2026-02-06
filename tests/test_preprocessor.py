@@ -320,3 +320,42 @@ class TestHighlightCodeLine:
     def test_whitespace_only(self):
         result = highlight_code_line("   ", "python")
         assert result == "   " or "<span" in result
+
+
+class TestProcessManimBlocks:
+    def test_manim_block_detected_when_unavailable(self, work_dir):
+        """Test that manim blocks pass through unchanged when manim is not available."""
+        from cdl_slides.preprocessor import MANIM_AVAILABLE, process_manim_blocks
+
+        md = "```manim\nclass Test(Scene):\n    pass\n```"
+        result, count = process_manim_blocks(md, str(work_dir))
+
+        if not MANIM_AVAILABLE:
+            assert count == 0
+            assert "```manim" in result
+        else:
+            assert count >= 0
+
+    def test_manim_stats_key_exists(self, copy_fixture_to_work, work_dir):
+        """Test that manim_animations_rendered key is in stats."""
+        src = copy_fixture_to_work("manim_simple.md")
+        output = work_dir / "output.md"
+        stats = process_markdown(str(src), str(output))
+        assert "manim_animations_rendered" in stats
+
+    def test_manim_block_replaced_when_available(self, copy_fixture_to_work, work_dir):
+        """Test manim block is replaced with image tag when manim is available."""
+        from cdl_slides.preprocessor import MANIM_AVAILABLE
+
+        src = copy_fixture_to_work("manim_simple.md")
+        output = work_dir / "output.md"
+        stats = process_markdown(str(src), str(output))
+        result = output.read_text(encoding="utf-8")
+
+        if MANIM_AVAILABLE:
+            assert stats["manim_animations_rendered"] >= 1
+            assert "```manim" not in result
+            assert "![height:" in result or "warning-box" in result
+        else:
+            assert stats["manim_animations_rendered"] == 0
+            assert "```manim" in result

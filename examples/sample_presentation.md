@@ -252,6 +252,35 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 
 ---
 
+# Manim animations (optional)
+
+Embed animated math visualizations with manim code blocks:
+
+```manim
+# scene: WaveAnimation
+# height: 400
+# quality: l
+
+class WaveAnimation(Scene):
+    def construct(self):
+        axes = Axes(x_range=[0, 4*PI], y_range=[-1.5, 1.5])
+        wave = axes.plot(lambda x: np.sin(x), color=BLUE)
+        label = MathTex(r"y = \sin(x)")
+        label.next_to(axes, UP)
+
+        self.play(Create(axes), Write(label))
+        self.play(Create(wave), run_time=2)
+        self.wait()
+```
+
+<div class="note-box" data-title="Requires manim">
+
+Install with `pip install cdl-slides[animations]` to enable manim support.
+
+</div>
+
+---
+
 # Emoji figures
 
 <div class="emoji-figure">

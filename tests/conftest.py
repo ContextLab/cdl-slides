@@ -50,6 +50,16 @@ def arrows_md(fixtures_dir):
 
 
 @pytest.fixture
+def manim_simple_md(fixtures_dir):
+    return fixtures_dir / "manim_simple.md"
+
+
+@pytest.fixture
+def manim_complex_md(fixtures_dir):
+    return fixtures_dir / "manim_complex.md"
+
+
+@pytest.fixture
 def work_dir(tmp_path):
     work = tmp_path / "work"
     work.mkdir()

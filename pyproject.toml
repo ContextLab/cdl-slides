@@ -37,6 +37,10 @@ dev = [
     "pytest>=7.0",
     "ruff>=0.4",
 ]
+animations = [
+    "manim>=0.18.0",
+    "Pillow>=9.0",
+]
 
 [project.urls]
 Homepage = "https://www.context-lab.com"

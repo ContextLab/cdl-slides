@@ -182,7 +182,7 @@ def compile_presentation(
 
             if fmt == "html" and out_path.exists():
                 _inject_js_into_html(out_path)
-                copy_assets_alongside_output(out_path)
+                copy_assets_alongside_output(out_path, source_dir=input_file.parent)
 
             if out_path.exists():
                 results["files"].append(  # type: ignore[union-attr]
