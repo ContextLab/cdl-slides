@@ -253,13 +253,14 @@ KaTeX is used for math rendering. Use `$...$` for inline and `$$...$$` for displ
 ---
 
 # Manim animations (optional)
+<!-- _class: scale-85 -->
 
 <div style="display: flex; gap: 1.5em;">
-<div style="flex: 1.3;">
+<div style="flex: 1;">
 
 ```manim
 # scene: WaveAnimation
-# height: 260
+# height: 380
 # quality: l
 
 class WaveAnimation(Scene):
@@ -273,7 +274,7 @@ class WaveAnimation(Scene):
 ```
 
 </div>
-<div style="flex: 0.7;">
+<div style="flex: 1;">
 
 <div class="note-box" data-title="Setup">
 
@@ -281,9 +282,15 @@ class WaveAnimation(Scene):
 
 </div>
 
-<div class="example-box" data-title="Syntax">
+<div class="example-box" data-title="Markdown syntax">
 
-<code>```manim</code> with `# height:`, `# quality:`
+<pre style="margin: 0; font-size: 0.7em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;manim
+# scene: WaveAnimation
+# height: 380
+class WaveAnimation(Scene):
+    def construct(self):
+        ...
+&#96;&#96;&#96;</pre>
 
 </div>
 
@@ -293,12 +300,13 @@ class WaveAnimation(Scene):
 ---
 
 # Animate DSL
+<!-- _class: scale-85 -->
 
 <div style="display: flex; gap: 1.5em;">
-<div style="flex: 1.3;">
+<div style="flex: 1;">
 
 ```animate
-height: 260
+height: 380
 quality: low
 write equation "\\int_0^\\infty e^{-x^2} dx" as integral at center
 wait 0.5
@@ -306,7 +314,7 @@ fade-in integral
 ```
 
 </div>
-<div style="flex: 0.7;">
+<div style="flex: 1;">
 
 <div class="tip-box" data-title="Simplified">
 
@@ -314,9 +322,14 @@ No Python needed! Transpiles to manim.
 
 </div>
 
-<div class="example-box" data-title="Syntax">
+<div class="example-box" data-title="Markdown syntax">
 
-<code>```animate</code> with `write`, `fade-in`, `wait`
+<pre style="margin: 0; font-size: 0.7em; background: rgba(0,105,62,0.08); padding: 0.3em; border-radius: 4px; white-space: pre-wrap;">&#96;&#96;&#96;animate
+height: 380
+write equation "E = mc^2" as eq
+wait 0.5
+fade-in eq
+&#96;&#96;&#96;</pre>
 
 </div>
 
