@@ -36,7 +36,9 @@ cdl-slides/
 
 ## CRITICAL: ANIMATE DSL USAGE
 
-**ALWAYS use the DSL markdown syntax for animations. NEVER use raw Python/Manim approach.**
+**ALWAYS use the DSL markdown syntax for animations.** The DSL approach is preferred because it handles object creation and animation separation correctly, avoids Manim quirks, and produces cleaner, more maintainable code.
+
+**Escape hatch:** For complex animations not expressible in DSL, use `manim <python_code> as NAME` within an animate block. This is the ONLY acceptable way to use raw Manim code.
 
 ### DSL Syntax (use this):
 ```
@@ -48,7 +50,8 @@ fade-in label
 - `write equation "LATEX" as NAME [position]` - Create equation
 - `write text "string" as NAME [position]` - Create text
 - `create axes x=[min,max,step] y=[min,max,step] as NAME` - Coordinate system
-- `plot "formula" on AXES color=COLOR as NAME` - Plot on axes
+- `create graph "formula" x=[min,max] color=COLOR as NAME` - Standalone function graph
+- `plot "formula" on AXES color=COLOR stroke=N as NAME` - Plot on existing axes (stroke sets line width)
 - `create [circle|square|arrow] color=COLOR as NAME` - Shapes
 - `fade-in NAME` / `fade-out NAME` - Animations
 - `draw NAME` - Create animation (for axes/graphs)
@@ -98,5 +101,5 @@ cdl-slides compile slides.md --format pdf
 
 - Animations require `pip install cdl-slides[animations]`
 - Marp CLI auto-downloads on first use
-- GIFs cached by content hash in `examples/animations/`
+- GIFs cached by content hash in output directory (e.g., `animations/` alongside slides)
 - Graceful degradation: missing manim shows warning-box, not crash

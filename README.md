@@ -151,6 +151,7 @@ Options:
   --no-split              Disable auto-splitting of code blocks and tables
   --keep-temp             Keep temporary processed files for debugging
   -t, --theme-dir PATH    Custom theme directory (overrides bundled CDL theme)
+  --no-animations         Skip processing of animate blocks (useful for CI)
   --help                  Show this message and exit.
 ```
 
@@ -188,6 +189,14 @@ Show version and Marp CLI status.
 
 ```bash
 cdl-slides version
+```
+
+### `cdl-slides setup`
+
+Pre-download the Marp CLI standalone binary. This is optional — Marp CLI is automatically downloaded on first compile if not already installed.
+
+```bash
+cdl-slides setup
 ```
 
 ## Slide authoring guide
@@ -278,7 +287,23 @@ Use the ```` ```flow ```` syntax for simple pipeline diagrams:
 <!-- caption: A data processing pipeline -->
 ````
 
-Available colors: `green`, `blue`, `navy`, `teal`, `orange`, `red`, `violet`, `yellow`, `gray`.
+**Available colors:**
+
+| Color | Alias | Description |
+|-------|-------|-------------|
+| `green` | — | Dartmouth Green (primary brand) |
+| `blue` | `river-blue` | River Blue |
+| `navy` | `river-navy` | River Navy |
+| `teal` | — | Blue-green |
+| `spring` | `spring-green` | Spring Green |
+| `rich-spring` | — | Rich Spring Green |
+| `yellow` | `summer` | Summer Yellow |
+| `orange` | `bonfire` | Bonfire Orange |
+| `tuck` | `tuck-orange` | Tuck Orange |
+| `red` | `bonfire-red` | Bonfire Red |
+| `violet` | `purple` | Violet |
+| `brown` | `autumn` | Autumn Brown |
+| `gray` | `granite`, `web-gray` | Granite Gray |
 
 ### Manim Animations
 
