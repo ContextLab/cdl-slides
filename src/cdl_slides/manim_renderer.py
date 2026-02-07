@@ -29,12 +29,15 @@ from typing import Optional, Tuple
 
 # Check for manim availability (deferred import pattern)
 MANIM_AVAILABLE = False
+MANIM_SYSTEM_DEPS_MISSING = False
 try:
     import manim  # noqa: F401
 
     MANIM_AVAILABLE = True
-except ImportError:
-    pass
+except ImportError as e:
+    error_msg = str(e).lower()
+    if "pango" in error_msg or "cairo" in error_msg or "gobject" in error_msg:
+        MANIM_SYSTEM_DEPS_MISSING = True
 
 # Check for PIL availability (for GIF post-processing)
 PIL_AVAILABLE = False
@@ -68,7 +71,10 @@ def check_dependencies() -> Tuple[bool, list]:
     """
     missing = []
     if not MANIM_AVAILABLE:
-        missing.append("manim (pip install manim)")
+        if MANIM_SYSTEM_DEPS_MISSING:
+            missing.append("manim system libraries (run: ./scripts/install-system-deps.sh)")
+        else:
+            missing.append("manim (pip install manim)")
     if not FFMPEG_AVAILABLE:
         missing.append("ffmpeg (pip install imageio-ffmpeg)")
     if not PIL_AVAILABLE:

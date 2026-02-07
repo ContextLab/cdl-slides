@@ -63,17 +63,17 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 pip install cdl-slides
 ```
 
-That's it! This installs everything you need:
-- **Marp CLI** is automatically downloaded on first compile if not already installed
-- **Manim** for animated equations and visualizations
-- **FFmpeg** bundled via `imageio-ffmpeg` — no system installation required
-
-**Linux users:** Manim requires system libraries. Run the install script first:
+Then run setup to install system dependencies and Marp CLI:
 
 ```bash
-./scripts/install-system-deps.sh
-pip install cdl-slides
+cdl-slides setup
 ```
+
+This installs everything you need:
+- **System libraries** (pango, cairo, ffmpeg) — auto-detected and installed via your package manager
+- **Marp CLI** — standalone binary, no npm required
+- **Manim** for animated equations and visualizations
+- **FFmpeg** bundled via `imageio-ffmpeg`
 
 Or install from source:
 

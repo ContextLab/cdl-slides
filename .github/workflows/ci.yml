@@ -19,10 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        run: ./scripts/install-system-deps.sh
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -30,6 +26,10 @@ jobs:
 
       - name: Install package
         run: pip install -e ".[dev]"
+
+      - name: Run setup (install system deps)
+        if: runner.os == 'Linux'
+        run: cdl-slides setup
 
       - name: Run unit tests
         run: pytest tests/ -v --tb=short
@@ -60,21 +60,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: ./scripts/install-system-deps.sh
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install Marp CLI
-        run: npm install -g @marp-team/marp-cli
 
       - name: Install Google Chrome
         uses: browser-actions/setup-chrome@latest
@@ -83,6 +72,9 @@ jobs:
 
       - name: Install package
         run: pip install -e .
+
+      - name: Run setup (install system deps + Marp CLI)
+        run: cdl-slides setup
 
       - name: Compile sample presentation (HTML)
         run: cdl-slides compile examples/sample_presentation.md --format html --no-animations

@@ -1,5 +1,6 @@
 """Click CLI for cdl-slides."""
 
+import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
@@ -186,23 +187,89 @@ def version() -> None:
             click.echo("  npx detected — can use @marp-team/marp-cli via npx")
 
 
+def _check_system_deps() -> bool:
+    """Check if manim system dependencies are available. Returns True if OK."""
+    try:
+        import manim  # noqa: F401
+
+        return True
+    except ImportError as e:
+        error_msg = str(e).lower()
+        return "pango" not in error_msg and "cairo" not in error_msg and "gobject" not in error_msg
+
+
+def _install_system_deps() -> bool:
+    """Install system dependencies. Returns True on success."""
+    import platform
+    import shutil
+    import subprocess
+
+    system = platform.system()
+
+    if system == "Linux":
+        if shutil.which("apt-get"):
+            cmd = ["sudo", "apt-get", "update"]
+            subprocess.run(cmd, check=True)
+            cmd = ["sudo", "apt-get", "install", "-y", "libpango1.0-dev", "libcairo2-dev", "ffmpeg"]
+            subprocess.run(cmd, check=True)
+            return True
+        elif shutil.which("dnf"):
+            cmd = ["sudo", "dnf", "install", "-y", "pango-devel", "cairo-devel", "ffmpeg"]
+            subprocess.run(cmd, check=True)
+            return True
+        elif shutil.which("pacman"):
+            cmd = ["sudo", "pacman", "-S", "--noconfirm", "pango", "cairo", "ffmpeg"]
+            subprocess.run(cmd, check=True)
+            return True
+        else:
+            return False
+    elif system == "Darwin":
+        if shutil.which("brew"):
+            cmd = ["brew", "install", "pango", "cairo", "ffmpeg"]
+            subprocess.run(cmd, check=True)
+            return True
+        else:
+            return False
+    else:
+        return True
+
+
 @main.command()
 def setup() -> None:
-    """Download and install Marp CLI (standalone binary, no npm required)."""
+    """Set up cdl-slides: install system dependencies and Marp CLI."""
+    import platform
+
     from cdl_slides.marp_cli import get_marp_version_info, resolve_marp_cli
+
+    system = platform.system()
+
+    if system in ("Linux", "Darwin"):
+        if _check_system_deps():
+            click.echo(click.style("System dependencies: OK", fg="green"))
+        else:
+            click.echo("Installing system dependencies (pango, cairo, ffmpeg)...")
+            try:
+                if _install_system_deps():
+                    click.echo(click.style("System dependencies installed.", fg="green"))
+                else:
+                    click.echo(click.style("Could not detect package manager.", fg="red"), err=True)
+                    click.echo("Install manually: pango, cairo, ffmpeg", err=True)
+            except subprocess.CalledProcessError as e:
+                click.echo(click.style(f"Installation failed: {e}", fg="red"), err=True)
+                sys.exit(1)
 
     info = get_marp_version_info()
     if info["installed"]:
         source_label = {"system": "system", "cached": "auto-installed"}.get(info["source"], info["source"])
-        click.echo(click.style(f"Marp CLI already available: {info['path']} ({source_label})", fg="green"))
-        return
-
-    click.echo("Downloading Marp CLI standalone binary...")
-    result = resolve_marp_cli()
-    if result:
-        path_str = result if isinstance(result, str) else " ".join(result)
-        click.echo(click.style(f"Marp CLI installed: {path_str}", fg="green"))
+        click.echo(click.style(f"Marp CLI: OK ({source_label})", fg="green"))
     else:
-        click.echo(click.style("Failed to install Marp CLI.", fg="red"), err=True)
-        click.echo("Try installing manually: npm install -g @marp-team/marp-cli", err=True)
-        sys.exit(1)
+        click.echo("Downloading Marp CLI standalone binary...")
+        result = resolve_marp_cli()
+        if result:
+            click.echo(click.style("Marp CLI installed.", fg="green"))
+        else:
+            click.echo(click.style("Failed to install Marp CLI.", fg="red"), err=True)
+            click.echo("Try installing manually: npm install -g @marp-team/marp-cli", err=True)
+            sys.exit(1)
+
+    click.echo(click.style("\nSetup complete!", fg="green", bold=True))
