@@ -99,7 +99,7 @@ cdl-slides compile slides.md --format pdf
 
 ## NOTES
 
-- Animations require `pip install cdl-slides[animations]`
+- Animation support included by default with `pip install cdl-slides`
 - Marp CLI auto-downloads on first use
 - GIFs cached by content hash in output directory (e.g., `animations/` alongside slides)
 - Graceful degradation: missing manim shows warning-box, not crash

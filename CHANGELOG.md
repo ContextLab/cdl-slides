@@ -29,12 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Features
 
-- Zero-config installation: `pip install cdl-slides`
-- Optional animation support: `pip install cdl-slides[animations]`
+- Zero-config installation: `pip install cdl-slides` includes everything (Manim, FFmpeg, fonts)
 - Bundled fonts: Avenir LT Std, Fira Code, Noto Sans SC
 - Bundled ffmpeg via `imageio-ffmpeg` — no system installation required
 - GIF caching by content hash for fast re-compilation
-- Graceful degradation: missing manim shows warning-box instead of crash
+- Graceful degradation: animation errors show warning-box instead of crash
 
 ### CLI Commands
 

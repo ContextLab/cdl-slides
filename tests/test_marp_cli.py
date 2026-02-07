@@ -1,13 +1,20 @@
 """Tests for cdl_slides.marp_cli."""
 
 import platform
+import stat
+import subprocess
+import urllib.request
+from urllib.request import urlopen
 
 import click.testing
 
 from cdl_slides.cli import main
 from cdl_slides.marp_cli import (
+    _PLATFORM_MAP,
+    _RELEASE_BASE,
     MARP_CLI_VERSION,
     _get_cache_dir,
+    _get_cached_marp_path,
     _get_platform_key,
     get_marp_version_info,
     resolve_marp_cli,
@@ -148,3 +155,148 @@ class TestCliSetupCommand:
         # Both calls should succeed (exit code 0 or 1)
         assert result1.exit_code in (0, 1)
         assert result2.exit_code in (0, 1)
+
+
+class TestInstallerDownloadUrl:
+    """Test the download URL construction for Marp CLI installer."""
+
+    def test_release_base_url_format(self):
+        """Verify the release base URL is correctly formatted."""
+        assert _RELEASE_BASE.startswith("https://github.com/marp-team/marp-cli/releases/download/")
+        assert MARP_CLI_VERSION in _RELEASE_BASE
+
+    def test_download_url_is_accessible(self):
+        """Verify the download URL for current platform is accessible (HEAD request)."""
+        platform_key = _get_platform_key()
+        assert platform_key is not None, "Platform should be supported"
+
+        os_name, archive_ext = _PLATFORM_MAP[platform_key]
+        filename = f"marp-cli-{MARP_CLI_VERSION}-{os_name}.{archive_ext}"
+        url = f"{_RELEASE_BASE}/{filename}"
+
+        # Use HEAD request to verify URL exists without downloading
+
+        req = urllib.request.Request(url, method="HEAD")
+        try:
+            response = urlopen(req, timeout=30)
+            assert response.status == 200, f"Expected 200, got {response.status}"
+        except Exception as e:
+            # If HEAD fails, try GET with small range
+            req = urllib.request.Request(url)
+            req.add_header("Range", "bytes=0-0")
+            response = urlopen(req, timeout=30)
+            assert response.status in (200, 206), f"URL not accessible: {e}"
+
+
+class TestInstallerPlatformMapping:
+    """Test platform detection and mapping for the installer."""
+
+    def test_all_platform_keys_have_valid_structure(self):
+        """Verify all platform map entries have correct structure."""
+        for key, value in _PLATFORM_MAP.items():
+            assert len(key) == 2, f"Key {key} should be (system, machine) tuple"
+            assert len(value) == 2, f"Value {value} should be (os_name, archive_ext) tuple"
+            os_name, archive_ext = value
+            assert os_name in ("mac", "linux", "win"), f"Unknown OS: {os_name}"
+            assert archive_ext in ("tar.gz", "zip"), f"Unknown archive: {archive_ext}"
+
+    def test_current_platform_is_supported(self):
+        """Verify the current platform is in the supported list."""
+        key = _get_platform_key()
+        assert key is not None, "Current platform should be supported"
+        assert key in _PLATFORM_MAP or key[0] in [k[0] for k in _PLATFORM_MAP]
+
+    def test_windows_uses_zip(self):
+        """Verify Windows platforms use zip archives."""
+        for key, value in _PLATFORM_MAP.items():
+            if key[0] == "Windows":
+                assert value[1] == "zip", "Windows should use zip archives"
+
+    def test_unix_uses_tar_gz(self):
+        """Verify Unix platforms use tar.gz archives."""
+        for key, value in _PLATFORM_MAP.items():
+            if key[0] in ("Darwin", "Linux"):
+                assert value[1] == "tar.gz", "Unix should use tar.gz archives"
+
+
+class TestInstallerCachedBinary:
+    """Test the cached binary detection and execution."""
+
+    def test_cached_path_in_version_directory(self):
+        """Verify cached binary path includes version directory."""
+        cached = _get_cached_marp_path()
+        if cached is not None:
+            assert MARP_CLI_VERSION in str(cached), "Cached path should include version"
+
+    def test_cached_binary_is_executable(self):
+        """Verify the cached binary has executable permissions."""
+        cached = _get_cached_marp_path()
+        if cached is not None:
+            assert cached.exists(), "Cached binary should exist"
+            mode = cached.stat().st_mode
+            assert mode & stat.S_IXUSR, "Binary should be user-executable"
+
+
+class TestInstallerBinaryExecution:
+    """Test that the resolved Marp CLI binary actually works."""
+
+    def test_resolved_binary_executes_version_command(self):
+        """Verify the resolved binary can execute --version."""
+        result = resolve_marp_cli()
+        assert result is not None, "Should resolve to something"
+
+        if isinstance(result, str):
+            # Direct binary path
+            proc = subprocess.run([result, "--version"], capture_output=True, text=True, timeout=30)
+        else:
+            # npx command list
+            proc = subprocess.run(result + ["--version"], capture_output=True, text=True, timeout=60)
+
+        assert proc.returncode == 0, f"--version failed: {proc.stderr}"
+        assert "marp" in proc.stdout.lower() or len(proc.stdout) > 0, "Should output version info"
+
+    def test_resolved_binary_help_command(self):
+        """Verify the resolved binary can execute --help."""
+        result = resolve_marp_cli()
+        assert result is not None
+
+        if isinstance(result, str):
+            proc = subprocess.run([result, "--help"], capture_output=True, text=True, timeout=30)
+        else:
+            proc = subprocess.run(result + ["--help"], capture_output=True, text=True, timeout=60)
+
+        assert proc.returncode == 0, f"--help failed: {proc.stderr}"
+        # Help output should mention common options
+        output_lower = proc.stdout.lower()
+        assert "html" in output_lower or "pdf" in output_lower or "output" in output_lower
+
+
+class TestInstallerCacheDirectory:
+    """Test cache directory creation and structure."""
+
+    def test_cache_dir_is_created(self):
+        """Verify cache directory is created if it doesn't exist."""
+        cache_dir = _get_cache_dir()
+        assert cache_dir.exists(), "Cache directory should be created"
+        assert cache_dir.is_dir(), "Cache directory should be a directory"
+
+    def test_cache_dir_is_writable(self):
+        """Verify cache directory is writable."""
+        cache_dir = _get_cache_dir()
+        test_file = cache_dir / ".write_test"
+        try:
+            test_file.write_text("test")
+            assert test_file.exists()
+        finally:
+            if test_file.exists():
+                test_file.unlink()
+
+    def test_cache_dir_contains_version_subdir_after_resolve(self):
+        """Verify version subdirectory exists after resolving."""
+        resolve_marp_cli()  # Ensure binary is downloaded/cached
+        cache_dir = _get_cache_dir()
+        version_dir = cache_dir / MARP_CLI_VERSION
+        # Only check if we're using cached binary (not system marp or npx)
+        info = get_marp_version_info()
+        if info["source"] == "cached":
+            assert version_dir.exists(), "Version directory should exist for cached binary"

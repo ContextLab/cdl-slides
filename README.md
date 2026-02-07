@@ -63,23 +63,19 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 pip install cdl-slides
 ```
 
-That's it. Marp CLI is automatically downloaded on first compile if not already installed.
+That's it! This installs everything you need:
+- **Marp CLI** is automatically downloaded on first compile if not already installed
+- **Manim** for animated equations and visualizations
+- **FFmpeg** bundled via `imageio-ffmpeg` — no system installation required
 
-For **manim animations** (optional), install with the animations extra:
-
-```bash
-pip install cdl-slides[animations]
-```
-
-This installs manim and bundled ffmpeg. Note: manim requires system libraries (pango, cairo) on Linux — see [manim installation docs](https://docs.manim.community/en/stable/installation.html) if you encounter issues.
+**Note:** On Linux, manim requires system libraries (pango, cairo) — see [manim installation docs](https://docs.manim.community/en/stable/installation.html) if you encounter issues.
 
 Or install from source:
 
 ```bash
 git clone https://github.com/ContextLab/cdl-slides.git
 cd cdl-slides
-pip install -e .            # Basic install
-pip install -e ".[animations]"  # With animation support
+pip install -e .
 ```
 
 ### Marp CLI resolution
@@ -309,8 +305,6 @@ Use the ```` ```flow ```` syntax for simple pipeline diagrams:
 
 Embed animated math visualizations using the **Animate DSL** — a simple, declarative syntax that compiles to [Manim Community](https://www.manim.community/). Animations are rendered to transparent GIFs and embedded in slides.
 
-**Requires:** `pip install cdl-slides[animations]`
-
 FFmpeg is bundled automatically via `imageio-ffmpeg` — no system ffmpeg installation required.
 
 **Usage:**
@@ -406,7 +400,7 @@ plot "np.sin(x)" on ax color=blue as wave
 
 **Available colors:** blue, red, green, yellow, orange, white, black
 
-**Requires:** `pip install cdl-slides[animations]`
+Animation support is included by default with `pip install cdl-slides`.
 
 ### Scale Directives
 
