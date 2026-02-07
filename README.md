@@ -59,21 +59,27 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 
 ## Installation
 
+**macOS:**
+```bash
+brew install pango cairo ffmpeg
+pip install cdl-slides
+```
+
+**Linux (Debian/Ubuntu):**
+```bash
+sudo apt-get install -y libpango1.0-dev libcairo2-dev ffmpeg
+pip install cdl-slides
+```
+
+**Windows:**
 ```bash
 pip install cdl-slides
 ```
 
-Then run setup to install system dependencies and Marp CLI:
-
+Then run setup to download Marp CLI:
 ```bash
 cdl-slides setup
 ```
-
-This installs everything you need:
-- **System libraries** (pango, cairo, ffmpeg) — auto-detected and installed via your package manager
-- **Marp CLI** — standalone binary, no npm required
-- **Manim** for animated equations and visualizations
-- **FFmpeg** bundled via `imageio-ffmpeg`
 
 Or install from source:
 
