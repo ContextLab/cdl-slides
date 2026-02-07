@@ -68,7 +68,12 @@ That's it! This installs everything you need:
 - **Manim** for animated equations and visualizations
 - **FFmpeg** bundled via `imageio-ffmpeg` — no system installation required
 
-**Note:** On Linux, manim requires system libraries (pango, cairo) — see [manim installation docs](https://docs.manim.community/en/stable/installation.html) if you encounter issues.
+**Linux users:** Manim requires system libraries. Run the install script first:
+
+```bash
+./scripts/install-system-deps.sh
+pip install cdl-slides
+```
 
 Or install from source:
 
