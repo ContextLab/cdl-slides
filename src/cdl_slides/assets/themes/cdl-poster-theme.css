@@ -414,7 +414,7 @@ p img[alt] {
 
 .emoji-bg {
   padding: 8mm;
-  border-radius: 50%;
+  border-radius: 4mm;
 }
 
 .emoji-bg-green { background-color: rgba(0, 105, 62, 0.15); }

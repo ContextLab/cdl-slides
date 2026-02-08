@@ -98,15 +98,15 @@ Describe the key statistical or computational methods. Prefer a **diagram** over
 
 <div class="emoji-figure">
 <div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-blue">🐍</span>
+<span class="emoji emoji-xl">🐍</span>
 <span class="label">Python</span>
 </div>
 <div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-green">🧠</span>
+<span class="emoji emoji-xl">🧠</span>
 <span class="label">Neuroimaging</span>
 </div>
 <div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-orange">📊</span>
+<span class="emoji emoji-xl">📊</span>
 <span class="label">Visualization</span>
 </div>
 </div>

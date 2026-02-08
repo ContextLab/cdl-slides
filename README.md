@@ -20,6 +20,10 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 |:-----------------:|:------------:|:--------------:|
 | ![Two-Column](docs/screenshots/09-two-column.png) | ![Table](docs/screenshots/10-simple-table.png) | ![Formats](docs/screenshots/11-output-formats.png) |
 
+| Academic Poster |
+|:---------------:|
+| ![Poster](docs/screenshots/poster-sample.png) |
+
 ## Table of contents
 
 - [Features](#features)
@@ -39,6 +43,11 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
   - [Code blocks](#code-blocks)
   - [Tables](#tables)
   - [Arrow syntax](#arrow-syntax)
+- [Poster authoring guide](#poster-authoring-guide)
+  - [Poster front matter](#poster-front-matter)
+  - [ASCII grid layout](#ascii-grid-layout)
+  - [Poster sections](#poster-sections)
+  - [Section colors](#section-colors)
 - [Bundled fonts](#bundled-fonts)
 - [Development](#development)
 - [License](#license)
@@ -56,6 +65,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Syntax highlighting**: Code blocks with line numbers via Pygments
 - **Math support**: KaTeX for inline and display equations
 - **Callout boxes**: Note, tip, warning, definition, example, and important boxes
+- **Academic posters**: Compile poster markdown with ASCII grid layouts to HTML or PDF
 
 ## Installation
 
@@ -205,6 +215,35 @@ Pre-download the Marp CLI standalone binary. This is optional — Marp CLI is au
 ```bash
 cdl-slides setup
 ```
+
+### `cdl-slides poster compile`
+
+Compile a poster markdown file into HTML or PDF.
+
+```
+Usage: cdl-slides poster compile [OPTIONS] INPUT_FILE
+
+Options:
+  -o, --output PATH      Output file or directory (default: same dir as input)
+  -f, --format TEXT       Output format: html, pdf, both (default: both)
+  --keep-temp             Keep temporary processed files for debugging
+  --help                  Show this message and exit.
+```
+
+**Examples:**
+
+```bash
+# Compile poster to HTML only
+cdl-slides poster compile poster.md --format html
+
+# Compile poster to PDF only
+cdl-slides poster compile poster.md --format pdf
+
+# Compile poster to both HTML and PDF
+cdl-slides poster compile poster.md
+```
+
+> **Note:** Posters support HTML and PDF output only (no PPTX). Math equations automatically use Avenir font to match poster typography.
 
 ## Slide authoring guide
 
@@ -474,6 +513,91 @@ A --[80]-> B --[lg]-> C
 ```
 
 Options: `--[80]->` (pixel width), `--[lg]->` (named size: sm, md, lg, xl).
+
+## Poster authoring guide
+
+Create academic posters with ASCII grid layouts. See [examples/sample_poster.md](examples/sample_poster.md) for a complete example.
+
+### Poster front matter
+
+```yaml
+---
+marp: true
+theme: cdl-poster
+size: A0
+math: katex
+---
+```
+
+Available sizes: `A0` (landscape, default), `A0-portrait`, `A1`, `48x36`, `36x48`, or any `WxH` pattern.
+
+### ASCII grid layout
+
+Define your poster layout with a `poster-layout` code block. Each letter represents a section, and its area on the grid determines its position and size:
+
+````markdown
+```poster-layout
+TTTTTTTTTTTTTTTTTTTTTTTTTTTT
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+MMMMMMMMRRRRRRRRRRRRDDDDDDDD
+MMMMMMMMRRRRRRRRRRRREEEEAAAA
+```
+````
+
+Each letter maps to a `## X: Section Title` heading in your markdown. The number of rows and columns a letter spans determines the relative size of that section.
+
+### Poster sections
+
+Define sections with `## X: Title` syntax, where `X` matches a letter from the grid:
+
+```markdown
+## T: Your poster title goes here
+
+**Author One**¹, **Author Two**² | email@institution.edu
+
+¹ Dartmouth College | ² Collaborating Institution
+
+## I: Introduction [blue]
+
+Content with **Markdown**, callout boxes, emoji figures, math, and tables.
+
+## M: Methods [violet]
+
+Use callout boxes, flow diagrams, and emoji figures inside sections.
+
+## R: Results [green]
+
+$$\hat{y} = \beta_0 + \beta_1 x_1 + \epsilon$$
+
+## D: Discussion [teal]
+
+Callout boxes work inside poster sections just like in slides.
+
+## E: References [orange]
+
+1. Author A, Author B (2023). *Journal* 1:1-10.
+
+## A: Acknowledgments [spring]
+
+Supported by **NSF** #1234567.
+```
+
+The `T` section renders as the title bar. All other sections render as content panels with section headings. Use `<div class="scale-80">` wrappers to adjust font size within sections.
+
+### Section colors
+
+Add `[color]` after a section title to set its callout box color scheme:
+
+```markdown
+## I: Introduction [blue]
+## M: Methods [violet]
+## R: Results [green]
+```
+
+Available colors: `blue`, `green`, `violet`/`purple`, `orange`, `red`, `teal`, `spring`.
+
+Colors affect the section heading border, callout box backgrounds, and callout box borders. Individual boxes can override with `data-color="..."` on the div.
 
 ## Bundled Fonts
 
