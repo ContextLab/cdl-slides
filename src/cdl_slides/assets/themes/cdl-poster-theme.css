@@ -1,0 +1,398 @@
+/* @theme cdl-poster */
+/* @size A0 1189mm 841mm */
+/* @size A0-portrait 841mm 1189mm */
+/* @size 48x36 1219mm 914mm */
+/* @size 36x48 914mm 1219mm */
+/* @size A1 841mm 594mm */
+
+:root {
+    --dartmouth-green: #00693e;
+    --dartmouth-green-light: #00854d;
+    --dartmouth-green-tint: #4d9678;  /* 30% tint of Dartmouth Green (same hue, lighter) */
+    --forest-green: #12312b;
+    --rich-forest-green: #0D1E1C;
+    --river-blue: #267aba;
+    --river-navy: #003c73;
+    --spring-green: #c4dd88;
+    --rich-spring-green: #a5d75f;
+    --summer-yellow: #f5dc69;
+    --bonfire-orange: #ffa00f;
+    --bonfire-red: #9d162e;
+    --tuck-orange: #d94415;
+    --violet: #8a6996;
+    --autumn-brown: #643c20;
+    --granite-gray: #424141;
+    --gray-1: #f7f7f7;
+    --gray-2: #e2e2e2;
+    --gray-3: #707070;
+    --text-primary: #0a2518;
+    --text-secondary: #0a3d23;
+    --font-sans: 'Avenir LT Std', 'Avenir', 'Avenir Next', 'Noto Sans SC', sans-serif;
+}
+
+@font-face {
+    font-family: 'Avenir LT Std';
+    src: url('../../fonts/AvenirLTStd-Light.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir LT Std';
+    src: url('../../fonts/AvenirLTStd-Book.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir LT Std';
+    src: url('../../fonts/AvenirLTStd-Roman.otf') format('opentype');
+    font-weight: 450;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir LT Std';
+    src: url('../../fonts/AvenirLTStd-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir LT Std';
+    src: url('../../fonts/AvenirLTStd-Heavy.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Avenir LT Std';
+    src: url('../../fonts/AvenirLTStd-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Noto Sans SC';
+    src: url('../../fonts/NotoSansSC-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Fira Code Local';
+    src: url('../../fonts/FiraCode-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Fira Code Local';
+    src: url('../../fonts/FiraCode-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Fira Code Local';
+    src: url('../../fonts/FiraCode-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+section {
+  display: grid !important;
+  width: 1189mm;
+  height: 841mm;
+  padding: 12mm;
+  gap: 6mm;
+  font-family: var(--font-sans);
+  font-size: 28pt;
+  background-color: var(--gray-2);
+  background-image: url('themes/background_geometry.svg');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% auto;
+  color: #0a2518;
+  line-height: 1.3;
+  position: relative;
+}
+
+h1 { 
+  font-size: 84pt; 
+  font-weight: 700; 
+  color: #0a2518;
+  margin: 0;
+  line-height: 1.1;
+}
+
+h2 { 
+  font-size: 48pt; 
+  font-weight: 500; 
+  color: #0a2518;
+  margin: 0.15em 0 0;
+  line-height: 1.1;
+}
+
+h3 { 
+  font-size: 42pt; 
+  font-weight: 700;
+  color: var(--dartmouth-green);
+  margin: 0 0 0.3em 0;
+  border-bottom: 2mm solid var(--dartmouth-green);
+  padding-bottom: 0.15em;
+}
+
+h4 {
+  font-size: 32pt;
+  font-weight: 600;
+  margin: 0.3em 0 0.15em;
+  color: var(--river-navy);
+}
+
+p, li { 
+  font-size: 30pt; 
+  line-height: 1.3; 
+  margin: 0.3em 0;
+}
+
+pre, section pre {
+  margin: 0.4em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 3mm;
+  background-color: rgba(0, 105, 62, 0.08);
+  padding: 5mm 7mm;
+  border: 0.8mm solid rgba(0, 105, 62, 0.15);
+  text-align: left;
+}
+
+pre code {
+  background-color: transparent;
+  color: #0a3d23;
+  padding: 0;
+  margin: 0;
+  font-size: 22pt;
+  line-height: 1.25;
+  font-family: 'Fira Code Local', 'Fira Code', monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+code {
+  display: inline-block;
+  font-family: 'Fira Code Local', 'Fira Code', monospace;
+  font-size: 0.85em;
+  padding: 0.1em 0.4em;
+  color: #0d5f2e;
+  background-color: rgba(0, 105, 62, 0.08);
+  border-radius: 1mm;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin: 0.4em 0;
+  font-size: 26pt;
+  border: 0.8mm solid #0a2518;
+  width: 100%;
+}
+
+table th, table td {
+  padding: 2.5mm 4mm;
+  text-align: center;
+  vertical-align: middle;
+  border: 0.4mm solid #0a2518;
+}
+
+table th {
+  background-color: rgba(0, 105, 62, 0.1);
+  font-weight: 600;
+}
+
+.poster-section {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 3mm;
+  padding: 7mm 10mm;
+  overflow: hidden;
+  box-shadow: 0 0.8mm 2mm rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.poster-title {
+  background: linear-gradient(135deg, var(--dartmouth-green-tint) 0%, var(--dartmouth-green) 100%);
+  color: white;
+  padding: 12mm 15mm;
+  text-align: center;
+  border-radius: 3mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.poster-title h1 {
+  color: white;
+  margin: 0;
+  text-shadow: 0 1mm 2mm rgba(0, 0, 0, 0.15);
+}
+
+.poster-title h2 {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 400;
+  margin: 0.1em 0 0;
+}
+
+.poster-title p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 36pt;
+  margin: 0.25em 0 0;
+}
+
+.poster-title strong {
+  font-weight: 600;
+}
+
+.note-box, .warning-box, .tip-box, .definition-box, .example-box, .important-box {
+  padding: 5mm 7mm;
+  margin: 5mm 0;
+  border-radius: 3mm;
+  font-size: 28pt;
+}
+
+.note-box::before, .warning-box::before, .tip-box::before, 
+.definition-box::before, .example-box::before, .important-box::before {
+  display: block;
+  font-size: 30pt;
+  font-weight: 600;
+  margin-bottom: 2mm;
+}
+
+.note-box {
+  background-color: rgba(38, 122, 186, 0.12);
+  border-left: 3mm solid var(--river-blue);
+}
+.note-box::before { content: 'Note'; color: var(--river-navy); }
+
+.warning-box {
+  background-color: rgba(255, 160, 15, 0.15);
+  border-left: 3mm solid var(--bonfire-orange);
+}
+.warning-box::before { content: 'Warning'; color: var(--tuck-orange); }
+
+.tip-box {
+  background-color: rgba(165, 215, 95, 0.15);
+  border-left: 3mm solid var(--rich-spring-green);
+}
+.tip-box::before { content: 'Tip'; color: #5a8a2a; }
+
+.definition-box {
+  background-color: rgba(138, 105, 150, 0.12);
+  border-left: 3mm solid var(--violet);
+}
+.definition-box::before { content: 'Definition'; color: #6a4d7a; }
+
+.example-box {
+  background-color: rgba(0, 105, 62, 0.10);
+  border-left: 3mm solid var(--dartmouth-green);
+}
+.example-box::before { content: 'Example'; color: var(--dartmouth-green); }
+
+.important-box {
+  background-color: rgba(157, 22, 46, 0.12);
+  border-left: 3mm solid var(--bonfire-red);
+}
+.important-box::before { content: 'Important'; color: var(--bonfire-red); }
+
+.note-box[data-title]::before { content: attr(data-title); }
+.warning-box[data-title]::before { content: attr(data-title); }
+.tip-box[data-title]::before { content: attr(data-title); }
+.definition-box[data-title]::before { content: attr(data-title); }
+.example-box[data-title]::before { content: attr(data-title); }
+.important-box[data-title]::before { content: attr(data-title); }
+
+ul, ol {
+  margin: 0.3em 0;
+  padding-left: 1.1em;
+}
+
+ul li, ol li {
+  margin: 0.2em 0;
+}
+
+a {
+  color: var(--river-navy);
+  text-decoration: underline;
+}
+
+.katex {
+  font-size: 1.1em;
+}
+
+.emoji-figure {
+  display: flex;
+  justify-content: center;
+  gap: 12mm;
+  margin: 6mm 0;
+}
+
+.emoji-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.emoji {
+  font-size: 42pt;
+}
+
+.emoji-xl {
+  font-size: 56pt;
+}
+
+.emoji-bg {
+  padding: 6mm;
+  border-radius: 50%;
+}
+
+.emoji-bg-green { background-color: rgba(0, 105, 62, 0.15); }
+.emoji-bg-blue { background-color: rgba(38, 122, 186, 0.15); }
+.emoji-bg-orange { background-color: rgba(255, 160, 15, 0.15); }
+.emoji-bg-purple { background-color: rgba(138, 105, 150, 0.15); }
+.emoji-bg-navy { background-color: rgba(0, 60, 115, 0.15); }
+
+.label {
+  font-size: 22pt;
+  font-weight: 500;
+  margin-top: 3mm;
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3mm;
+  margin: 5mm 0;
+  flex-wrap: wrap;
+}
+
+.flow-box {
+  padding: 4mm 6mm;
+  border-radius: 2mm;
+  font-size: 22pt;
+  font-weight: 500;
+  text-align: center;
+}
+
+.flow-arrow {
+  font-size: 28pt;
+  color: var(--granite-gray);
+}
+
+.flow-green { background-color: rgba(0, 105, 62, 0.2); color: var(--dartmouth-green); }
+.flow-blue { background-color: rgba(38, 122, 186, 0.2); color: var(--river-navy); }
+.flow-orange { background-color: rgba(255, 160, 15, 0.2); color: #b8860b; }
+.flow-purple { background-color: rgba(138, 105, 150, 0.2); color: #6a4d7a; }
+.flow-red { background-color: rgba(157, 22, 46, 0.15); color: var(--bonfire-red); }

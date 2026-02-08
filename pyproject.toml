@@ -77,3 +77,4 @@ select = ["E", "F", "W", "I"]
 [tool.ruff.lint.per-file-ignores]
 # Preprocessor contains embedded SVG/HTML templates that naturally exceed line length
 "src/cdl_slides/preprocessor.py" = ["E501"]
+"src/cdl_slides/poster_preprocessor.py" = ["E501"]

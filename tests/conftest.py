@@ -80,6 +80,30 @@ def animate_malformed_md(fixtures_dir):
 
 
 @pytest.fixture
+def poster_minimal_md(fixtures_dir):
+    """Minimal poster fixture for basic testing."""
+    return fixtures_dir / "poster_minimal.md"
+
+
+@pytest.fixture
+def poster_full_md(fixtures_dir):
+    """Full-featured poster fixture for comprehensive testing."""
+    return fixtures_dir / "poster_full.md"
+
+
+@pytest.fixture
+def poster_invalid_grid_md(fixtures_dir):
+    """Poster with invalid (non-rectangular) grid layout."""
+    return fixtures_dir / "poster_invalid_grid.md"
+
+
+@pytest.fixture
+def poster_missing_section_md(fixtures_dir):
+    """Poster with grid letter that has no matching section."""
+    return fixtures_dir / "poster_missing_section.md"
+
+
+@pytest.fixture
 def work_dir(tmp_path):
     work = tmp_path / "work"
     work.mkdir()

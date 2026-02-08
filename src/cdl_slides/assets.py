@@ -143,34 +143,35 @@ def _rewrite_css_urls(css_content: str, assets_dir: Path) -> str:
     return url_pattern.sub(replace_url, css_content)
 
 
-def prepare_theme_for_compilation(work_dir: Path) -> Path:
+def prepare_theme_for_compilation(work_dir: Path, theme_name: str = "cdl-theme") -> Path:
     """Prepare the CDL theme for Marp compilation with proper asset paths.
 
     Creates a temporary directory in the same location as the work directory
     with the following structure:
 
-        cdl-theme-XXXX/
-        ├── cdl-theme.css     (font urls rewritten to file://)
-        ├── themes/           (copied from package assets)
-        │   ├── background_geometry.svg
-        │   ├── conversation_green_32pct.png
-        │   └── ...
-        └── images/           (copied from package assets)
-            ├── arrow-clean.svg
-            └── ...
+            cdl-theme-XXXX/
+            ├── cdl-theme.css     (font urls rewritten to file://)
+            ├── themes/           (copied from package assets)
+            │   ├── background_geometry.svg
+            │   ├── conversation_green_32pct.png
+            │   └── ...
+            └── images/           (copied from package assets)
+                    ├── arrow-clean.svg
+                    └── ...
 
     The CSS references themes/ and images/ via relative paths, which resolve
     because those directories are copied alongside the CSS file.
 
     Args:
-        work_dir: Directory containing the input markdown file
+            work_dir: Directory containing the input markdown file
+            theme_name: Name of the theme CSS file (default: "cdl-theme")
 
     Returns:
-        Path to the directory containing the rewritten CSS file
-        (suitable for use with marp --theme-set)
+            Path to the directory containing the rewritten CSS file
+            (suitable for use with marp --theme-set)
     """
     assets_dir = get_assets_dir()
-    original_theme = get_themes_dir() / "cdl-theme.css"
+    original_theme = get_themes_dir() / f"{theme_name}.css"
 
     if not original_theme.exists():
         raise FileNotFoundError(f"CDL theme not found at {original_theme}")
@@ -181,7 +182,7 @@ def prepare_theme_for_compilation(work_dir: Path) -> Path:
     css_content = original_theme.read_text(encoding="utf-8")
     rewritten_css = _rewrite_css_urls(css_content, assets_dir)
 
-    output_theme = temp_dir / "cdl-theme.css"
+    output_theme = temp_dir / f"{theme_name}.css"
     output_theme.write_text(rewritten_css, encoding="utf-8")
 
     # Copy themes/ directory (background SVG, conversation PNGs)
@@ -189,7 +190,7 @@ def prepare_theme_for_compilation(work_dir: Path) -> Path:
     dst_themes = temp_dir / "themes"
     dst_themes.mkdir(exist_ok=True)
     for f in src_themes.iterdir():
-        if f.is_file() and f.name != "cdl-theme.css":
+        if f.is_file() and not f.name.endswith(".css"):
             shutil.copy2(f, dst_themes / f.name)
 
     # Copy images/ directory (arrow SVGs)
@@ -225,7 +226,7 @@ def copy_assets_alongside_output(output_html: Path, source_dir: Optional[Path] =
         src_themes = get_themes_dir()
         dst_themes.mkdir(exist_ok=True)
         for f in src_themes.iterdir():
-            if f.is_file() and f.name != "cdl-theme.css":
+            if f.is_file() and not f.name.endswith(".css"):
                 shutil.copy2(f, dst_themes / f.name)
 
     # Copy images/ (arrow SVGs)

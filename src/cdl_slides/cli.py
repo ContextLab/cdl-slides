@@ -53,6 +53,67 @@ def hello():
 Questions?
 """
 
+POSTER_TEMPLATE_MARKDOWN = """\
+---
+marp: true
+theme: cdl-poster
+size: A0
+title: "Your Poster Title"
+authors:
+  - name: "Your Name"
+    affiliation: "Your Institution"
+---
+
+```poster-layout
+TTTTTTTTTT
+IIIMMMMRRR
+IIIMMMMRRR
+CCCCMMMMDD
+```
+
+## T: Poster Title
+
+# Your Poster Title Here
+**Your Name** · Your Institution
+
+## I: Introduction
+
+Write your introduction here. Explain the background and motivation for your research.
+
+- Key background point
+- Research question
+- Significance
+
+## M: Methods
+
+Describe your methodology:
+
+```python
+# Example code
+def analyze(data):
+    return process(data)
+```
+
+## R: Results
+
+Present your key findings:
+
+$$y = mx + b$$
+
+<div class="note-box" data-title="Key Finding">
+Highlight important results here.
+</div>
+
+## C: Conclusion
+
+Summarize your conclusions and future directions.
+
+## D: References
+
+1. Author et al. (2024) *Journal Name*
+2. Other Author (2023) *Conference*
+"""
+
 
 def _format_size(size_bytes: int) -> str:
     if size_bytes < 1024:
@@ -273,3 +334,87 @@ def setup() -> None:
             sys.exit(1)
 
     click.echo(click.style("\nSetup complete!", fg="green", bold=True))
+
+
+@main.group()
+def poster() -> None:
+    """Commands for academic poster creation."""
+    pass
+
+
+@poster.command()
+@click.argument("input_file", type=click.Path(exists=True, dir_okay=False, path_type=Path))
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Output file or directory.",
+)
+@click.option(
+    "--format",
+    "-f",
+    "output_format",
+    type=click.Choice(["html", "pdf", "both"], case_sensitive=False),
+    default="pdf",
+    show_default=True,
+    help="Output format (no pptx for posters).",
+)
+@click.option(
+    "--keep-temp",
+    is_flag=True,
+    default=False,
+    help="Keep temporary processed files for debugging.",
+)
+def compile(input_file: Path, output: Optional[Path], output_format: str, keep_temp: bool) -> None:  # noqa: F811
+    """Compile a Markdown file into a CDL-themed academic poster."""
+    from cdl_slides.compiler import CompilationError
+    from cdl_slides.poster_compiler import compile_poster
+
+    click.echo(click.style(f"Compiling {input_file.name}...", fg="cyan"))
+
+    try:
+        result = compile_poster(
+            input_file=input_file,
+            output_file=output,
+            output_format=output_format,
+            keep_temp=keep_temp,
+        )
+
+        # Display results
+        click.echo(click.style("✓ Poster compiled successfully!", fg="green", bold=True))
+        for file_info in result["files"]:
+            size_kb = file_info["size"] / 1024
+            click.echo(f"  → {file_info['path']} ({size_kb:.1f} KB)")
+
+        if result.get("warnings"):
+            click.echo(click.style("\nWarnings:", fg="yellow"))
+            for warning in result["warnings"]:
+                click.echo(f"  ⚠ {warning}")
+
+    except CompilationError as e:
+        click.echo(click.style(f"✗ Compilation failed: {e}", fg="red"), err=True)
+        sys.exit(1)
+    except FileNotFoundError as e:
+        click.echo(click.style(f"✗ File not found: {e}", fg="red"), err=True)
+        sys.exit(1)
+    except KeyboardInterrupt:
+        click.echo(click.style("\n✗ Compilation cancelled.", fg="yellow"), err=True)
+        sys.exit(130)
+
+
+@poster.command()
+@click.argument("directory", type=click.Path(path_type=Path), default=".")
+def init(directory: Path) -> None:  # noqa: F811
+    """Initialize a new poster directory with a template .md file."""
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+
+    poster_file = directory / "poster.md"
+    if poster_file.exists():
+        click.echo(click.style(f"✗ {poster_file} already exists.", fg="red"), err=True)
+        sys.exit(1)
+
+    poster_file.write_text(POSTER_TEMPLATE_MARKDOWN, encoding="utf-8")
+    click.echo(click.style(f"✓ Created {poster_file}", fg="green"))
+    click.echo(f"  Edit the file, then run: cdl-slides poster compile {poster_file}")
