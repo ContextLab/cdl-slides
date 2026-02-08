@@ -222,6 +222,8 @@ table th {
 
 .poster-section > :last-child {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .poster-title {
@@ -358,7 +360,7 @@ a {
 .katex,
 .katex .katex-html,
 .katex .base {
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
 /* Prevent awkward line breaks in math and around punctuation */

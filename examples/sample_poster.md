@@ -14,8 +14,8 @@ IIIIIIIIRRRRRRRRRRRRDDDDDDDD
 IIIIIIIIRRRRRRRRRRRRDDDDDDDD
 MMMMMMMMRRRRRRRRRRRRDDDDDDDD
 MMMMMMMMRRRRRRRRRRRRDDDDDDDD
-MMMMMMMMRRRRRRRRRRRREEEEAAAA
-MMMMMMMMRRRRRRRRRRRREEEEAAAA
+MMMMMMMMRRRRRRRRRRRREEEAAAAA
+MMMMMMMMRRRRRRRRRRRREEEAAAAA
 ```
 
 ## T: Your poster title goes here
@@ -96,6 +96,7 @@ Describe the key statistical or computational methods. Prefer a **diagram** over
 
 </div>
 
+<div style="flex: 1; display: flex; align-items: center; justify-content: center;">
 <div class="emoji-figure">
 <div class="emoji-col">
 <span class="emoji emoji-xl">🐍</span>
@@ -108,6 +109,7 @@ Describe the key statistical or computational methods. Prefer a **diagram** over
 <div class="emoji-col">
 <span class="emoji emoji-xl">📊</span>
 <span class="label">Visualization</span>
+</div>
 </div>
 </div>
 
@@ -179,7 +181,7 @@ Show that findings **replicate** across datasets or participant groups to streng
 
 <div class="example-box" data-title="Robustness check">
 
-We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span>
+We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span> Sensitivity analyses confirm that results hold across a range of preprocessing choices and model specifications.
 
 </div>
 
@@ -238,12 +240,11 @@ Acknowledge **limitations** honestly and describe planned follow-ups.
 
 <div class="scale-50">
 
-<div class="warning-box" data-title="Selected references">
+<div class="warning-box" data-title="References">
 
-1. Author A, Author B (2023). *J. Neurosci.* 1:1-10.
-2. Author C, Author D (2022). *Nat. Hum. Behav.* 5:100-110.
-3. Author E, Author F (2021). *Psychol. Rev.* 128:500-520.
-4. Author G, Author H (2020). *JMLR* 21:1-15.
+1. Author A *et al.* (2023). *J. Neurosci.*
+2. Author C *et al.* (2022). *Nat. Hum. Behav.*
+3. Author E *et al.* (2021). *Psychol. Rev.*
 
 </div>
 
