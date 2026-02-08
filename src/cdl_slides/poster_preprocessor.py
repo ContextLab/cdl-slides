@@ -57,6 +57,7 @@ def parse_poster_frontmatter(content: str) -> dict[str, Any]:
         "marp": True,
         "theme": theme,
         "size": size_str,
+        "math": fm.get("math", "katex"),
         "title": fm.get("title", ""),
         "authors": fm.get("authors", []),
     }
@@ -125,33 +126,50 @@ def parse_ascii_layout(layout_text: str) -> dict[str, Any]:
     }
 
 
-def extract_poster_sections(content: str) -> dict[str, dict[str, str]]:
+_VALID_COLORS = {"blue", "green", "violet", "purple", "orange", "red", "teal", "spring"}
+
+
+def extract_poster_sections(content: str) -> dict[str, dict[str, str | None]]:
     """
-    Parse ## X: Section Title headers to extract section content.
+    Parse ## X: Section Title [color] headers to extract section content.
+
+    The optional [color] suffix sets the default callout-box color for
+    that section.  Valid colors: blue, green, violet, purple, orange,
+    red, teal, spring.  Individual boxes can override with
+    data-color="…" on the div.
 
     Args:
         content: Markdown content (after frontmatter)
 
     Returns:
-        Dict mapping letter to {"title": str, "content": str}
+        Dict mapping letter to {"title": str, "content": str, "color": str | None}
     """
     pattern = r"^## ([A-Z]):\s*(.+?)$"
     matches = list(re.finditer(pattern, content, re.MULTILINE))
-    sections: dict[str, dict[str, str]] = {}
+    sections: dict[str, dict[str, str | None]] = {}
     for i, match in enumerate(matches):
         letter = match.group(1)
-        title = match.group(2).strip()
+        raw_title = match.group(2).strip()
         start = match.end()
         end = matches[i + 1].start() if i + 1 < len(matches) else len(content)
         section_content = content[start:end].strip()
-        sections[letter] = {"title": title, "content": section_content}
+
+        color_match = re.search(r"\s*\[(\w+)\]\s*$", raw_title)
+        color = None
+        if color_match:
+            candidate = color_match.group(1).lower()
+            if candidate in _VALID_COLORS:
+                color = candidate
+                raw_title = raw_title[: color_match.start()].strip()
+
+        sections[letter] = {"title": raw_title, "content": section_content, "color": color}
     return sections
 
 
 def generate_poster_html(
     frontmatter: dict[str, Any],
     layout: dict[str, Any],
-    sections: dict[str, dict[str, str]],
+    sections: dict[str, dict[str, str | None]],
 ) -> str:
     """
     Generate Marp-compatible markdown with CSS Grid layout.
@@ -169,6 +187,7 @@ def generate_poster_html(
         "marp: true",
         f"theme: {frontmatter['theme']}",
         f"size: {frontmatter['size']}",
+        f"math: {frontmatter.get('math', 'katex')}",
         "---",
         "",
     ]
@@ -185,8 +204,8 @@ section {{
     {grid_template};
   grid-template-rows: repeat({layout["rows"]}, 1fr);
   grid-template-columns: repeat({layout["cols"]}, 1fr);
-  gap: 1em;
-  padding: 2em;
+  gap: 6mm;
+  padding: 12mm;
 }}
 </style>"""
 
@@ -196,6 +215,8 @@ section {{
             continue
         sec = sections[label]
         css_class = "poster-title" if label == "T" else "poster-section"
+        if sec.get("color"):
+            css_class += f" poster-color-{sec['color']}"
         heading = f"# {sec['title']}" if label == "T" else f"### {sec['title']}"
         div = f"""<div style="grid-area: {label};" class="{css_class}">
 

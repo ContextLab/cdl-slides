@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import tempfile
@@ -56,6 +57,24 @@ def _resolve_poster_output_path(
         return output.with_suffix(f".{format_ext}")
 
     return output
+
+
+_KATEX_FONT_FACE_RE = re.compile(
+    r"@font-face\s*\{[^}]*font-family\s*:\s*[\"']?KaTeX_[^}]*\}",
+    re.DOTALL,
+)
+
+_AVENIR_STACK = "'Avenir LT Std',Avenir,'Avenir Next',sans-serif"
+_KATEX_FONT_FAMILY_RE = re.compile(r"font-family\s*:\s*[\"']?KaTeX_\w+[\"']?")
+_KATEX_FONT_SHORTHAND_RE = re.compile(r"(font\s*:\s*[^;]*?)KaTeX_Main[^;]*?(;)")
+
+
+def _postprocess_katex_fonts(html_path: Path) -> None:
+    content = html_path.read_text(encoding="utf-8")
+    content = _KATEX_FONT_FACE_RE.sub("", content)
+    content = _KATEX_FONT_FAMILY_RE.sub(f"font-family:{_AVENIR_STACK}", content)
+    content = _KATEX_FONT_SHORTHAND_RE.sub(rf"\g<1>{_AVENIR_STACK}\2", content)
+    html_path.write_text(content, encoding="utf-8")
 
 
 def _build_poster_marp_command(
@@ -120,6 +139,7 @@ def compile_poster(
     formats = _expand_poster_formats(output_format)
     temp_dir = Path(tempfile.mkdtemp(prefix="cdl-poster-"))
 
+    theme_dir = None
     try:
         theme_dir = prepare_theme_for_compilation(
             input_file.parent,
@@ -153,6 +173,7 @@ def compile_poster(
 
             if output_path.exists():
                 if fmt == "html":
+                    _postprocess_katex_fonts(output_path)
                     copy_assets_alongside_output(output_path)
                 output_files.append(
                     {
@@ -169,5 +190,8 @@ def compile_poster(
         }
 
     finally:
-        if not keep_temp and temp_dir.exists():
-            shutil.rmtree(temp_dir)
+        if not keep_temp:
+            if temp_dir.exists():
+                shutil.rmtree(temp_dir)
+            if theme_dir and theme_dir.exists() and theme_dir.is_dir():
+                shutil.rmtree(theme_dir)

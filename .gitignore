@@ -216,6 +216,7 @@ notes/
 # Compiled example output (themes/images are copied during compile)
 examples/themes/
 examples/images/
+examples/*.html
 
 # macOS
 .DS_Store

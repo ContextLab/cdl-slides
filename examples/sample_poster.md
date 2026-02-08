@@ -2,155 +2,267 @@
 marp: true
 theme: cdl-poster
 size: A0
+math: katex
 ---
 
 ```poster-layout
 TTTTTTTTTTTTTTTTTTTTTTTTTTTT
-IIIIIIIIMMMMMMMMMMMMRRRRRRRR
-IIIIIIIIMMMMMMMMMMMMRRRRRRRR
-IIIIIIIIMMMMMMMMMMMMRRRRRRRR
-IIIIIIIIMMMMMMMMMMMMRRRRRRRR
-CCCCCCCCDDDDDDDDDDDDRRRRRRRR
-CCCCCCCCDDDDDDDDDDDDRRRRRRRR
-CCCCCCCCDDDDDDDDDDDDRRRRRRRR
-CCCCCCCCDDDDDDDDDDDDRRRRRRRR
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+MMMMMMMMRRRRRRRRRRRRDDDDDDDD
+MMMMMMMMRRRRRRRRRRRRDDDDDDDD
+MMMMMMMMRRRRRRRRRRRREEEEAAAA
+MMMMMMMMRRRRRRRRRRRREEEEAAAA
 ```
 
 ## T: Your poster title goes here
 
-## A brief subtitle that captures the main finding or question
+**Author One**¹, **Author Two**², **Author Three**¹ | corresponding.author@dartmouth.edu
 
-**Author One**¹, **Author Two**¹², **Author Three**²
+¹ Dartmouth College | ² Collaborating Institution
 
-¹ Department of Psychological and Brain Sciences, Dartmouth College | ² Collaborating Institution
+## I: Introduction and motivation [blue]
 
-## I: Introduction and motivation
+<div class="scale-80">
 
 <div class="note-box" data-title="Orient your audience">
 
-Start with the **broad question** your research addresses. Why should the reader care? Narrow from the big picture to your specific contribution in 3–5 sentences.
+Start with the **broad question** your research addresses and narrow to your specific contribution in 3–5 sentences. Explain why this topic matters and what gap in current knowledge your work fills.
 
 </div>
 
-<div class="note-box" data-title="What to include">
+<div class="emoji-figure">
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-blue">🔬</span>
+<span class="label">Phenomenon</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-green">❓</span>
+<span class="label">Open question</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-orange">💡</span>
+<span class="label">Your approach</span>
+</div>
+</div>
 
-- The **big-picture problem** your work addresses
-- Why existing approaches fall short
-- Your specific **research question** or hypothesis
-- A visual or diagram that captures the core idea
+<div class="note-box" data-title="Research question">
+
+State your specific **hypothesis** or research question. Use a figure instead of a paragraph wherever possible.
+
+- **Hypothesis 1**: Feature X correlates with Y
+- **Hypothesis 2**: Intervention Z modulates this relationship
 
 </div>
 
-<div class="note-box" data-title="Less is more">
+<div class="note-box" data-title="Background">
 
-Aim for **minimal text** and **maximal visual impact**. A reader should grasp your motivation in under 30 seconds. Use a figure instead of a paragraph wherever possible.
+Summarize **prior work** that motivates your study and explain how your approach advances the field.
 
 </div>
 
-## M: Methods
+</div>
+
+## M: Methods [violet]
+
+<div class="scale-75">
 
 <div class="definition-box" data-title="Experimental design">
 
-Describe your **paradigm** concisely: number of participants, key conditions, stimuli, and procedure. A flow diagram is ideal here.
+Describe your **paradigm**: participants ($N=50$), conditions (within-subject), stimuli (naturalistic video), and procedure.
 
 </div>
 
-<div class="definition-box" data-title="Analysis pipeline">
+<div class="flow-diagram">
+<span class="flow-box flow-blue">Design</span>
+<span class="flow-arrow">→</span>
+<span class="flow-box flow-green">Record</span>
+<span class="flow-arrow">→</span>
+<span class="flow-box flow-orange">Process</span>
+<span class="flow-arrow">→</span>
+<span class="flow-box flow-purple">Analyze</span>
+</div>
 
-Show your pipeline as a visual flow: **collection → preprocessing → modeling → validation**. A diagram works best here.
+<div class="definition-box" data-title="Analysis approach">
+
+Describe the key statistical or computational methods. Prefer a **diagram** over dense notation.
+
+- **Preprocessing**: fMRIPrep v20.2.1
+- **Modeling**: GLM with custom regressors
+- **Inference**: Non-parametric permutation tests
 
 </div>
 
-<div class="definition-box" data-title="Figures over formulas">
-
-Prefer **diagrams and flowcharts** over dense notation. Limit to one or two key formulas at most.
+<div class="emoji-figure">
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-blue">🐍</span>
+<span class="label">Python</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-green">🧠</span>
+<span class="label">Neuroimaging</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-orange">📊</span>
+<span class="label">Visualization</span>
+</div>
+</div>
 
 </div>
 
-<div class="definition-box" data-title="Tools and code">
+## R: Results [green]
 
-List key software and libraries used. If your code is open source, include a link or QR code to the repository.
+<div class="example-box" data-title="Primary finding">
 
-</div>
+Lead with your **most critical result**. Every figure should have a clear, self-explanatory takeaway.
 
-## R: Results
-
-<div class="example-box" data-title="Tell a story with your data">
-
-Lead with your **most critical result** first, then provide supporting evidence. Every figure should have a clear, self-explanatory takeaway message.
+> **Significant interaction found between Condition&nbsp;A and B** <span style="white-space:nowrap;">**($p < 0.001$).**</span>
 
 </div>
 
-<div class="example-box" data-title="Figure 1: Main result">
+<div class="emoji-figure">
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-green">✓</span>
+<span class="label">Condition A</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-blue">✓</span>
+<span class="label">Condition B</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-orange">✗</span>
+<span class="label">Control</span>
+</div>
+</div>
 
-Place your **primary finding** here. The figure should be self-explanatory — a reader should understand the key message without reading surrounding text.
+<div style="text-align: center; white-space: nowrap;">
+
+$$\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon, \quad R^2 = 0.73$$
 
 </div>
 
-<div class="example-box" data-title="Figure 2: Supporting evidence">
+<div class="example-box" data-title="Supporting evidence">
 
-Additional results that **support or extend** your main finding. Use tables for quantitative comparisons, or multi-panel figures for consistency across conditions.
-
-</div>
-
-<div class="example-box" data-title="Statistical reporting">
-
-Report key statistics concisely. Use a small **table** for multiple comparisons, or annotate figures directly with significance markers.
+Use tables for quantitative comparisons across conditions:
 
 </div>
 
-<div class="example-box" data-title="Common pitfall">
+| Measure | Group A | Group B | Group C | *p*-value |
+|---------|---------|---------|---------|-----------|
+| Accuracy | 0.89 | 0.72 | 0.65 | < 0.01 |
+| RT (ms) | 342 | 418 | 450 | < 0.05 |
+| F1 Score | 0.85 | 0.68 | 0.60 | < 0.01 |
 
-Don't overcrowd this section. **Two or three well-designed figures** are far more effective than five cramped ones. Leave white space for visual breathing room.
+<div class="example-box" data-title="Generalization">
 
-</div>
-
-<div class="example-box" data-title="Figure 3: Replication">
-
-If applicable, show that your findings **generalize** across datasets, conditions, or participant groups. This strengthens the impact of your main result.
-
-</div>
-
-## C: Conclusions and future directions
-
-<div class="tip-box" data-title="Summary of findings">
-
-Restate your **key findings** in 2–3 bullet points. Connect them back to the motivating question from the introduction.
+Show that findings **replicate** across datasets or participant groups to strengthen impact.
 
 </div>
 
-<div class="tip-box" data-title="Broader impact">
+<div class="emoji-figure">
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-green">📊</span>
+<span class="label">Dataset 1</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-blue">📊</span>
+<span class="label">Dataset 2</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-purple">📊</span>
+<span class="label">Dataset 3</span>
+</div>
+</div>
 
-Explain why your findings **matter** beyond the specific experiment — theoretical, clinical, or practical implications.
+<div class="example-box" data-title="Robustness check">
+
+We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span>
 
 </div>
 
-<div class="tip-box" data-title="Limitations">
 
-Acknowledge **limitations** honestly and note how future work might address them.
+## D: Discussion [teal]
 
-</div>
+<div class="scale-75">
 
-<div class="tip-box" data-title="Future directions">
+<div class="tip-box" data-title="Key takeaways">
 
-- Next experiments you plan to run
-- Extensions of the current approach
-- Open questions raised by your findings
+Summarize your **main findings** and connect them back to the original research question.
 
-</div>
-
-## D: References and acknowledgments
-
-<div class="warning-box" data-title="References">
-
-Include **5–10 key citations** most relevant to your work. Use a numbered list with abbreviated journal names. Prioritize citations the reader might actually look up.
+- **Finding 1**: Model outperforms baseline by 15%, supporting Hypothesis 1.
+- **Finding 2**: Effect is robust to parameter variations and generalizes across datasets.
+- **Finding 3**: Results suggest a new cognitive control mechanism consistent with prior theoretical accounts.
 
 </div>
 
-<div class="warning-box" data-title="Acknowledgments and funding">
+<div class="tip-box" data-title="Implications">
 
-Thank funding agencies (with grant numbers), collaborators, and lab members. Mention shared resources and institutional support.
+Explain **why these findings matter** for the broader field.
+
+- Provides evidence for predictive coding frameworks in perception.
+- Challenges existing models that assume static representations.
+- Opens new avenues for computational psychiatry applications.
 
 </div>
 
-**Contact**: your.email@dartmouth.edu | **Web**: context-lab.com | **Code**: github.com/ContextLab
+<div class="emoji-figure">
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-blue">🔍</span>
+<span class="label">Current work</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-green">🚀</span>
+<span class="label">Next steps</span>
+</div>
+<div class="emoji-col">
+<span class="emoji emoji-xl emoji-bg emoji-bg-orange">🌐</span>
+<span class="label">Broader impact</span>
+</div>
+</div>
+
+<div class="tip-box" data-title="Limitations and future work">
+
+Acknowledge **limitations** honestly and describe planned follow-ups.
+
+- Sample limited to college-age participants; generalization needed.
+- Future work: longitudinal designs, larger and more diverse cohorts.
+
+</div>
+
+</div>
+
+## E: References [orange]
+
+<div class="scale-50">
+
+<div class="warning-box" data-title="Selected references">
+
+1. Author A, Author B (2023). *J. Neurosci.* 1:1-10.
+2. Author C, Author D (2022). *Nat. Hum. Behav.* 5:100-110.
+3. Author E, Author F (2021). *Psychol. Rev.* 128:500-520.
+4. Author G, Author H (2020). *JMLR* 21:1-15.
+
+</div>
+
+</div>
+
+## A: Acknowledgments [spring]
+
+<div class="scale-55">
+
+<div class="tip-box" data-title="Funding and links">
+
+**NSF EPSCoR** #1632738
+**NIH R01** MH112357
+**NSF CAREER** #1849109
+
+🌐 context-lab.com
+💻 github.com/ContextLab
+📂 osf.io/example
+
+</div>
+
+</div>
