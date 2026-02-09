@@ -218,12 +218,38 @@ table th {
   box-shadow: 0 0.8mm 2mm rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .poster-section > :last-child {
   flex-grow: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.poster-section > div[class*="scale-"] {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.poster-section > div[class*="scale-"] > .note-box:only-child,
+.poster-section > div[class*="scale-"] > .warning-box:only-child,
+.poster-section > div[class*="scale-"] > .tip-box:only-child,
+.poster-section > div[class*="scale-"] > .definition-box:only-child,
+.poster-section > div[class*="scale-"] > .example-box:only-child,
+.poster-section > div[class*="scale-"] > .important-box:only-child {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .poster-title {
@@ -326,6 +352,7 @@ table th {
 .important-box::before { content: 'Important'; }
 
 [data-title]::before { content: attr(data-title); }
+[data-title=""]::before { display: none; }
 
 .poster-color-blue { --section-box-bg: rgba(38, 122, 186, 0.12); --section-box-border: var(--river-blue); --section-box-title: var(--river-navy); }
 .poster-color-green { --section-box-bg: rgba(0, 105, 62, 0.10); --section-box-border: var(--dartmouth-green); --section-box-title: var(--dartmouth-green); }
@@ -470,4 +497,6 @@ p img[alt] {
 .scale-60 { font-size: 0.60em; }
 .scale-55 { font-size: 0.55em; }
 .scale-50 { font-size: 0.50em; }
+.scale-45 { font-size: 0.45em; }
+.scale-40 { font-size: 0.40em; }
 

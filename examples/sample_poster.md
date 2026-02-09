@@ -181,7 +181,7 @@ Show that findings **replicate** across datasets or participant groups to streng
 
 <div class="example-box" data-title="Robustness check">
 
-We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span> Sensitivity analyses confirm that results hold across a range of preprocessing choices and model specifications.
+We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span> Sensitivity analyses confirm that results hold across a range of preprocessing choices and model specifications. Permutation testing corroborates significance under non-parametric assumptions <span style="white-space:nowrap;">(BF&nbsp;>&nbsp;10).</span>
 
 </div>
 
@@ -238,13 +238,15 @@ Acknowledge **limitations** honestly and describe planned follow-ups.
 
 ## E: References [orange]
 
-<div class="scale-50">
+<div class="scale-45">
 
-<div class="warning-box" data-title="References">
+<div class="warning-box" data-title="">
 
 1. Author A *et al.* (2023). *J. Neurosci.*
 2. Author C *et al.* (2022). *Nat. Hum. Behav.*
 3. Author E *et al.* (2021). *Psychol. Rev.*
+4. Author G *et al.* (2020). *PNAS.*
+5. Author J *et al.* (2019). *NeuroImage.*
 
 </div>
 
