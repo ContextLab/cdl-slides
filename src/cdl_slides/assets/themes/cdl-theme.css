@@ -3714,6 +3714,55 @@ section.table-compact td {
 }
 
 /* ============================================
+   CODE BLOCKS + CALLOUT BOXES COEXISTENCE
+   When code blocks share a slide with callout boxes,
+   reduce code block max-height and font-size to prevent
+   overlap. Uses preprocessor-injected classes.
+   ============================================ */
+
+section.has-code-block.has-callouts-1,
+section.has-code-block.has-callouts-2,
+section.has-code-block.has-callouts-3 {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+section.has-code-block.has-callouts-1 > pre,
+section.has-code-block.has-callouts-1 > :is(pre, marp-pre) {
+    max-height: 45vh !important;
+    flex-shrink: 1 !important;
+    overflow: hidden !important;
+}
+
+section.has-code-block.has-callouts-2 > pre,
+section.has-code-block.has-callouts-2 > :is(pre, marp-pre) {
+    max-height: 35vh !important;
+    font-size: 16pt !important;
+    flex-shrink: 1 !important;
+    overflow: hidden !important;
+}
+
+section.has-code-block.has-callouts-3 > pre,
+section.has-code-block.has-callouts-3 > :is(pre, marp-pre) {
+    max-height: 25vh !important;
+    font-size: 14pt !important;
+    flex-shrink: 1 !important;
+    overflow: hidden !important;
+}
+
+section.has-code-block[class*="has-callouts"] > .callout,
+section.has-code-block[class*="has-callouts"] > .note-box,
+section.has-code-block[class*="has-callouts"] > .example-box,
+section.has-code-block[class*="has-callouts"] > .warning-box,
+section.has-code-block[class*="has-callouts"] > .tip-box,
+section.has-code-block[class*="has-callouts"] > .important-box,
+section.has-code-block[class*="has-callouts"] > .definition-box {
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+}
+
+/* ============================================
    ELEMENT-LEVEL SCALING (wrap individual elements)
    Usage: <div class="sized-70">...</div>
    Scales content inside the div without affecting the rest of the slide.

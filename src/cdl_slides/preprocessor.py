@@ -961,13 +961,13 @@ FLOW_DIAGRAM_PATTERN = re.compile(r"```flow\n.*?```", re.DOTALL)
 # Content height weights (approximate units where 1 unit ~ 30px)
 CONTENT_WEIGHTS = {
     # Recalibrated based on visual inspection of actual slides
-    # A slide with H1 + 2 callout boxes + 4 list items should estimate ~10 units (uses ~50% of slide)
+    # A slide with H1 + 2 callout boxes + 4 list items should estimate ~14 units (uses ~70% of slide)
     "h1": 2.0,
     "h2": 1.8,
     "h3": 1.5,
     "paragraph_per_50_chars": 0.4,  # Reduced - text wraps efficiently
     "list_item": 0.7,  # Reduced - list items are compact
-    "callout_box_base": 2.5,  # Reduced - callout overhead is smaller than estimated
+    "callout_box_base": 4.5,  # Each callout box ~80-90px (title + padding + content)
     "callout_content_per_50_chars": 0.3,
     "code_block_line": 0.6,  # Code lines are relatively compact
     "table_header": 1.2,
@@ -998,6 +998,21 @@ SCALE_FACTORS = {
 }
 
 
+def _estimate_callout_content_height(slide_content: str) -> float:
+    """Estimate additional height from text content inside callout boxes."""
+    total = 0.0
+    callout_pattern = re.compile(
+        r'<div\s+class="[^"]*(?:note|warning|tip|example|definition|important|callout)-box[^"]*"'
+        r"[^>]*>(.*?)</div>",
+        re.DOTALL,
+    )
+    for match in callout_pattern.finditer(slide_content):
+        content = match.group(1)
+        text_only = re.sub(r"<[^>]+>", "", content).strip()
+        total += (len(text_only) / 50) * CONTENT_WEIGHTS["callout_content_per_50_chars"]
+    return total
+
+
 def compute_available_code_lines(slide_content: str, default_max: int = 20) -> int:
     """
     Compute max code lines for a slide based on other content and scale class.
@@ -1020,6 +1035,7 @@ def compute_available_code_lines(slide_content: str, default_max: int = 20) -> i
         other_height += CONTENT_WEIGHTS["h1"]
 
     callout_height = metrics["callout_count"] * CONTENT_WEIGHTS["callout_box_base"]
+    callout_height += _estimate_callout_content_height(slide_content)
     list_height = metrics["list_items"] * CONTENT_WEIGHTS["list_item"]
 
     if metrics["has_two_column"] and metrics["callout_count"] >= 2:
@@ -1314,6 +1330,32 @@ def inject_scale_class(slide_content: str, scale_class: str) -> str:
     return "\n".join(lines)
 
 
+def inject_layout_classes(slide_content: str, classes: list) -> str:
+    """Inject layout helper classes into the slide's _class directive."""
+    if not classes:
+        return slide_content
+
+    existing_class = re.search(r"<!--\s*_class:\s*([^>]*)\s*-->", slide_content)
+    if existing_class:
+        old_directive = existing_class.group(0)
+        old_classes = existing_class.group(1).strip()
+        new_classes = [c for c in classes if c not in old_classes]
+        if not new_classes:
+            return slide_content
+        new_directive = f"<!-- _class: {old_classes} {' '.join(new_classes)} -->"
+        return slide_content.replace(old_directive, new_directive)
+
+    lines = slide_content.split("\n")
+    insert_idx = 0
+    for i, line in enumerate(lines):
+        if line.strip():
+            insert_idx = i
+            break
+
+    lines.insert(insert_idx, f"<!-- _class: {' '.join(classes)} -->")
+    return "\n".join(lines)
+
+
 def analyze_and_warn_slides(content, filename="unknown"):
     """
     Analyze all slides in content and generate warnings.
@@ -1353,6 +1395,13 @@ def analyze_and_warn_slides(content, filename="unknown"):
                 f"Slide {i}: Auto-injecting {scale_class} (estimated height: {metrics['estimated_height']:.1f})"
             )
             slide = inject_scale_class(slide, scale_class)
+
+        layout_classes = []
+        if metrics["callout_count"] > 0 and metrics["has_code_block"]:
+            layout_classes.append(f"has-callouts-{min(metrics['callout_count'], 3)}")
+            layout_classes.append("has-code-block")
+        if layout_classes:
+            slide = inject_layout_classes(slide, layout_classes)
 
         modified_parts.append(slide)
 

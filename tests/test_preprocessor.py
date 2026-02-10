@@ -5,8 +5,10 @@ import pytest
 from cdl_slides.preprocessor import (
     PYGMENTS_AVAILABLE,
     analyze_slide_content,
+    compute_available_code_lines,
     determine_scale_class,
     highlight_code_line,
+    inject_layout_classes,
     parse_flow_node,
     process_arrow_syntax,
     process_flow_blocks,
@@ -408,3 +410,62 @@ class TestProcessAnimateBlocks:
         process_markdown(str(src), str(output))
         result = output.read_text(encoding="utf-8")
         assert "warning-box" in result or "```animate" in result
+
+
+class TestCodeBlockWithCallouts:
+    def test_available_lines_reduced_with_one_callout(self):
+        slide_no_callout = "<!-- _class: scale-80 -->\n# Title\n\n```python\nx = 1\n```\n"
+        slide_one_callout = (
+            "<!-- _class: scale-80 -->\n# Title\n\n```python\nx = 1\n```\n\n"
+            '<div class="note-box">\nSome note.\n</div>\n'
+        )
+        lines_no_callout = compute_available_code_lines(slide_no_callout, default_max=30)
+        lines_one_callout = compute_available_code_lines(slide_one_callout, default_max=30)
+        assert lines_one_callout < lines_no_callout
+
+    def test_available_lines_reduced_with_two_callouts(self):
+        slide_one = (
+            "<!-- _class: scale-80 -->\n# Title\n\n```python\nx = 1\n```\n\n"
+            '<div class="note-box">\nSome note.\n</div>\n'
+        )
+        slide_two = (
+            "<!-- _class: scale-80 -->\n# Title\n\n```python\nx = 1\n```\n\n"
+            '<div class="note-box">\nSome note.\n</div>\n\n'
+            '<div class="example-box">\nSome example.\n</div>\n'
+        )
+        lines_one = compute_available_code_lines(slide_one)
+        lines_two = compute_available_code_lines(slide_two)
+        assert lines_two < lines_one
+
+    def test_layout_classes_injected_for_code_and_callouts(self):
+        from cdl_slides.preprocessor import analyze_and_warn_slides
+
+        content = (
+            "---\nmarp: true\ntheme: cdl-theme\n---\n\n"
+            "# Title\n\n"
+            "```python\nx = 1\n```\n\n"
+            '<div class="note-box">\nNote.\n</div>\n\n'
+            '<div class="example-box">\nExample.\n</div>\n'
+        )
+        modified, warnings = analyze_and_warn_slides(content)
+        assert "has-callouts-2" in modified
+        assert "has-code-block" in modified
+
+    def test_no_layout_classes_without_code_block(self):
+        from cdl_slides.preprocessor import analyze_and_warn_slides
+
+        content = (
+            "---\nmarp: true\ntheme: cdl-theme\n---\n\n"
+            "# Title\n\n"
+            '<div class="note-box">\nNote.\n</div>\n\n'
+            '<div class="example-box">\nExample.\n</div>\n'
+        )
+        modified, warnings = analyze_and_warn_slides(content)
+        assert "has-callouts" not in modified
+
+    def test_layout_classes_appended_to_existing_scale(self):
+        slide = "<!-- _class: scale-80 -->\n# Title\n\n```python\nx=1\n```\n"
+        result = inject_layout_classes(slide, ["has-callouts-1", "has-code-block"])
+        assert "scale-80" in result
+        assert "has-callouts-1" in result
+        assert "has-code-block" in result
