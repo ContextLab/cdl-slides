@@ -100,13 +100,13 @@
   // ==========================================================================
   const FONT_CONFIG = {
     sizes: {
-      title: 32,        // Chart title
-      subtitle: 28,     // Subtitle
-      legend: 28,       // Legend labels
-      axisTitle: 28,    // Axis titles
-      axisTicks: 26,    // Axis tick labels
-      tooltip: 24,      // Tooltip text
-      dataLabels: 24,   // Data labels on charts
+      title: 24,        // Chart title
+      subtitle: 20,     // Subtitle
+      legend: 18,       // Legend labels (same as ticks)
+      axisTitle: 20,    // Axis titles
+      axisTicks: 18,    // Axis tick labels
+      tooltip: 16,      // Tooltip text
+      dataLabels: 16,   // Data labels on charts
     },
     weight: {
       normal: 400,

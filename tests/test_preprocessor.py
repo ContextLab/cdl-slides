@@ -645,7 +645,7 @@ class TestProcessChartBlocks:
         result, count = process_chart_blocks(content)
         assert count == 1
         assert "Avenir" in result
-        assert "size: 24" in result
+        assert "size: 18" in result
 
     def test_radar_has_no_backdrop(self):
         content = "```chart\ntype: radar\nlabels: A, B, C\ndata: 1, 2, 3\n```"
@@ -677,3 +677,39 @@ class TestProcessChartBlocks:
         large_pos = result.index("'Large'")
         small_pos = result.index("'Small'")
         assert large_pos < small_pos, "Largest dataset should be drawn first (behind)"
+
+    def test_default_alpha_is_half(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "rgba(0, 105, 62, 0.5)" in result
+
+    def test_custom_alpha(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\nalpha: 0.8\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "rgba(0, 105, 62, 0.8)" in result
+
+    def test_pie_chart_alpha_in_background(self):
+        content = "```chart\ntype: pie\nlabels: A, B\ndata: 50, 50\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "rgba(0, 105, 62, 0.5)" in result
+        assert "borderColor: ['#00693e'" in result
+
+    def test_chart_container_centered(self):
+        content = "```chart\ntype: bar\nlabels: A\ndata: 1\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "margin: 0 auto" in result
+
+    def test_legend_font_equals_tick_font(self):
+        content = (
+            "```chart\ntype: bar\nlabels: A, B\ndatasets:\n"
+            "  - label: S1\n    data: 1, 2\n"
+            "  - label: S2\n    data: 3, 4\n```"
+        )
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "legend: { display: true" in result
+        assert result.count("size: 18") >= 2

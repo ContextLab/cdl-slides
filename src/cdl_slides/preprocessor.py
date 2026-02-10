@@ -700,6 +700,7 @@ def _parse_chart_block(block_content: str) -> dict:
         "width": "85%",
         "height": "350px",
         "palette": "cdl",
+        "alpha": "0.5",
     }
 
     current_dataset = None
@@ -741,6 +742,8 @@ def _parse_chart_block(block_content: str) -> dict:
             config["height"] = stripped[len("height:") :].strip()
         elif stripped.startswith("palette:"):
             config["palette"] = stripped[len("palette:") :].strip()
+        elif stripped.startswith("alpha:"):
+            config["alpha"] = stripped[len("alpha:") :].strip()
         elif stripped.startswith("data:") and current_dataset is None:
             raw = stripped[len("data:") :].strip()
             config["_top_level_data"] = raw
@@ -779,6 +782,7 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
         chart_type = "bar"
 
     palette = _get_palette(config.get("palette", "cdl"))
+    alpha = float(config.get("alpha", 0.5))
 
     def js_escape(s):
         return s.replace("'", "\\'")
@@ -814,32 +818,36 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
                 if isinstance(ds["data"], str)
                 else len(ds["data"])
             )
-            colors_arr = ", ".join(f"'{palette[i % len(palette)]}'" for i in range(num_items))
+            colors_arr = ", ".join(f"'{_hex_to_rgba(palette[i % len(palette)], alpha)}'" for i in range(num_items))
             props.append(f"backgroundColor: [{colors_arr}]")
-            props.append("borderColor: '#d8d8d8'")
+            border_arr = ", ".join(f"'{palette[i % len(palette)]}'" for i in range(num_items))
+            props.append(f"borderColor: [{border_arr}]")
             props.append("borderWidth: 2")
         elif chart_type == "line":
-            bg_color = _hex_to_rgba(color, 0.1)
+            bg_color = _hex_to_rgba(color, alpha)
             props.append(f"borderColor: '{color}'")
             props.append(f"backgroundColor: '{bg_color}'")
+            props.append("fill: true")
             props.append("borderWidth: 3")
             props.append("pointRadius: 5")
             props.append(f"pointBackgroundColor: '{color}'")
             props.append("tension: 0.3")
         elif chart_type == "scatter":
-            props.append(f"backgroundColor: '{color}'")
+            bg_color = _hex_to_rgba(color, alpha)
+            props.append(f"backgroundColor: '{bg_color}'")
             props.append(f"borderColor: '{color}'")
             props.append("pointRadius: 10")
             props.append("pointHoverRadius: 13")
         elif chart_type == "radar":
-            bg_color = _hex_to_rgba(color, 0.2)
+            bg_color = _hex_to_rgba(color, alpha)
             props.append(f"borderColor: '{color}'")
             props.append(f"backgroundColor: '{bg_color}'")
             props.append("borderWidth: 2")
             props.append("pointRadius: 4")
             props.append(f"pointBackgroundColor: '{color}'")
         else:
-            props.append(f"backgroundColor: '{color}'")
+            bg_color = _hex_to_rgba(color, alpha)
+            props.append(f"backgroundColor: '{bg_color}'")
             props.append(f"borderColor: '{color}'")
             props.append("borderWidth: 2")
 
@@ -850,9 +858,9 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
     show_legend = len(config["datasets"]) > 1 or chart_type in always_legend_types
     legend_display = "true" if show_legend else "false"
 
-    font_tick = f"family: '{CDL_FONT_FAMILY}', size: 24"
-    font_legend = f"family: '{CDL_FONT_FAMILY}', size: 24"
-    font_point_label = f"family: '{CDL_FONT_FAMILY}', size: 26"
+    font_tick = f"family: '{CDL_FONT_FAMILY}', size: 18"
+    font_legend = f"family: '{CDL_FONT_FAMILY}', size: 18"
+    font_point_label = f"family: '{CDL_FONT_FAMILY}', size: 20"
 
     options_parts = []
     options_parts.append("responsive: true")
@@ -877,7 +885,9 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
         )
 
     parts = []
-    parts.append(f'<div class="chart-container" style="width: {config["width"]}; height: {config["height"]};">')
+    parts.append(
+        f'<div class="chart-container" style="width: {config["width"]}; height: {config["height"]}; margin: 0 auto;">'
+    )
     parts.append(f'  <canvas id="{chart_id}"></canvas>')
     parts.append("</div>")
 

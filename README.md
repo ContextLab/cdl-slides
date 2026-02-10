@@ -561,6 +561,7 @@ For grouped bars, use multiple datasets with `type: bar`.
 | `data` | — | Comma-separated values (single dataset) |
 | `datasets` | — | Multiple datasets (see multi-dataset example) |
 | `palette` | `cdl` | Color palette name |
+| `alpha` | `0.5` | Fill opacity (0.0–1.0) |
 | `caption` | — | Caption text below the chart |
 | `width` | `85%` | Chart container width |
 | `height` | `350px` | Chart container height |
