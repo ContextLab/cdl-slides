@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-10
+
+### Added
+
+- **Auto-numbered captions**: Poster compiler automatically prepends bold "Figure X." and "Table X." labels to caption elements
+- **Hardcoded color palettes**: viridis, plasma, inferno, magma, cividis palettes work in CI environments without matplotlib installed
+
+### Fixed
+
+- Viridis palette lookup for matplotlib 3.9+ (use dict access instead of deprecated `.get()`)
+- CI cross-platform failures across macOS, Linux, and Windows
+- Caption label isolation: flex layout no longer forces "Figure X." onto its own line when caption is the last child of a poster section
+
+### Changed
+
+- Poster layout refinements: chart-row layout, vertical centering, Figure 2 clipping fix
+- Extended Figure 2 caption to multi-line with descriptive text
+- Trimmed Limitations box to prevent text overflow
+
+## [1.1.1] - 2026-02-08
+
+### Fixed
+
+- PyPI image links now use absolute URLs for correct rendering on pypi.org
+
+### Added
+
+- PyPI version badge, CI status badge, and download count badge to README
+
+## [1.1.0] - 2026-02-08
+
+### Added
+
+- **Academic poster extension**: ASCII grid layout system with `cdl-slides poster compile` command
+  - Per-section callout boxes with color theming
+  - Avenir math fonts, balanced layout, styled reference/acknowledgment boxes
+  - Rounded-rect emoji backgrounds
+- **Inline Chart.js support**: Bar, line, scatter, pie, doughnut, and radar charts via ```` ```chart ```` blocks
+  - 14 built-in color palettes (CDL, seaborn, matplotlib, colorblind-friendly, and more)
+  - Support for any matplotlib colormap or seaborn palette by name
+  - Per-bar colors, axis labels, alpha transparency, italic captions
+- **SVG chart renderer**: Matplotlib-based SVG rendering for poster charts (print quality)
+- **pyyaml** added as a dependency (required for poster front matter parsing)
+
+### Fixed
+
+- Code block overflow when callout boxes are present on the same slide
+
 ## [1.0.0] - 2026-02-06
 
 ### Added
@@ -42,4 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `cdl-slides version` — Show version and Marp CLI status
 - `cdl-slides setup` — Pre-download Marp CLI binary
 
+[1.2.0]: https://github.com/ContextLab/cdl-slides/compare/v1.1.1...v1.2.0
+[1.1.1]: https://github.com/ContextLab/cdl-slides/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/ContextLab/cdl-slides/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ContextLab/cdl-slides/releases/tag/v1.0.0

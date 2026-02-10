@@ -61,6 +61,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
   - [ASCII grid layout](#ascii-grid-layout)
   - [Poster sections](#poster-sections)
   - [Section colors](#section-colors)
+  - [Auto-numbered captions](#auto-numbered-captions)
 - [Bundled fonts](#bundled-fonts)
 - [Development](#development)
 - [License](#license)
@@ -81,6 +82,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Inline charts**: Embed Chart.js charts with ```` ```chart ```` blocks — bar, line, scatter, pie, doughnut, radar, and more
 - **Color palettes**: 14 built-in palettes including CDL, seaborn, matplotlib, and colorblind-friendly options
 - **Academic posters**: Compile poster markdown with ASCII grid layouts to HTML or PDF
+- **Auto-numbered captions**: Poster compiler automatically labels figures and tables with bold **Figure X.** / **Table X.** prefixes
 
 ## Installation
 
@@ -773,6 +775,23 @@ Add `[color]` after a section title to set its callout box color scheme:
 Available colors: `blue`, `green`, `violet`/`purple`, `orange`, `red`, `teal`, `spring`.
 
 Colors affect the section heading border, callout box backgrounds, and callout box borders. Individual boxes can override with `data-color="..."` on the div.
+
+### Auto-numbered captions
+
+The poster compiler automatically prepends bold **Figure X.** and **Table X.** labels to caption elements. Use `figure-caption` or `table-caption` classes on `<div>` or `<p>` tags:
+
+```html
+<div class="figure-caption">Description of the figure</div>
+<div class="table-caption">Description of the table</div>
+```
+
+These render as:
+
+> **Figure 1.** *Description of the figure*
+>
+> **Table 1.** *Description of the table*
+
+Numbering increments automatically in document order. The labels use non-breaking spaces to prevent line breaks between the number and caption text.
 
 ## Bundled Fonts
 
