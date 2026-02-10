@@ -226,8 +226,8 @@ table th {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
+  justify-content: flex-start;
+  overflow: visible;
 }
 
 .poster-section > div[class*="scale-"] {
@@ -235,7 +235,7 @@ table th {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .poster-section > div[class*="scale-"] > .note-box:only-child,
@@ -249,7 +249,26 @@ table th {
   flex-direction: column;
   justify-content: center;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.chart-row {
+  display: flex;
+  gap: 4mm;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+}
+
+.chart-row > div {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Ensure SVG charts scale to fit their container */
+.poster-section svg {
+  max-width: 100%;
+  height: auto;
 }
 
 .poster-title {

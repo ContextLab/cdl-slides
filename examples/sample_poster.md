@@ -26,11 +26,9 @@ MMMMMMMMRRRRRRRRRRRREEEAAAAA
 
 ## I: Introduction and motivation [blue]
 
-<div class="scale-80">
-
 <div class="note-box" data-title="Orient your audience">
 
-Start with the **broad question** your research addresses and narrow to your specific contribution in 3–5 sentences. Explain why this topic matters and what gap in current knowledge your work fills.
+Start with the **broad question** your research addresses and narrow to your specific contribution. Explain why this topic matters and what gap your work fills.
 
 </div>
 
@@ -49,30 +47,26 @@ Start with the **broad question** your research addresses and narrow to your spe
 </div>
 </div>
 
-<div class="note-box" data-title="Research question">
+<div class="note-box" data-title="Hypotheses">
 
-State your specific **hypothesis** or research question. Use a figure instead of a paragraph wherever possible.
-
-- **Hypothesis 1**: Feature X correlates with Y
-- **Hypothesis 2**: Intervention Z modulates this relationship
+- **H1**: Feature X correlates with outcome Y
+- **H2**: Intervention Z modulates this relationship
 
 </div>
 
 <div class="note-box" data-title="Background">
 
-Summarize **prior work** that motivates your study and explain how your approach advances the field.
-
-</div>
+Prior work motivates this study; our approach advances the field by addressing key limitations in existing models.
 
 </div>
 
 ## M: Methods [violet]
 
-<div class="scale-75">
+<div class="scale-90">
 
 <div class="definition-box" data-title="Experimental design">
 
-Describe your **paradigm**: participants ($N=50$), conditions (within-subject), stimuli (naturalistic video), and procedure.
+**Paradigm**: $N=50$ participants, within-subject design, naturalistic video stimuli.
 
 </div>
 
@@ -88,15 +82,12 @@ Describe your **paradigm**: participants ($N=50$), conditions (within-subject), 
 
 <div class="definition-box" data-title="Analysis approach">
 
-Describe the key statistical or computational methods. Prefer a **diagram** over dense notation.
-
 - **Preprocessing**: fMRIPrep v20.2.1
 - **Modeling**: GLM with custom regressors
 - **Inference**: Non-parametric permutation tests
 
 </div>
 
-<div style="flex: 1; display: flex; align-items: center; justify-content: center;">
 <div class="emoji-figure">
 <div class="emoji-col">
 <span class="emoji emoji-xl">🐍</span>
@@ -111,7 +102,6 @@ Describe the key statistical or computational methods. Prefer a **diagram** over
 <span class="label">Visualization</span>
 </div>
 </div>
-</div>
 
 </div>
 
@@ -119,30 +109,37 @@ Describe the key statistical or computational methods. Prefer a **diagram** over
 
 <div class="example-box" data-title="Primary finding">
 
-Lead with your **most critical result**. Every figure should have a clear, self-explanatory takeaway.
-
-> **Significant interaction found between Condition&nbsp;A and B** <span style="white-space:nowrap;">**($p < 0.001$).**</span>
+**Significant interaction** between Condition A and B ($p < 0.001$).
 
 </div>
+
+<div class="chart-row">
 
 ```chart
 type: bar
 labels: Condition A, Condition B, Control
 data: 0.89, 0.72, 0.65
 ylabel: Accuracy
-caption: Figure 1. Accuracy by experimental condition
-height: 220px
+caption: Accuracy by condition
 ```
+
+```chart
+type: bar
+labels: Condition A, Condition B, Control
+datasets:
+  - label: Accuracy
+    data: 0.89, 0.72, 0.65
+  - label: F1 score
+    data: 0.85, 0.68, 0.60
+ylabel: Score
+caption: Accuracy and F1 by condition
+```
+
+</div>
 
 <div style="text-align: center; white-space: nowrap;">
 
 $$\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon, \quad R^2 = 0.73$$
-
-</div>
-
-<div class="example-box" data-title="Supporting evidence">
-
-Use tables for quantitative comparisons across conditions:
 
 </div>
 
@@ -154,7 +151,7 @@ Use tables for quantitative comparisons across conditions:
 
 <div class="example-box" data-title="Generalization">
 
-Show that findings **replicate** across datasets or participant groups to strengthen impact.
+Findings **replicate** across datasets and participant groups.
 
 </div>
 
@@ -170,50 +167,32 @@ datasets:
     data: 0.71, 0.74, 0.70, 0.75, 0.73
 xlabel: Cross-validation fold
 ylabel: F1 score
-caption: Figure 2. Generalization across datasets
-height: 220px
+caption: Generalization across datasets
 ```
 
-```chart
-type: bar
-labels: Condition A, Condition B, Control
-datasets:
-  - label: Accuracy
-    data: 0.89, 0.72, 0.65
-  - label: F1 score
-    data: 0.85, 0.68, 0.60
-caption: Figure 1. Accuracy and F1 scores across experimental conditions
-height: 250px
-```
+<div class="example-box" data-title="Robustness">
 
-<div class="example-box" data-title="Robustness check">
-
-We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span> Sensitivity analyses confirm that results hold across a range of preprocessing choices and model specifications. Permutation testing corroborates significance under non-parametric assumptions <span style="white-space:nowrap;">(BF&nbsp;>&nbsp;10).</span>
+Cross-validation (k=5) and bootstrap resampling (1000 iterations) confirm stable effect size (Cohen's d = 0.8). Permutation testing corroborates significance (BF > 10).
 
 </div>
 
-
 ## D: Discussion [teal]
 
-<div class="scale-75">
+<div class="scale-80">
 
 <div class="tip-box" data-title="Key takeaways">
 
-Summarize your **main findings** and connect them back to the original research question.
-
-- **Finding 1**: Model outperforms baseline by 15%, supporting Hypothesis 1.
-- **Finding 2**: Effect is robust to parameter variations and generalizes across datasets.
-- **Finding 3**: Results suggest a new cognitive control mechanism consistent with prior theoretical accounts.
+- **Finding 1**: Model outperforms baseline by 15%, supporting H1
+- **Finding 2**: Effect is robust across parameter variations
+- **Finding 3**: Results suggest a new cognitive control mechanism
 
 </div>
 
 <div class="tip-box" data-title="Implications">
 
-Explain **why these findings matter** for the broader field.
-
-- Provides evidence for predictive coding frameworks in perception.
-- Challenges existing models that assume static representations.
-- Opens new avenues for computational psychiatry applications.
+- Evidence for predictive coding frameworks in perception
+- Challenges models assuming static representations
+- Opens avenues for computational psychiatry
 
 </div>
 
@@ -225,16 +204,13 @@ datasets:
     data: 88, 72, 65, 80, 90
   - label: Next steps
     data: 93, 85, 80, 88, 92
-caption: Figure 3. Current capabilities vs. planned improvements
-height: 220px
+caption: Current capabilities vs. planned improvements
 ```
 
 <div class="tip-box" data-title="Limitations and future work">
 
-Acknowledge **limitations** honestly and describe planned follow-ups.
-
-- Sample limited to college-age participants; generalization needed.
-- Future work: longitudinal designs, larger and more diverse cohorts.
+- Sample limited to college-age participants
+- Future: longitudinal designs, larger cohorts
 
 </div>
 
@@ -242,9 +218,7 @@ Acknowledge **limitations** honestly and describe planned follow-ups.
 
 ## E: References [orange]
 
-<div class="scale-45">
-
-<div class="warning-box" data-title="">
+<div class="scale-60">
 
 1. Author A *et al.* (2023). *J. Neurosci.*
 2. Author C *et al.* (2022). *Nat. Hum. Behav.*
@@ -254,22 +228,12 @@ Acknowledge **limitations** honestly and describe planned follow-ups.
 
 </div>
 
-</div>
-
 ## A: Acknowledgments [spring]
 
-<div class="scale-55">
+<div class="scale-65">
 
-<div class="tip-box" data-title="Funding and links">
+**NSF EPSCoR** #1632738 · **NIH R01** MH112357 · **NSF CAREER** #1849109
 
-**NSF EPSCoR** #1632738
-**NIH R01** MH112357
-**NSF CAREER** #1849109
-
-🌐 context-lab.com
-💻 github.com/ContextLab
-📂 osf.io/example
-
-</div>
+🌐 context-lab.com · 💻 github.com/ContextLab
 
 </div>

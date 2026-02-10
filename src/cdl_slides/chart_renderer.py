@@ -5,13 +5,23 @@ from __future__ import annotations
 import io
 import re
 
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
+from cdl_slides.preprocessor import _get_palette, _parse_chart_block
 
-matplotlib.use("Agg")
 
-from cdl_slides.preprocessor import _get_palette, _parse_chart_block  # noqa: E402
+def _import_matplotlib():
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    return plt
+
+
+def _import_numpy():
+    import numpy as np
+
+    return np
+
 
 CDL_FONT_FAMILY = "Avenir LT Std"
 CDL_FONT_FALLBACKS = ["Avenir", "Avenir Next", "Helvetica Neue", "sans-serif"]
@@ -19,11 +29,11 @@ CDL_TEXT_COLOR = "#0a2518"
 CDL_GRID_RGBA = (0, 0.412, 0.243, 0.1)
 CDL_GRID_DARK_RGBA = (0, 0.412, 0.243, 0.2)
 
-TICK_SIZE = 10
-AXIS_TITLE_SIZE = 11
-LEGEND_SIZE = 10
-POINT_LABEL_SIZE = 12
-CAPTION_SIZE = 10
+TICK_SIZE = 24
+AXIS_TITLE_SIZE = 26
+LEGEND_SIZE = 22
+POINT_LABEL_SIZE = 24
+CAPTION_SIZE = 28
 
 
 def _hex_to_rgba(hex_color: str, alpha: float) -> tuple:
@@ -33,11 +43,13 @@ def _hex_to_rgba(hex_color: str, alpha: float) -> tuple:
 
 
 def _setup_font():
+    plt = _import_matplotlib()
     plt.rcParams["font.family"] = "sans-serif"
     plt.rcParams["font.sans-serif"] = [CDL_FONT_FAMILY] + CDL_FONT_FALLBACKS
 
 
-def _fig_to_svg(fig: plt.Figure) -> str:
+def _fig_to_svg(fig) -> str:
+    plt = _import_matplotlib()
     buf = io.BytesIO()
     fig.savefig(buf, format="svg", transparent=True, bbox_inches="tight")
     plt.close(fig)
@@ -118,10 +130,10 @@ def _apply_axis_styling(ax, config: dict):
         ax.set_ylabel(ylabel, fontsize=AXIS_TITLE_SIZE, color=CDL_TEXT_COLOR)
 
 
-def _add_caption(fig: plt.Figure, config: dict):
+def _add_caption(fig, config: dict):
     caption = config.get("caption", "")
     if caption:
-        fig.text(0.5, -0.02, caption, ha="center", fontsize=CAPTION_SIZE, color=CDL_TEXT_COLOR)
+        fig.text(0.5, -0.1, caption, ha="center", fontsize=CAPTION_SIZE, color=CDL_TEXT_COLOR)
 
 
 def _add_legend(ax, config: dict, palette: list):
@@ -135,7 +147,9 @@ def _add_legend(ax, config: dict, palette: list):
 
 
 def _render_bar(config: dict) -> str:
-    fig, ax = plt.subplots(figsize=(6, 4))
+    plt = _import_matplotlib()
+    np = _import_numpy()
+    fig, ax = plt.subplots(figsize=(10, 6))
     palette = _get_colors(config)
     alpha = float(config.get("alpha", 0.5))
     labels = config["labels"]
@@ -167,7 +181,8 @@ def _render_bar(config: dict) -> str:
 
 
 def _render_line(config: dict) -> str:
-    fig, ax = plt.subplots(figsize=(6, 4))
+    plt = _import_matplotlib()
+    fig, ax = plt.subplots(figsize=(10, 6))
     palette = _get_colors(config)
     alpha = float(config.get("alpha", 0.5))
     labels = config["labels"]
@@ -186,7 +201,8 @@ def _render_line(config: dict) -> str:
 
 
 def _render_scatter(config: dict) -> str:
-    fig, ax = plt.subplots(figsize=(6, 4))
+    plt = _import_matplotlib()
+    fig, ax = plt.subplots(figsize=(10, 6))
     palette = _get_colors(config)
     alpha = float(config.get("alpha", 0.5))
 
@@ -204,7 +220,8 @@ def _render_scatter(config: dict) -> str:
 
 
 def _render_pie(config: dict) -> str:
-    fig, ax = plt.subplots(figsize=(5, 5))
+    plt = _import_matplotlib()
+    fig, ax = plt.subplots(figsize=(8, 8))
     palette = _get_colors(config)
     alpha = float(config.get("alpha", 0.5))
     labels = config["labels"]
@@ -230,7 +247,8 @@ def _render_pie(config: dict) -> str:
 
 
 def _render_doughnut(config: dict) -> str:
-    fig, ax = plt.subplots(figsize=(5, 5))
+    plt = _import_matplotlib()
+    fig, ax = plt.subplots(figsize=(8, 8))
     palette = _get_colors(config)
     alpha = float(config.get("alpha", 0.5))
     labels = config["labels"]
@@ -256,7 +274,9 @@ def _render_doughnut(config: dict) -> str:
 
 
 def _render_radar(config: dict) -> str:
-    fig, ax = plt.subplots(figsize=(5, 5), subplot_kw=dict(polar=True))
+    plt = _import_matplotlib()
+    np = _import_numpy()
+    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
     palette = _get_colors(config)
     alpha = float(config.get("alpha", 0.5))
     labels = config["labels"]

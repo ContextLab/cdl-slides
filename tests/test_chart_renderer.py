@@ -1,7 +1,11 @@
 """Tests for the matplotlib SVG chart renderer used in posters."""
 
-from cdl_slides.chart_renderer import process_poster_chart_blocks, render_chart_svg
-from cdl_slides.preprocessor import _parse_chart_block
+import pytest
+
+pytest.importorskip("matplotlib", reason="matplotlib required for chart renderer tests")
+
+from cdl_slides.chart_renderer import process_poster_chart_blocks, render_chart_svg  # noqa: E402
+from cdl_slides.preprocessor import _parse_chart_block  # noqa: E402
 
 
 class TestRenderChartSvg:

@@ -9,7 +9,13 @@ from typing import Any
 
 import yaml
 
-from cdl_slides.chart_renderer import process_poster_chart_blocks
+try:
+    from cdl_slides.chart_renderer import process_poster_chart_blocks
+except ImportError:
+
+    def process_poster_chart_blocks(content: str) -> tuple:
+        return content, 0
+
 
 _VALID_SIZES = {"A0", "A0-landscape", "A1", "36x48", "48x36"}
 _SIZE_PATTERN = re.compile(r"^\d+x\d+$")
