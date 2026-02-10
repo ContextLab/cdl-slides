@@ -106,3 +106,16 @@ datasets:
     data: 78, 82, 75, 80, 76, 72
 caption: Capability scores across evaluation dimensions
 ```
+
+---
+
+# Neural network layer activations (viridis palette)
+
+```chart
+type: bar
+labels: Conv1, Conv2, Conv3, Pool1, FC1, FC2, Output
+data: 0.82, 0.91, 0.67, 0.45, 0.93, 0.78, 0.56
+palette: viridis
+ylabel: Mean activation
+caption: Average activations by layer (ImageNet validation set)
+```

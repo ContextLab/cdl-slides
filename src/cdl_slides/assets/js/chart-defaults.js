@@ -101,7 +101,7 @@
   const FONT_CONFIG = {
     sizes: {
       title: 24,        // Chart title
-      subtitle: 20,     // Subtitle
+      subtitle: 22,     // Subtitle/caption
       legend: 18,       // Legend labels (same as ticks)
       axisTitle: 20,    // Axis titles
       axisTicks: 18,    // Axis tick labels

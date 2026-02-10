@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from cdl_slides.preprocessor import process_chart_blocks
+from cdl_slides.chart_renderer import process_poster_chart_blocks
 
 _VALID_SIZES = {"A0", "A0-landscape", "A1", "36x48", "48x36"}
 _SIZE_PATTERN = re.compile(r"^\d+x\d+$")
@@ -222,7 +222,7 @@ section {{
             css_class += f" poster-color-{sec['color']}"
         heading = f"# {sec['title']}" if label == "T" else f"### {sec['title']}"
         section_content = sec["content"] or ""
-        section_content, chart_count = process_chart_blocks(section_content)
+        section_content, chart_count = process_poster_chart_blocks(section_content)
         charts_total += chart_count
         div = f"""<div style="grid-area: {label};" class="{css_class}">
 

@@ -191,8 +191,6 @@ def compile_poster(
             if output_path.exists():
                 if fmt == "html":
                     _postprocess_katex_fonts(output_path)
-                    if preprocess_stats.get("charts_processed", 0) > 0:
-                        _inject_chart_js_into_html(output_path)
                     copy_assets_alongside_output(output_path)
                 output_files.append(
                     {

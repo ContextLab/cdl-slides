@@ -125,20 +125,14 @@ Lead with your **most critical result**. Every figure should have a clear, self-
 
 </div>
 
-<div class="emoji-figure">
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-green">✓</span>
-<span class="label">Condition A</span>
-</div>
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-blue">✓</span>
-<span class="label">Condition B</span>
-</div>
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-orange">✗</span>
-<span class="label">Control</span>
-</div>
-</div>
+```chart
+type: bar
+labels: Condition A, Condition B, Control
+data: 0.89, 0.72, 0.65
+ylabel: Accuracy
+caption: Figure 1. Accuracy by experimental condition
+height: 220px
+```
 
 <div style="text-align: center; white-space: nowrap;">
 
@@ -164,20 +158,21 @@ Show that findings **replicate** across datasets or participant groups to streng
 
 </div>
 
-<div class="emoji-figure">
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-green">📊</span>
-<span class="label">Dataset 1</span>
-</div>
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-blue">📊</span>
-<span class="label">Dataset 2</span>
-</div>
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-purple">📊</span>
-<span class="label">Dataset 3</span>
-</div>
-</div>
+```chart
+type: line
+labels: Fold 1, Fold 2, Fold 3, Fold 4, Fold 5
+datasets:
+  - label: Dataset 1
+    data: 0.85, 0.87, 0.83, 0.88, 0.86
+  - label: Dataset 2
+    data: 0.78, 0.81, 0.79, 0.82, 0.80
+  - label: Dataset 3
+    data: 0.71, 0.74, 0.70, 0.75, 0.73
+xlabel: Cross-validation fold
+ylabel: F1 score
+caption: Figure 2. Generalization across datasets
+height: 220px
+```
 
 ```chart
 type: bar
@@ -222,20 +217,17 @@ Explain **why these findings matter** for the broader field.
 
 </div>
 
-<div class="emoji-figure">
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-blue">🔍</span>
-<span class="label">Current work</span>
-</div>
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-green">🚀</span>
-<span class="label">Next steps</span>
-</div>
-<div class="emoji-col">
-<span class="emoji emoji-xl emoji-bg emoji-bg-orange">🌐</span>
-<span class="label">Broader impact</span>
-</div>
-</div>
+```chart
+type: radar
+labels: Accuracy, Speed, Scalability, Robustness, Interpretability
+datasets:
+  - label: Current work
+    data: 88, 72, 65, 80, 90
+  - label: Next steps
+    data: 93, 85, 80, 88, 92
+caption: Figure 3. Current capabilities vs. planned improvements
+height: 220px
+```
 
 <div class="tip-box" data-title="Limitations and future work">
 

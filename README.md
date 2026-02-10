@@ -32,9 +32,9 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 |:---------:|:--------------:|:-----------:|
 | ![Pie](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-05-pie.png) | ![Doughnut](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-06-doughnut.png) | ![Radar](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-08-radar.png) |
 
-| Scatter Plot | Academic Poster |
-|:------------:|:---------------:|
-| ![Scatter](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-07-scatter.png) | ![Poster](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/poster-sample.png) |
+| Scatter Plot | Viridis Palette | Academic Poster |
+|:------------:|:---------------:|:---------------:|
+| ![Scatter](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-07-scatter.png) | ![Viridis](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-09-viridis.png) | ![Poster](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/poster-sample.png) |
 
 ## Table of contents
 
@@ -560,13 +560,88 @@ For grouped bars, use multiple datasets with `type: bar`.
 | `labels` | — | Comma-separated axis labels |
 | `data` | — | Comma-separated values (single dataset) |
 | `datasets` | — | Multiple datasets (see multi-dataset example) |
-| `palette` | `cdl` | Color palette name |
+| `palette` | `cdl` | Color palette name (see palettes below) |
 | `alpha` | `0.5` | Fill opacity (0.0–1.0) |
-| `caption` | — | Caption text below the chart |
+| `caption` | — | Caption text centered below the chart |
+| `xlabel` | — | X-axis label |
+| `ylabel` | — | Y-axis label |
 | `width` | `85%` | Chart container width |
 | `height` | `350px` | Chart container height |
 
+**Axis labels example:**
+
+````markdown
+```chart
+type: bar
+labels: Conv1, Conv2, Pool1, FC1, Output
+data: 0.82, 0.91, 0.45, 0.93, 0.56
+palette: viridis
+xlabel: Network layer
+ylabel: Mean activation
+caption: Average activations by layer
+```
+````
+
+**Scatter plot example:**
+
+````markdown
+```chart
+type: scatter
+datasets:
+  - label: Transformer models
+    data: 1.5 78, 7 85, 13 87, 52 91, 70 90
+  - label: RNN baselines
+    data: 0.5 62, 2 68, 5 72, 10 74
+xlabel: Parameters (B)
+ylabel: Accuracy (%)
+caption: Model size vs. benchmark accuracy
+```
+````
+
+Scatter data uses `x y` pairs separated by commas (e.g., `1.5 78, 7 85`).
+
+**Radar chart example:**
+
+````markdown
+```chart
+type: radar
+labels: Reasoning, Coding, Math, Writing, Analysis
+datasets:
+  - label: Model A
+    data: 95, 92, 90, 93, 91
+  - label: Model B
+    data: 78, 82, 75, 80, 76
+caption: Capability comparison
+```
+````
+
+Radar charts automatically render smaller datasets on top of larger ones for maximum visibility.
+
+**Pie and doughnut chart examples:**
+
+````markdown
+```chart
+type: pie
+labels: Federal, Industry, Foundation, University
+data: 45, 25, 18, 12
+caption: Funding sources
+```
+````
+
+````markdown
+```chart
+type: doughnut
+labels: Research, Teaching, Service, Admin
+data: 40, 25, 20, 15
+caption: Faculty time distribution
+```
+````
+
+Pie and doughnut charts display legends automatically.
+
 **Available palettes:**
+
+14 built-in palettes are available:
 
 | Palette | Description |
 |---------|-------------|
@@ -585,7 +660,13 @@ For grouped bars, use multiple datasets with `type: bar`.
 | `Set3` | ColorBrewer Set3 |
 | `Paired` | ColorBrewer Paired |
 
-Charts also work inside poster sections — just use the same ```` ```chart ```` syntax in your poster markdown.
+In addition to the built-in palettes, you can use **any matplotlib colormap** or **seaborn palette** by name. Colors are sampled automatically based on the number of chart elements (datasets for multi-dataset charts, labels for single-dataset bar/pie/doughnut charts).
+
+**Matplotlib colormaps:** `viridis`, `plasma`, `inferno`, `magma`, `cividis`, `twilight`, `coolwarm`, `Spectral`, `RdYlBu`, `RdYlGn`, and [all others](https://matplotlib.org/stable/gallery/color/colormap_reference.html).
+
+**Seaborn palettes:** `husl`, `hls`, `rocket`, `mako`, `flare`, `crest`, and [all others](https://seaborn.pydata.org/tutorial/color_palettes.html).
+
+Charts also work inside poster sections — just use the same ```` ```chart ```` syntax in your poster markdown. In posters, charts are rendered as scalable vector graphics (SVG) using matplotlib for optimal print quality.
 
 ### Code Blocks
 

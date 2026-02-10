@@ -684,9 +684,49 @@ def _hex_to_rgba(hex_color: str, alpha: float) -> str:
     return f"rgba({r}, {g}, {b}, {alpha})"
 
 
-def _get_palette(name: str) -> list:
-    """Return color list for a named palette, defaulting to CDL."""
-    return _PALETTES.get(name.lower().strip(), CDL_CHART_COLORS)
+def _get_palette(name: str, n_colors: "int | None" = None) -> list:
+    """Return color list for a named palette, sampling n_colors if specified.
+
+    Resolution order:
+    1. Hardcoded _PALETTES dict
+    2. matplotlib continuous colormaps (viridis, plasma, etc.)
+    3. seaborn color palettes
+    4. Fallback to CDL_CHART_COLORS
+    """
+    key = name.lower().strip()
+
+    if key in _PALETTES:
+        palette = _PALETTES[key]
+        if n_colors is not None and n_colors > 0:
+            return [palette[i % len(palette)] for i in range(n_colors)]
+        return palette
+
+    # Try matplotlib continuous colormaps (viridis, plasma, inferno, magma, cividis, etc.)
+    try:
+        import matplotlib.colors as mcolors
+        import matplotlib.pyplot as plt
+
+        cmap = plt.colormaps.get(name, None) or plt.colormaps.get(key, None)
+        if cmap is not None:
+            count = n_colors if n_colors and n_colors > 0 else 10
+            return [mcolors.to_hex(cmap(i / max(count - 1, 1))) for i in range(count)]
+    except (ImportError, ValueError):
+        pass
+
+    # Try seaborn color palettes
+    try:
+        import matplotlib.colors as mcolors
+        import seaborn as sns
+
+        count = n_colors if n_colors and n_colors > 0 else 10
+        pal = sns.color_palette(name, n_colors=count)
+        return [mcolors.to_hex(c) for c in pal]
+    except (ImportError, ValueError):
+        pass
+
+    if n_colors is not None and n_colors > 0:
+        return [CDL_CHART_COLORS[i % len(CDL_CHART_COLORS)] for i in range(n_colors)]
+    return CDL_CHART_COLORS
 
 
 def _parse_chart_block(block_content: str) -> dict:
@@ -701,6 +741,8 @@ def _parse_chart_block(block_content: str) -> dict:
         "height": "350px",
         "palette": "cdl",
         "alpha": "0.5",
+        "xlabel": "",
+        "ylabel": "",
     }
 
     current_dataset = None
@@ -744,6 +786,10 @@ def _parse_chart_block(block_content: str) -> dict:
             config["palette"] = stripped[len("palette:") :].strip()
         elif stripped.startswith("alpha:"):
             config["alpha"] = stripped[len("alpha:") :].strip()
+        elif stripped.startswith("xlabel:"):
+            config["xlabel"] = stripped[len("xlabel:") :].strip()
+        elif stripped.startswith("ylabel:"):
+            config["ylabel"] = stripped[len("ylabel:") :].strip()
         elif stripped.startswith("data:") and current_dataset is None:
             raw = stripped[len("data:") :].strip()
             config["_top_level_data"] = raw
@@ -781,7 +827,16 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
     if chart_type == "grouped_bar":
         chart_type = "bar"
 
-    palette = _get_palette(config.get("palette", "cdl"))
+    n_datasets = len(config["datasets"])
+    n_labels = len(config["labels"])
+    if chart_type in ("pie", "doughnut"):
+        n_colors = n_labels if n_labels > 0 else n_datasets
+    elif n_datasets > 1:
+        n_colors = n_datasets
+    else:
+        n_colors = n_labels if n_labels > 0 else 1
+
+    palette = _get_palette(config.get("palette", "cdl"), n_colors=n_colors)
     alpha = float(config.get("alpha", 0.5))
 
     def js_escape(s):
@@ -846,9 +901,21 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
             props.append("pointRadius: 4")
             props.append(f"pointBackgroundColor: '{color}'")
         else:
-            bg_color = _hex_to_rgba(color, alpha)
-            props.append(f"backgroundColor: '{bg_color}'")
-            props.append(f"borderColor: '{color}'")
+            # Single-dataset bar charts: use per-bar colors from palette
+            if chart_type == "bar" and n_datasets == 1:
+                num_items = (
+                    len([x.strip() for x in ds["data"].split(",") if x.strip()])
+                    if isinstance(ds["data"], str)
+                    else len(ds["data"])
+                )
+                colors_arr = ", ".join(f"'{_hex_to_rgba(palette[i % len(palette)], alpha)}'" for i in range(num_items))
+                props.append(f"backgroundColor: [{colors_arr}]")
+                border_arr = ", ".join(f"'{palette[i % len(palette)]}'" for i in range(num_items))
+                props.append(f"borderColor: [{border_arr}]")
+            else:
+                bg_color = _hex_to_rgba(color, alpha)
+                props.append(f"backgroundColor: '{bg_color}'")
+                props.append(f"borderColor: '{color}'")
             props.append("borderWidth: 2")
 
         datasets_js_parts.append("{" + ", ".join(props) + "}")
@@ -867,17 +934,38 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
     options_parts.append("maintainAspectRatio: false")
     options_parts.append("animation: { duration: 400 }")
 
+    font_axis_title = f"family: '{CDL_FONT_FAMILY}', size: 20"
+
+    xlabel = config.get("xlabel", "")
+    ylabel = config.get("ylabel", "")
+    xlabel_js = (
+        f", title: {{ display: true, text: '{js_escape(xlabel)}', font: {{ {font_axis_title} }}, color: '{CDL_TEXT_COLOR}' }}"
+        if xlabel
+        else ""
+    )
+    ylabel_js = (
+        f", title: {{ display: true, text: '{js_escape(ylabel)}', font: {{ {font_axis_title} }}, color: '{CDL_TEXT_COLOR}' }}"
+        if ylabel
+        else ""
+    )
+
     legend_position = "'right'" if chart_type in ("pie", "doughnut") else "'top'"
     legend_js = f"legend: {{ display: {legend_display}, position: {legend_position}, labels: {{ font: {{ {font_legend} }}, color: '{CDL_TEXT_COLOR}', usePointStyle: true, padding: 15 }} }}"
-    options_parts.append(f"plugins: {{ {legend_js}, title: {{ display: false }} }}")
+
+    caption = config.get("caption", "")
+    caption_js = ""
+    if caption:
+        caption_js = f", subtitle: {{ display: true, text: '{js_escape(caption)}', position: 'bottom', fullSize: true, font: {{ family: '{CDL_FONT_FAMILY}', size: 22 }}, color: 'rgba(10, 37, 24, 0.8)', padding: {{ top: 8 }} }}"
+
+    options_parts.append(f"plugins: {{ {legend_js}, title: {{ display: false }}{caption_js} }}")
 
     if chart_type in ("bar",):
         options_parts.append(
-            f"scales: {{ x: {{ grid: {{ display: false }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }}, y: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }} }}"
+            f"scales: {{ x: {{ grid: {{ display: false }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }}{xlabel_js} }}, y: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }}{ylabel_js} }} }}"
         )
     elif chart_type in ("line", "scatter"):
         options_parts.append(
-            f"scales: {{ x: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }}, y: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }} }}"
+            f"scales: {{ x: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }}{xlabel_js} }}, y: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }}{ylabel_js} }} }}"
         )
     elif chart_type == "radar":
         options_parts.append(
@@ -890,9 +978,6 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
     )
     parts.append(f'  <canvas id="{chart_id}"></canvas>')
     parts.append("</div>")
-
-    if config["caption"]:
-        parts.append(f'<div class="chart-caption">{escape(config["caption"])}</div>')
 
     options_js = ", ".join(options_parts)
     parts.append("<script>")

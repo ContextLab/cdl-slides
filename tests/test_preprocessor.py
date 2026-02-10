@@ -487,7 +487,8 @@ class TestProcessChartBlocks:
         content = "```chart\ntype: bar\nlabels: X, Y\ndata: 10, 20\ncaption: Figure 1\n```"
         result, count = process_chart_blocks(content)
         assert count == 1
-        assert "chart-caption" in result
+        # Caption is rendered as Chart.js subtitle plugin (centered on chart area)
+        assert "subtitle:" in result
         assert "Figure 1" in result
 
     def test_no_chart_title_in_output(self):
@@ -713,3 +714,68 @@ class TestProcessChartBlocks:
         assert count == 1
         assert "legend: { display: true" in result
         assert result.count("size: 18") >= 2
+
+    def test_xlabel_in_output(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\nxlabel: Categories\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "Categories" in result
+        assert "title: { display: true" in result
+
+    def test_ylabel_in_output(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\nylabel: Score\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "Score" in result
+
+    def test_xlabel_and_ylabel_together(self):
+        content = "```chart\ntype: line\nlabels: A, B\ndata: 1, 2\nxlabel: Time\nylabel: Value\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "Time" in result
+        assert "Value" in result
+
+    def test_no_xlabel_ylabel_by_default(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        x_scale = result.split("scales:")[1] if "scales:" in result else ""
+        assert x_scale.count("title: { display: true") == 0
+
+    def test_viridis_palette_returns_hex_colors(self):
+        from cdl_slides.preprocessor import _get_palette
+
+        colors = _get_palette("viridis", n_colors=5)
+        assert len(colors) == 5
+        for c in colors:
+            assert c.startswith("#")
+            assert len(c) == 7
+
+    def test_plasma_palette_returns_hex_colors(self):
+        from cdl_slides.preprocessor import _get_palette
+
+        colors = _get_palette("plasma", n_colors=3)
+        assert len(colors) == 3
+        for c in colors:
+            assert c.startswith("#")
+
+    def test_viridis_palette_in_chart(self):
+        content = "```chart\ntype: bar\nlabels: A, B, C\ndata: 1, 2, 3\npalette: viridis\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#00693e" not in result
+
+    def test_caption_uses_subtitle_plugin(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\ncaption: Test caption\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "subtitle:" in result
+        assert "fullSize: true" in result
+        assert "Test caption" in result
+        assert "chart-caption" not in result
+
+    def test_line_chart_fill_enabled(self):
+        content = "```chart\ntype: line\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "fill: true" in result
