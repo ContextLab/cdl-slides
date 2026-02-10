@@ -201,7 +201,7 @@ class TestGeneratePosterHtml:
             "B": {"title": "Methods", "content": "World", "color": None},
         }
         fm = {"marp": True, "theme": "cdl-poster", "size": "A0"}
-        html = generate_poster_html(fm, layout, sections)
+        html, _ = generate_poster_html(fm, layout, sections)
         assert "grid-template-areas" in html
 
     def test_output_has_section_divs(self):
@@ -212,7 +212,7 @@ class TestGeneratePosterHtml:
             "B": {"title": "Methods", "content": "World", "color": None},
         }
         fm = {"marp": True, "theme": "cdl-poster", "size": "A0"}
-        html = generate_poster_html(fm, layout, sections)
+        html, _ = generate_poster_html(fm, layout, sections)
         assert "grid-area: A" in html or "grid-area:A" in html
         assert "grid-area: B" in html or "grid-area:B" in html
 
@@ -224,7 +224,7 @@ class TestGeneratePosterHtml:
             "B": {"title": "Methods", "content": "World", "color": "violet"},
         }
         fm = {"marp": True, "theme": "cdl-poster", "size": "A0"}
-        html = generate_poster_html(fm, layout, sections)
+        html, _ = generate_poster_html(fm, layout, sections)
         assert "poster-color-blue" in html
         assert "poster-color-violet" in html
 
@@ -235,7 +235,7 @@ class TestGeneratePosterHtml:
             "A": {"title": "Intro", "content": "Hello", "color": None},
         }
         fm = {"marp": True, "theme": "cdl-poster", "size": "A0"}
-        html = generate_poster_html(fm, layout, sections)
+        html, _ = generate_poster_html(fm, layout, sections)
         assert "poster-color-" not in html
 
 

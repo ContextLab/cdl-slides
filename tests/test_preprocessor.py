@@ -11,6 +11,7 @@ from cdl_slides.preprocessor import (
     inject_layout_classes,
     parse_flow_node,
     process_arrow_syntax,
+    process_chart_blocks,
     process_flow_blocks,
     process_markdown,
 )
@@ -469,3 +470,210 @@ class TestCodeBlockWithCallouts:
         assert "scale-80" in result
         assert "has-callouts-1" in result
         assert "has-code-block" in result
+
+
+class TestProcessChartBlocks:
+    def test_simple_bar_chart(self):
+        content = "```chart\ntype: bar\nlabels: A, B, C\ndata: 1, 2, 3\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "chart-container" in result
+        assert "cdl-chart-0" in result
+        assert "type: 'bar'" in result
+        assert "'A'" in result
+        assert "1, 2, 3" in result
+
+    def test_chart_with_caption(self):
+        content = "```chart\ntype: bar\nlabels: X, Y\ndata: 10, 20\ncaption: Figure 1\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "chart-caption" in result
+        assert "Figure 1" in result
+
+    def test_no_chart_title_in_output(self):
+        content = "```chart\ntype: line\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "title: { display: false }" in result
+
+    def test_multiple_datasets(self):
+        content = (
+            "```chart\ntype: bar\nlabels: A, B\ndatasets:\n"
+            "  - label: Set 1\n    data: 1, 2\n"
+            "  - label: Set 2\n    data: 3, 4\n```"
+        )
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "'Set 1'" in result
+        assert "'Set 2'" in result
+        assert "display: true" in result
+
+    def test_pie_chart_with_legend(self):
+        content = "```chart\ntype: pie\nlabels: Slice A, Slice B, Slice C\ndata: 30, 50, 20\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "type: 'pie'" in result
+        assert "legend: { display: true" in result
+
+    def test_scatter_chart(self):
+        content = "```chart\ntype: scatter\ndatasets:\n  - label: Points\n    data: 1 2, 3 4, 5 6\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "type: 'scatter'" in result
+        assert "{x: 1, y: 2}" in result
+
+    def test_radar_chart(self):
+        content = (
+            "```chart\ntype: radar\nlabels: Speed, Power, Range\ndatasets:\n"
+            "  - label: Model A\n    data: 80, 90, 70\n"
+            "  - label: Model B\n    data: 60, 85, 95\n```"
+        )
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "type: 'radar'" in result
+
+    def test_doughnut_chart_with_legend(self):
+        content = "```chart\ntype: doughnut\nlabels: A, B, C\ndata: 40, 35, 25\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "type: 'doughnut'" in result
+        assert "legend: { display: true" in result
+
+    def test_multiple_chart_blocks(self):
+        content = (
+            "```chart\ntype: bar\nlabels: A\ndata: 1\n```\n\n"
+            "Some text\n\n"
+            "```chart\ntype: pie\nlabels: X\ndata: 100\n```"
+        )
+        result, count = process_chart_blocks(content)
+        assert count == 2
+        assert "cdl-chart-0" in result
+        assert "cdl-chart-1" in result
+
+    def test_no_chart_blocks(self):
+        content = '# Hello\n\nSome text\n```python\nprint("hi")\n```'
+        result, count = process_chart_blocks(content)
+        assert count == 0
+        assert result == content
+
+    def test_custom_dimensions(self):
+        content = "```chart\ntype: bar\nlabels: A\ndata: 1\nwidth: 70%\nheight: 400px\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "width: 70%" in result
+        assert "height: 400px" in result
+
+    def test_grouped_bar_becomes_bar(self):
+        content = (
+            "```chart\ntype: grouped_bar\nlabels: A, B\ndatasets:\n"
+            "  - label: S1\n    data: 1, 2\n"
+            "  - label: S2\n    data: 3, 4\n```"
+        )
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "type: 'bar'" in result
+
+    def test_chart_in_process_markdown(self, tmp_path):
+        input_md = tmp_path / "input.md"
+        output_md = tmp_path / "output.md"
+        input_md.write_text(
+            "---\nmarp: true\ntheme: cdl-theme\n---\n\n# Charts\n\n```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\n```\n"
+        )
+        stats = process_markdown(str(input_md), str(output_md))
+        assert stats["charts_processed"] == 1
+        output_content = output_md.read_text()
+        assert "chart-container" in output_content
+
+    def test_single_dataset_legend_hidden(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "legend: { display: false" in result
+
+    def test_labels_properly_quoted(self):
+        content = "```chart\ntype: bar\nlabels: It's good, Not bad\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "It\\'s good" in result
+
+    def test_radar_always_shows_legend(self):
+        content = "```chart\ntype: radar\nlabels: A, B, C\ndata: 1, 2, 3\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "legend: { display: true" in result
+
+    def test_default_palette_uses_cdl_colors(self):
+        content = "```chart\ntype: bar\nlabels: A, B, C\ndata: 1, 2, 3\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#00693e" in result
+
+    def test_seaborn_palette(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\npalette: seaborn\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#4c72b0" in result
+
+    def test_tab10_palette(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\npalette: tab10\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#1f77b4" in result
+
+    def test_colorblind_palette(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\npalette: colorblind\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#0173b2" in result
+
+    def test_unknown_palette_falls_back_to_cdl(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\npalette: nonexistent\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#00693e" in result
+
+    def test_pie_chart_has_multiple_colors(self):
+        content = "```chart\ntype: pie\nlabels: A, B, C, D\ndata: 25, 25, 25, 25\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "#00693e" in result
+        assert "#267aba" in result
+        assert "#ffa00f" in result
+
+    def test_bar_chart_has_inline_font_config(self):
+        content = "```chart\ntype: bar\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "Avenir" in result
+        assert "size: 24" in result
+
+    def test_radar_has_no_backdrop(self):
+        content = "```chart\ntype: radar\nlabels: A, B, C\ndata: 1, 2, 3\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "showBackdrop: false" in result
+        assert "backdropColor: 'transparent'" in result
+
+    def test_line_chart_has_tension(self):
+        content = "```chart\ntype: line\nlabels: A, B\ndata: 1, 2\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "tension: 0.3" in result
+
+    def test_scatter_chart_has_point_radius(self):
+        content = "```chart\ntype: scatter\ndatasets:\n  - label: P\n    data: 1 2, 3 4\n```"
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        assert "pointRadius: 10" in result
+
+    def test_radar_datasets_sorted_largest_first(self):
+        content = (
+            "```chart\ntype: radar\nlabels: A, B, C\ndatasets:\n"
+            "  - label: Small\n    data: 10, 20, 30\n"
+            "  - label: Large\n    data: 90, 80, 70\n```"
+        )
+        result, count = process_chart_blocks(content)
+        assert count == 1
+        large_pos = result.index("'Large'")
+        small_pos = result.index("'Small'")
+        assert large_pos < small_pos, "Largest dataset should be drawn first (behind)"

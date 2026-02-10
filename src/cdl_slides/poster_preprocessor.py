@@ -9,6 +9,8 @@ from typing import Any
 
 import yaml
 
+from cdl_slides.preprocessor import process_chart_blocks
+
 _VALID_SIZES = {"A0", "A0-landscape", "A1", "36x48", "48x36"}
 _SIZE_PATTERN = re.compile(r"^\d+x\d+$")
 
@@ -170,7 +172,7 @@ def generate_poster_html(
     frontmatter: dict[str, Any],
     layout: dict[str, Any],
     sections: dict[str, dict[str, str | None]],
-) -> str:
+) -> tuple[str, int]:
     """
     Generate Marp-compatible markdown with CSS Grid layout.
 
@@ -210,6 +212,7 @@ section {{
 </style>"""
 
     section_divs = []
+    charts_total = 0
     for label in layout["labels"]:
         if label not in sections:
             continue
@@ -218,17 +221,21 @@ section {{
         if sec.get("color"):
             css_class += f" poster-color-{sec['color']}"
         heading = f"# {sec['title']}" if label == "T" else f"### {sec['title']}"
+        section_content = sec["content"] or ""
+        section_content, chart_count = process_chart_blocks(section_content)
+        charts_total += chart_count
         div = f"""<div style="grid-area: {label};" class="{css_class}">
 
 {heading}
 
-{sec["content"]}
+{section_content}
 
 </div>"""
         section_divs.append(div)
 
     parts = fm_lines + [style, ""] + section_divs
-    return "\n".join(parts) + "\n"
+    result = "\n".join(parts) + "\n"
+    return result, charts_total
 
 
 def process_poster_markdown(input_path: str | Path, output_path: str | Path) -> dict[str, Any]:
@@ -272,7 +279,7 @@ def process_poster_markdown(input_path: str | Path, output_path: str | Path) -> 
         warnings.warn(msg, stacklevel=2)
         warn_list.append(msg)
 
-    html = generate_poster_html(frontmatter, layout, sections)
+    html, charts_total = generate_poster_html(frontmatter, layout, sections)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(html, encoding="utf-8")
@@ -281,4 +288,5 @@ def process_poster_markdown(input_path: str | Path, output_path: str | Path) -> 
         "sections": len(sections),
         "grid_size": f"{layout['rows']}x{layout['cols']}",
         "warnings": warn_list,
+        "charts_processed": charts_total,
     }

@@ -179,6 +179,18 @@ Show that findings **replicate** across datasets or participant groups to streng
 </div>
 </div>
 
+```chart
+type: bar
+labels: Condition A, Condition B, Control
+datasets:
+  - label: Accuracy
+    data: 0.89, 0.72, 0.65
+  - label: F1 score
+    data: 0.85, 0.68, 0.60
+caption: Figure 1. Accuracy and F1 scores across experimental conditions
+height: 250px
+```
+
 <div class="example-box" data-title="Robustness check">
 
 We verified our results using cross-validation <span style="white-space:nowrap;">(k&nbsp;=&nbsp;5)</span> and bootstrap resampling <span style="white-space:nowrap;">(1000 iterations).</span> The effect size remains stable <span style="white-space:nowrap;">(Cohen's d&nbsp;=&nbsp;0.8).</span> Sensitivity analyses confirm that results hold across a range of preprocessing choices and model specifications. Permutation testing corroborates significance under non-parametric assumptions <span style="white-space:nowrap;">(BF&nbsp;>&nbsp;10).</span>

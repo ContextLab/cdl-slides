@@ -25,15 +25,21 @@ class CompilationError(Exception):
 def _inject_js_into_html(html_path: Path) -> None:
     """Inject chart JS files into compiled HTML output.
 
+    - Chart.js CDN → <script> before </head> (must load before defaults)
     - chart-defaults.js → <script> before </head>
     - chart-animations.js → <script> before </body>
     """
     js_dir = get_js_dir()
     html_content = html_path.read_text(encoding="utf-8")
 
+    # Inject Chart.js CDN BEFORE chart-defaults.js so Chart global is available
+    cdn_tag = '<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>'
+    html_content = html_content.replace("</head>", f"{cdn_tag}\n</head>", 1)
+
     defaults_js = js_dir / "chart-defaults.js"
     if defaults_js.exists():
-        script_tag = f"<script>{defaults_js.read_text(encoding='utf-8')}</script>"
+        js_content = defaults_js.read_text(encoding="utf-8").replace("</script>", "<\\/script>")
+        script_tag = f"<script>{js_content}</script>"
         html_content = html_content.replace("</head>", f"{script_tag}\n</head>", 1)
 
     animations_js = js_dir / "chart-animations.js"

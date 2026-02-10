@@ -9,7 +9,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from cdl_slides.assets import copy_assets_alongside_output, prepare_theme_for_compilation
+from cdl_slides.assets import copy_assets_alongside_output, get_js_dir, prepare_theme_for_compilation
 from cdl_slides.compiler import CompilationError
 from cdl_slides.marp_cli import resolve_marp_cli
 from cdl_slides.poster_preprocessor import process_poster_markdown
@@ -67,6 +67,23 @@ _KATEX_FONT_FACE_RE = re.compile(
 _AVENIR_STACK = "'Avenir LT Std',Avenir,'Avenir Next',sans-serif"
 _KATEX_FONT_FAMILY_RE = re.compile(r"font-family\s*:\s*[\"']?KaTeX_\w+[\"']?")
 _KATEX_FONT_SHORTHAND_RE = re.compile(r"(font\s*:\s*[^;]*?)KaTeX_Main[^;]*?(;)")
+
+
+def _inject_chart_js_into_html(html_path: Path) -> None:
+    """Inject Chart.js CDN and defaults into compiled poster HTML."""
+    js_dir = get_js_dir()
+    html_content = html_path.read_text(encoding="utf-8")
+
+    cdn_tag = '<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>'
+    html_content = html_content.replace("</head>", f"{cdn_tag}\n</head>", 1)
+
+    defaults_js = js_dir / "chart-defaults.js"
+    if defaults_js.exists():
+        js_content = defaults_js.read_text(encoding="utf-8").replace("</script>", "<\\/script>")
+        script_tag = f"<script>{js_content}</script>"
+        html_content = html_content.replace("</head>", f"{script_tag}\n</head>", 1)
+
+    html_path.write_text(html_content, encoding="utf-8")
 
 
 def _postprocess_katex_fonts(html_path: Path) -> None:
@@ -174,6 +191,8 @@ def compile_poster(
             if output_path.exists():
                 if fmt == "html":
                     _postprocess_katex_fonts(output_path)
+                    if preprocess_stats.get("charts_processed", 0) > 0:
+                        _inject_chart_js_into_html(output_path)
                     copy_assets_alongside_output(output_path)
                 output_files.append(
                     {

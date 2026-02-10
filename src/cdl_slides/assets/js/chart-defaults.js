@@ -100,13 +100,13 @@
   // ==========================================================================
   const FONT_CONFIG = {
     sizes: {
-      title: 22,        // Chart title
-      subtitle: 18,     // Subtitle
-      legend: 16,       // Legend labels
-      axisTitle: 18,    // Axis titles
-      axisTicks: 16,    // Axis tick labels
-      tooltip: 14,      // Tooltip text
-      dataLabels: 14,   // Data labels on charts
+      title: 32,        // Chart title
+      subtitle: 28,     // Subtitle
+      legend: 28,       // Legend labels
+      axisTitle: 28,    // Axis titles
+      axisTicks: 26,    // Axis tick labels
+      tooltip: 24,      // Tooltip text
+      dataLabels: 24,   // Data labels on charts
     },
     weight: {
       normal: 400,
@@ -384,12 +384,21 @@
     if (Chart.defaults.scales && Chart.defaults.scales.radialLinear) {
       if (Chart.defaults.scales.radialLinear.grid) Chart.defaults.scales.radialLinear.grid.color = palette.gridLight;
       if (Chart.defaults.scales.radialLinear.angleLines) Chart.defaults.scales.radialLinear.angleLines.color = palette.gridMedium;
+      if (Chart.defaults.scales.radialLinear.ticks) {
+        Chart.defaults.scales.radialLinear.ticks.showBackdrop = false;
+        Chart.defaults.scales.radialLinear.ticks.font = {
+          family: palette.fontFamily,
+          size: FONT_CONFIG.sizes.axisTicks,
+        };
+        Chart.defaults.scales.radialLinear.ticks.color = palette.textPrimary;
+      }
       if (Chart.defaults.scales.radialLinear.pointLabels) {
         Chart.defaults.scales.radialLinear.pointLabels.font = {
           family: palette.fontFamily,
           size: FONT_CONFIG.sizes.axisTicks,
         };
         Chart.defaults.scales.radialLinear.pointLabels.color = palette.textPrimary;
+        Chart.defaults.scales.radialLinear.pointLabels.backdropColor = 'transparent';
       }
     }
 

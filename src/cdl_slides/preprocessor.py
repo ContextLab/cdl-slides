@@ -491,6 +491,438 @@ def process_flow_blocks(content: str) -> tuple:
     return processed, diagrams_processed
 
 
+# ---------------------------------------------------------------------------
+# Chart color palettes
+# ---------------------------------------------------------------------------
+
+CDL_CHART_COLORS = [
+    "#00693e",
+    "#267aba",
+    "#ffa00f",
+    "#9d162e",
+    "#8a6996",
+    "#a5d75f",
+    "#003c73",
+    "#d94415",
+    "#643c20",
+    "#c4dd88",
+    "#f5dc69",
+    "#424141",
+]
+
+_PALETTES = {
+    "cdl": CDL_CHART_COLORS,
+    "tab10": [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+        "#7f7f7f",
+        "#bcbd22",
+        "#17becf",
+    ],
+    "seaborn": [
+        "#4c72b0",
+        "#dd8452",
+        "#55a868",
+        "#c44e52",
+        "#8172b3",
+        "#937860",
+        "#da8bc3",
+        "#8c8c8c",
+        "#ccb974",
+        "#64b5cd",
+    ],
+    "deep": [
+        "#4c72b0",
+        "#dd8452",
+        "#55a868",
+        "#c44e52",
+        "#8172b3",
+        "#937860",
+        "#da8bc3",
+        "#8c8c8c",
+        "#ccb974",
+        "#64b5cd",
+    ],
+    "muted": [
+        "#4878d0",
+        "#ee854a",
+        "#6acc64",
+        "#d65f5f",
+        "#956cb4",
+        "#8c613c",
+        "#dc7ec0",
+        "#797979",
+        "#d5bb67",
+        "#82c6e2",
+    ],
+    "bright": [
+        "#023eff",
+        "#ff7c00",
+        "#1ac938",
+        "#e8000b",
+        "#8b2be2",
+        "#9f4800",
+        "#f14cc1",
+        "#a3a3a3",
+        "#ffc400",
+        "#00d7ff",
+    ],
+    "colorblind": [
+        "#0173b2",
+        "#de8f05",
+        "#029e73",
+        "#d55e00",
+        "#cc78bc",
+        "#ca9161",
+        "#fbafe4",
+        "#949494",
+        "#ece133",
+        "#56b4e9",
+    ],
+    "pastel": [
+        "#a1c9f4",
+        "#ffb482",
+        "#8de5a1",
+        "#ff9f9b",
+        "#d0bbff",
+        "#debb9b",
+        "#fab0e4",
+        "#cfcfcf",
+        "#fffea3",
+        "#b9f2f0",
+    ],
+    "dark": [
+        "#001c7f",
+        "#b1400d",
+        "#12711c",
+        "#8c0800",
+        "#591e71",
+        "#592f0d",
+        "#a23582",
+        "#3c3c3c",
+        "#b8850a",
+        "#006374",
+    ],
+    "matplotlib": [
+        "#1f77b4",
+        "#ff7f0e",
+        "#2ca02c",
+        "#d62728",
+        "#9467bd",
+        "#8c564b",
+        "#e377c2",
+        "#7f7f7f",
+        "#bcbd22",
+        "#17becf",
+    ],
+    "Set1": [
+        "#e41a1c",
+        "#377eb8",
+        "#4daf4a",
+        "#984ea3",
+        "#ff7f00",
+        "#ffff33",
+        "#a65628",
+        "#f781bf",
+        "#999999",
+    ],
+    "Set2": [
+        "#66c2a5",
+        "#fc8d62",
+        "#8da0cb",
+        "#e78ac3",
+        "#a6d854",
+        "#ffd92f",
+        "#e5c494",
+        "#b3b3b3",
+    ],
+    "Set3": [
+        "#8dd3c7",
+        "#ffffb3",
+        "#bebada",
+        "#fb8072",
+        "#80b1d3",
+        "#fdb462",
+        "#b3de69",
+        "#fccde5",
+        "#d9d9d9",
+        "#bc80bd",
+        "#ccebc5",
+        "#ffed6f",
+    ],
+    "Paired": [
+        "#a6cee3",
+        "#1f78b4",
+        "#b2df8a",
+        "#33a02c",
+        "#fb9a99",
+        "#e31a1c",
+        "#fdbf6f",
+        "#ff7f00",
+        "#cab2d6",
+        "#6a3d9a",
+        "#ffff99",
+        "#b15928",
+    ],
+}
+
+CDL_FONT_FAMILY = "Avenir LT Std, Avenir, Avenir Next, -apple-system, BlinkMacSystemFont, sans-serif"
+CDL_TEXT_COLOR = "#0a2518"
+CDL_GRID_COLOR = "rgba(0, 105, 62, 0.1)"
+CDL_GRID_DARK = "rgba(0, 105, 62, 0.2)"
+
+
+def _hex_to_rgba(hex_color: str, alpha: float) -> str:
+    """Convert hex color to rgba string."""
+    h = hex_color.lstrip("#")
+    r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+    return f"rgba({r}, {g}, {b}, {alpha})"
+
+
+def _get_palette(name: str) -> list:
+    """Return color list for a named palette, defaulting to CDL."""
+    return _PALETTES.get(name.lower().strip(), CDL_CHART_COLORS)
+
+
+def _parse_chart_block(block_content: str) -> dict:
+    """Parse a chart block's YAML-like content into a config dict."""
+    config = {
+        "type": "bar",
+        "title": "",
+        "labels": [],
+        "datasets": [],
+        "caption": "",
+        "width": "85%",
+        "height": "350px",
+        "palette": "cdl",
+    }
+
+    current_dataset = None
+    lines = block_content.strip().split("\n")
+
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+
+        if stripped.startswith("- label:"):
+            if current_dataset is not None:
+                config["datasets"].append(current_dataset)
+            current_dataset = {"label": stripped[len("- label:") :].strip(), "data": []}
+            continue
+
+        if stripped.startswith("- data:") and current_dataset is not None:
+            raw = stripped[len("- data:") :].strip()
+            current_dataset["data"] = raw
+            continue
+
+        if current_dataset is not None and stripped.startswith("data:"):
+            raw = stripped[len("data:") :].strip()
+            current_dataset["data"] = raw
+            continue
+
+        if stripped.startswith("type:"):
+            config["type"] = stripped[len("type:") :].strip()
+        elif stripped.startswith("title:"):
+            config["title"] = stripped[len("title:") :].strip()
+        elif stripped.startswith("labels:"):
+            raw = stripped[len("labels:") :].strip()
+            config["labels"] = [item.strip() for item in raw.split(",") if item.strip()]
+        elif stripped.startswith("caption:"):
+            config["caption"] = stripped[len("caption:") :].strip()
+        elif stripped.startswith("width:"):
+            config["width"] = stripped[len("width:") :].strip()
+        elif stripped.startswith("height:"):
+            config["height"] = stripped[len("height:") :].strip()
+        elif stripped.startswith("palette:"):
+            config["palette"] = stripped[len("palette:") :].strip()
+        elif stripped.startswith("data:") and current_dataset is None:
+            raw = stripped[len("data:") :].strip()
+            config["_top_level_data"] = raw
+        elif stripped == "datasets:":
+            pass
+
+    if current_dataset is not None:
+        config["datasets"].append(current_dataset)
+
+    if not config["datasets"] and "_top_level_data" in config:
+        config["datasets"] = [{"label": "", "data": config.pop("_top_level_data")}]
+    elif "_top_level_data" in config:
+        config.pop("_top_level_data")
+
+    return config
+
+
+def _format_chart_data(data_str: str, chart_type: str) -> str:
+    """Format data string into JS array literal."""
+    if chart_type == "scatter":
+        points = [p.strip() for p in data_str.split(",") if p.strip()]
+        js_points = []
+        for point in points:
+            parts = point.split()
+            if len(parts) >= 2:
+                js_points.append(f"{{x: {parts[0]}, y: {parts[1]}}}")
+        return "[" + ", ".join(js_points) + "]"
+    nums = [n.strip() for n in data_str.split(",") if n.strip()]
+    return "[" + ", ".join(nums) + "]"
+
+
+def _generate_chart_html(config: dict, chart_id: str) -> str:
+    """Generate HTML+JS for a single chart block with full inline styling."""
+    chart_type = config["type"]
+    if chart_type == "grouped_bar":
+        chart_type = "bar"
+
+    palette = _get_palette(config.get("palette", "cdl"))
+
+    def js_escape(s):
+        return s.replace("'", "\\'")
+
+    labels_js = ", ".join(f"'{js_escape(label)}'" for label in config["labels"])
+
+    datasets = config["datasets"]
+    if chart_type == "radar" and len(datasets) > 1:
+
+        def _radar_data_sum(ds):
+            raw = ds["data"]
+            if isinstance(raw, str):
+                try:
+                    return sum(float(v.strip()) for v in raw.split(",") if v.strip())
+                except ValueError:
+                    return 0
+            return 0
+
+        datasets = sorted(datasets, key=_radar_data_sum, reverse=True)
+
+    datasets_js_parts = []
+    for idx, ds in enumerate(datasets):
+        data_js = _format_chart_data(ds["data"], config["type"]) if isinstance(ds["data"], str) else str(ds["data"])
+        color = palette[idx % len(palette)]
+        props = []
+        if ds.get("label"):
+            props.append(f"label: '{js_escape(ds['label'])}'")
+        props.append(f"data: {data_js}")
+
+        if chart_type in ("pie", "doughnut"):
+            num_items = (
+                len([x.strip() for x in ds["data"].split(",") if x.strip()])
+                if isinstance(ds["data"], str)
+                else len(ds["data"])
+            )
+            colors_arr = ", ".join(f"'{palette[i % len(palette)]}'" for i in range(num_items))
+            props.append(f"backgroundColor: [{colors_arr}]")
+            props.append("borderColor: '#d8d8d8'")
+            props.append("borderWidth: 2")
+        elif chart_type == "line":
+            bg_color = _hex_to_rgba(color, 0.1)
+            props.append(f"borderColor: '{color}'")
+            props.append(f"backgroundColor: '{bg_color}'")
+            props.append("borderWidth: 3")
+            props.append("pointRadius: 5")
+            props.append(f"pointBackgroundColor: '{color}'")
+            props.append("tension: 0.3")
+        elif chart_type == "scatter":
+            props.append(f"backgroundColor: '{color}'")
+            props.append(f"borderColor: '{color}'")
+            props.append("pointRadius: 10")
+            props.append("pointHoverRadius: 13")
+        elif chart_type == "radar":
+            bg_color = _hex_to_rgba(color, 0.2)
+            props.append(f"borderColor: '{color}'")
+            props.append(f"backgroundColor: '{bg_color}'")
+            props.append("borderWidth: 2")
+            props.append("pointRadius: 4")
+            props.append(f"pointBackgroundColor: '{color}'")
+        else:
+            props.append(f"backgroundColor: '{color}'")
+            props.append(f"borderColor: '{color}'")
+            props.append("borderWidth: 2")
+
+        datasets_js_parts.append("{" + ", ".join(props) + "}")
+    datasets_js = ", ".join(datasets_js_parts)
+
+    always_legend_types = ("pie", "doughnut", "radar")
+    show_legend = len(config["datasets"]) > 1 or chart_type in always_legend_types
+    legend_display = "true" if show_legend else "false"
+
+    font_tick = f"family: '{CDL_FONT_FAMILY}', size: 24"
+    font_legend = f"family: '{CDL_FONT_FAMILY}', size: 24"
+    font_point_label = f"family: '{CDL_FONT_FAMILY}', size: 26"
+
+    options_parts = []
+    options_parts.append("responsive: true")
+    options_parts.append("maintainAspectRatio: false")
+    options_parts.append("animation: { duration: 400 }")
+
+    legend_position = "'right'" if chart_type in ("pie", "doughnut") else "'top'"
+    legend_js = f"legend: {{ display: {legend_display}, position: {legend_position}, labels: {{ font: {{ {font_legend} }}, color: '{CDL_TEXT_COLOR}', usePointStyle: true, padding: 15 }} }}"
+    options_parts.append(f"plugins: {{ {legend_js}, title: {{ display: false }} }}")
+
+    if chart_type in ("bar",):
+        options_parts.append(
+            f"scales: {{ x: {{ grid: {{ display: false }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }}, y: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }} }}"
+        )
+    elif chart_type in ("line", "scatter"):
+        options_parts.append(
+            f"scales: {{ x: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }}, y: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, border: {{ color: '{CDL_GRID_DARK}' }}, ticks: {{ font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }} }} }}"
+        )
+    elif chart_type == "radar":
+        options_parts.append(
+            f"scales: {{ r: {{ grid: {{ color: '{CDL_GRID_COLOR}' }}, angleLines: {{ color: 'rgba(0, 105, 62, 0.15)' }}, ticks: {{ showBackdrop: false, backdropColor: 'transparent', font: {{ {font_tick} }}, color: '{CDL_TEXT_COLOR}' }}, pointLabels: {{ font: {{ {font_point_label} }}, color: '{CDL_TEXT_COLOR}', backdropColor: 'transparent' }} }} }}"
+        )
+
+    parts = []
+    parts.append(f'<div class="chart-container" style="width: {config["width"]}; height: {config["height"]};">')
+    parts.append(f'  <canvas id="{chart_id}"></canvas>')
+    parts.append("</div>")
+
+    if config["caption"]:
+        parts.append(f'<div class="chart-caption">{escape(config["caption"])}</div>')
+
+    options_js = ", ".join(options_parts)
+    parts.append("<script>")
+    parts.append(f"new Chart(document.getElementById('{chart_id}'), {{")
+    parts.append(f"  type: '{chart_type}',")
+    parts.append("  data: {")
+    if config["labels"]:
+        parts.append(f"    labels: [{labels_js}],")
+    parts.append(f"    datasets: [{datasets_js}]")
+    parts.append("  },")
+    parts.append(f"  options: {{ {options_js} }}")
+    parts.append("});")
+    parts.append("</script>")
+
+    return "\n".join(parts)
+
+
+def process_chart_blocks(content: str) -> tuple:
+    """Process ```chart code blocks and convert them to Chart.js HTML/JS."""
+    chart_pattern = r"```chart\n(.*?)```"
+    charts_processed = 0
+    chart_counter = 0
+
+    def replace_chart_block(match):
+        nonlocal charts_processed, chart_counter
+        block_content = match.group(1)
+        config = _parse_chart_block(block_content)
+
+        if not config["datasets"]:
+            return match.group(0)
+
+        chart_id = f"cdl-chart-{chart_counter}"
+        chart_counter += 1
+        charts_processed += 1
+        return _generate_chart_html(config, chart_id)
+
+    processed = re.sub(chart_pattern, replace_chart_block, content, flags=re.DOTALL)
+    return processed, charts_processed
+
+
 def process_manim_blocks(content: str, output_dir: str) -> tuple:
     """
     Process ```manim code blocks and render them to GIF animations.
@@ -1449,6 +1881,8 @@ def process_markdown(
     # Process flow diagram blocks first (before line-by-line processing)
     content, flow_diagrams_processed = process_flow_blocks(content)
 
+    content, charts_processed = process_chart_blocks(content)
+
     # Process animate DSL blocks (transpiles to manim blocks)
     # Skip if --no-animations flag is set
     if skip_animations:
@@ -1515,6 +1949,7 @@ def process_markdown(
         "flow_diagrams_processed": flow_diagrams_processed,
         "animate_blocks_transpiled": animate_blocks_transpiled,
         "manim_animations_rendered": manim_animations_rendered,
+        "charts_processed": charts_processed,
         "split_directives_found": 0,
         "overflow_warnings": len([w for w in overflow_warnings if "overflow" in w.lower() or "exceeds" in w.lower()]),
         "scale_classes_injected": len([w for w in overflow_warnings if "Auto-injecting" in w]),
@@ -1838,6 +2273,8 @@ def main():
             print(f"Animate blocks transpiled: {stats['animate_blocks_transpiled']}")
         if stats.get("manim_animations_rendered", 0) > 0:
             print(f"Manim animations rendered: {stats['manim_animations_rendered']}")
+        if stats.get("charts_processed", 0) > 0:
+            print(f"Charts processed: {stats['charts_processed']}")
         if stats.get("scale_classes_injected", 0) > 0:
             print(f"Scale classes auto-injected: {stats['scale_classes_injected']}")
         if stats.get("overflow_warnings", 0) > 0:

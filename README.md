@@ -24,9 +24,17 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 |:-----------------:|:------------:|:--------------:|
 | ![Two-Column](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/09-two-column.png) | ![Table](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/10-simple-table.png) | ![Formats](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/11-output-formats.png) |
 
-| Academic Poster |
-|:---------------:|
-| ![Poster](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/poster-sample.png) |
+| Bar Chart | Line Chart | Grouped Bar |
+|:---------:|:----------:|:-----------:|
+| ![Bar](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-02-bar.png) | ![Line](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-03-line.png) | ![Grouped](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-04-grouped-bar.png) |
+
+| Pie Chart | Doughnut Chart | Radar Chart |
+|:---------:|:--------------:|:-----------:|
+| ![Pie](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-05-pie.png) | ![Doughnut](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-06-doughnut.png) | ![Radar](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-08-radar.png) |
+
+| Scatter Plot | Academic Poster |
+|:------------:|:---------------:|
+| ![Scatter](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/chart-07-scatter.png) | ![Poster](https://raw.githubusercontent.com/ContextLab/cdl-slides/main/docs/screenshots/poster-sample.png) |
 
 ## Table of contents
 
@@ -44,6 +52,7 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
   - [Scale directives](#scale-directives)
   - [Emoji figures](#emoji-figures)
   - [Math (KaTeX)](#math-katex)
+  - [Inline charts](#inline-charts)
   - [Code blocks](#code-blocks)
   - [Tables](#tables)
   - [Arrow syntax](#arrow-syntax)
@@ -69,6 +78,8 @@ Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) prese
 - **Syntax highlighting**: Code blocks with line numbers via Pygments
 - **Math support**: KaTeX for inline and display equations
 - **Callout boxes**: Note, tip, warning, definition, example, and important boxes
+- **Inline charts**: Embed Chart.js charts with ```` ```chart ```` blocks — bar, line, scatter, pie, doughnut, radar, and more
+- **Color palettes**: 14 built-in palettes including CDL, seaborn, matplotlib, and colorblind-friendly options
 - **Academic posters**: Compile poster markdown with ASCII grid layouts to HTML or PDF
 
 ## Installation
@@ -496,6 +507,84 @@ Display:
 ```
 $$\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}$$
 ```
+
+### Inline charts
+
+Embed interactive Chart.js charts directly in your slides using ```` ```chart ```` blocks. Charts are automatically styled with CDL theme colors and fonts.
+
+**Basic example:**
+
+````markdown
+```chart
+type: bar
+labels: Q1, Q2, Q3, Q4
+data: 120, 95, 140, 110
+caption: Quarterly revenue
+```
+````
+
+**Multi-dataset example:**
+
+````markdown
+```chart
+type: line
+labels: Jan, Feb, Mar, Apr, May
+datasets:
+  - label: Model A
+    data: 82, 87, 91, 88, 93
+  - label: Model B
+    data: 75, 80, 85, 89, 92
+palette: colorblind
+caption: Model accuracy over time
+```
+````
+
+**Supported chart types:**
+
+| Type | Description |
+|------|-------------|
+| `bar` | Vertical bar chart |
+| `line` | Line chart with smooth curves |
+| `scatter` | Scatter plot |
+| `pie` | Pie chart |
+| `doughnut` | Doughnut chart |
+| `radar` | Radar/spider chart |
+
+For grouped bars, use multiple datasets with `type: bar`.
+
+**Chart options:**
+
+| Field | Default | Description |
+|-------|---------|-------------|
+| `type` | `bar` | Chart type (see above) |
+| `labels` | — | Comma-separated axis labels |
+| `data` | — | Comma-separated values (single dataset) |
+| `datasets` | — | Multiple datasets (see multi-dataset example) |
+| `palette` | `cdl` | Color palette name |
+| `caption` | — | Caption text below the chart |
+| `width` | `85%` | Chart container width |
+| `height` | `350px` | Chart container height |
+
+**Available palettes:**
+
+| Palette | Description |
+|---------|-------------|
+| `cdl` | CDL/Dartmouth brand colors (default) |
+| `tab10` | Matplotlib Tab10 |
+| `seaborn` | Seaborn default |
+| `deep` | Seaborn deep |
+| `muted` | Seaborn muted |
+| `bright` | Seaborn bright |
+| `colorblind` | Colorblind-friendly (seaborn) |
+| `pastel` | Seaborn pastel |
+| `dark` | Seaborn dark |
+| `matplotlib` | Matplotlib default |
+| `Set1` | ColorBrewer Set1 |
+| `Set2` | ColorBrewer Set2 |
+| `Set3` | ColorBrewer Set3 |
+| `Paired` | ColorBrewer Paired |
+
+Charts also work inside poster sections — just use the same ```` ```chart ```` syntax in your poster markdown.
 
 ### Code Blocks
 
