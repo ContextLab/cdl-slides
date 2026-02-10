@@ -19,7 +19,8 @@ Contextual Dynamics Lab
 type: bar
 labels: GPT-2, LLaMA, Mistral, Claude, LLaMA-2
 data: 1.5, 70, 7, 52, 70
-caption: Parameter counts in billions
+ylabel: Parameters (B)
+caption: LLaMA and LLaMA-2 lead at 70B parameters
 ```
 
 ---
@@ -34,7 +35,9 @@ datasets:
     data: 2.8, 2.1, 1.7, 1.4, 1.2, 1.05, 0.95, 0.88, 0.83, 0.80
   - label: Optimized
     data: 2.5, 1.6, 1.1, 0.8, 0.65, 0.55, 0.48, 0.43, 0.40, 0.38
-caption: Cross-entropy loss by training epoch
+xlabel: Epoch
+ylabel: Loss
+caption: Optimized model converges 2x faster than baseline
 ```
 
 ---
@@ -51,7 +54,8 @@ datasets:
     data: 89, 88, 85, 79
   - label: Recall
     data: 87, 91, 83, 76
-caption: Benchmark scores across models (%)
+ylabel: Score (%)
+caption: GPT-4 leads across all three metrics
 ```
 
 ---
@@ -62,7 +66,7 @@ caption: Benchmark scores across models (%)
 type: pie
 labels: Federal grants, Industry, Foundation, University
 data: 45, 25, 18, 12
-caption: Funding sources for fiscal year 2025
+caption: Federal grants account for nearly half of all funding
 ```
 
 ---
@@ -73,7 +77,7 @@ caption: Funding sources for fiscal year 2025
 type: doughnut
 labels: Research, Teaching, Service, Administration
 data: 40, 25, 20, 15
-caption: Average faculty time distribution
+caption: Research dominates at 40% of faculty effort
 ```
 
 ---
@@ -87,7 +91,9 @@ datasets:
     data: 1.5 78, 7 85, 13 87, 52 91, 70 90, 175 93
   - label: RNN baselines
     data: 0.5 62, 2 68, 5 72, 10 74, 20 76
-caption: Parameters (B) vs. benchmark accuracy (%)
+xlabel: Parameters (B)
+ylabel: Accuracy (%)
+caption: Accuracy plateaus above 50B parameters
 ```
 
 ---
@@ -104,7 +110,7 @@ datasets:
     data: 93, 90, 88, 95, 94, 90
   - label: Open source
     data: 78, 82, 75, 80, 76, 72
-caption: Capability scores across evaluation dimensions
+caption: Claude excels in writing; open source lags across all dimensions
 ```
 
 ---
@@ -117,5 +123,5 @@ labels: Conv1, Conv2, Conv3, Pool1, FC1, FC2, Output
 data: 0.82, 0.91, 0.67, 0.45, 0.93, 0.78, 0.56
 palette: viridis
 ylabel: Mean activation
-caption: Average activations by layer (ImageNet validation set)
+caption: FC1 shows highest activation; pooling layer is lowest
 ```

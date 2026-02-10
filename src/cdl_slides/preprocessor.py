@@ -955,7 +955,7 @@ def _generate_chart_html(config: dict, chart_id: str) -> str:
     caption = config.get("caption", "")
     caption_js = ""
     if caption:
-        caption_js = f", subtitle: {{ display: true, text: '{js_escape(caption)}', position: 'bottom', fullSize: true, font: {{ family: '{CDL_FONT_FAMILY}', size: 22 }}, color: 'rgba(10, 37, 24, 0.8)', padding: {{ top: 8 }} }}"
+        caption_js = f", subtitle: {{ display: true, text: '{js_escape(caption)}', position: 'bottom', fullSize: true, font: {{ family: '{CDL_FONT_FAMILY}', size: 20, style: 'italic' }}, color: 'rgba(10, 37, 24, 0.55)', padding: {{ top: 12 }} }}"
 
     options_parts.append(f"plugins: {{ {legend_js}, title: {{ display: false }}{caption_js} }}")
 
