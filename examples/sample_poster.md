@@ -95,7 +95,7 @@ Start with the **broad question** your research addresses and narrow to your con
 <span class="label">Visualization</span>
 </div>
 </div>
-<div class="figure-caption">Analysis toolkit spanning computation, brain imaging, and data visualization</div>
+<div class="figure-caption">Analysis toolkit spanning computation, brain imaging, and data visualization. Each stage of the pipeline leverages open-source libraries optimized for reproducibility and scalability across computing environments.</div>
 
 ## R: Results [green]
 
@@ -197,7 +197,6 @@ caption: Current capabilities vs. planned improvements
 - Sample limited to college-age participants
 - Future: longitudinal designs, larger cohorts
 - Explore transfer learning to clinical populations
-- Incorporate real-time fMRI neurofeedback paradigms
 - Extend to multimodal data (EEG + fMRI fusion)
 
 </div>
