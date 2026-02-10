@@ -706,11 +706,17 @@ def _get_palette(name: str, n_colors: "int | None" = None) -> list:
         import matplotlib.colors as mcolors
         import matplotlib.pyplot as plt
 
-        cmap = plt.colormaps.get(name, None) or plt.colormaps.get(key, None)
+        cmap = None
+        for cmap_name in (name, key):
+            try:
+                cmap = plt.colormaps[cmap_name]
+                break
+            except (KeyError, ValueError):
+                continue
         if cmap is not None:
             count = n_colors if n_colors and n_colors > 0 else 10
             return [mcolors.to_hex(cmap(i / max(count - 1, 1))) for i in range(count)]
-    except (ImportError, ValueError):
+    except (ImportError, ValueError, AttributeError):
         pass
 
     # Try seaborn color palettes
