@@ -669,6 +669,67 @@ _PALETTES = {
         "#ffff99",
         "#b15928",
     ],
+    # Standard matplotlib continuous colormaps (hardcoded so they work without matplotlib installed)
+    "viridis": [
+        "#440154",
+        "#482878",
+        "#3e4989",
+        "#31688e",
+        "#26828e",
+        "#1f9e89",
+        "#35b779",
+        "#6ece58",
+        "#b5de2b",
+        "#fde725",
+    ],
+    "plasma": [
+        "#0d0887",
+        "#46039f",
+        "#7201a8",
+        "#9c179e",
+        "#bd3786",
+        "#d8576b",
+        "#ed7953",
+        "#fb9f3a",
+        "#fdca26",
+        "#f0f921",
+    ],
+    "inferno": [
+        "#000004",
+        "#1b0c41",
+        "#4a0c6b",
+        "#781c6d",
+        "#a52c60",
+        "#cf4446",
+        "#ed6925",
+        "#fb9b06",
+        "#f7d13d",
+        "#fcffa4",
+    ],
+    "magma": [
+        "#000004",
+        "#180f3d",
+        "#440f76",
+        "#721f81",
+        "#9e2f7f",
+        "#cd4071",
+        "#f1605d",
+        "#fd9668",
+        "#feca8d",
+        "#fcfdbf",
+    ],
+    "cividis": [
+        "#00224e",
+        "#123570",
+        "#3b496c",
+        "#575d6d",
+        "#707173",
+        "#8a8678",
+        "#a59c74",
+        "#c3b369",
+        "#e1cc55",
+        "#fee838",
+    ],
 }
 
 CDL_FONT_FAMILY = "Avenir LT Std, Avenir, Avenir Next, -apple-system, BlinkMacSystemFont, sans-serif"
@@ -701,18 +762,22 @@ def _get_palette(name: str, n_colors: "int | None" = None) -> list:
             return [palette[i % len(palette)] for i in range(n_colors)]
         return palette
 
-    # Try matplotlib continuous colormaps (viridis, plasma, inferno, magma, cividis, etc.)
+    # Try matplotlib continuous colormaps for names not in _PALETTES (e.g. user-specified custom cmaps)
     try:
+        import matplotlib
         import matplotlib.colors as mcolors
-        import matplotlib.pyplot as plt
 
         cmap = None
         for cmap_name in (name, key):
             try:
-                cmap = plt.colormaps[cmap_name]
+                cmap = matplotlib.colormaps[cmap_name]
                 break
-            except (KeyError, ValueError):
-                continue
+            except (KeyError, ValueError, AttributeError):
+                try:
+                    cmap = matplotlib.cm.get_cmap(cmap_name)
+                    break
+                except (ValueError, AttributeError):
+                    pass
         if cmap is not None:
             count = n_colors if n_colors and n_colors > 0 else 10
             return [mcolors.to_hex(cmap(i / max(count - 1, 1))) for i in range(count)]
