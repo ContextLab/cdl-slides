@@ -141,7 +141,17 @@ def _add_legend(ax, config: dict, palette: list):
     always_legend = chart_type in ("pie", "doughnut", "radar")
     show_legend = len(config["datasets"]) > 1 or always_legend
     if show_legend:
-        legend = ax.legend(fontsize=LEGEND_SIZE, frameon=False, labelcolor=CDL_TEXT_COLOR)
+        legend_pos = config.get("legend", "")
+        if legend_pos == "right":
+            legend = ax.legend(
+                fontsize=LEGEND_SIZE,
+                frameon=False,
+                labelcolor=CDL_TEXT_COLOR,
+                loc="center left",
+                bbox_to_anchor=(1.02, 0.5),
+            )
+        else:
+            legend = ax.legend(fontsize=LEGEND_SIZE, frameon=False, labelcolor=CDL_TEXT_COLOR)
         if legend:
             legend.get_frame().set_alpha(0)
 
@@ -320,7 +330,11 @@ def _render_radar(config: dict) -> str:
 
 
 def process_poster_chart_blocks(content: str) -> tuple:
-    """Process ```chart code blocks and convert them to inline SVG for posters."""
+    """Process ```chart code blocks and convert them to inline SVG for posters.
+
+    Chart captions are rendered as HTML divs (not embedded in SVG) so the
+    poster preprocessor can auto-number them consistently with other figures.
+    """
     chart_pattern = r"```chart\n(.*?)```"
     charts_processed = 0
 
@@ -333,7 +347,14 @@ def process_poster_chart_blocks(content: str) -> tuple:
             return match.group(0)
 
         charts_processed += 1
-        return render_chart_svg(config)
+        caption = config.get("caption", "")
+        config["caption"] = ""
+        svg_html = render_chart_svg(config)
+
+        if caption:
+            svg_html += f'\n<p class="figure-caption">{caption}</p>'
+
+        return f'<div class="poster-chart">\n{svg_html}\n</div>'
 
     processed = re.sub(chart_pattern, replace_chart_block, content, flags=re.DOTALL)
     return processed, charts_processed

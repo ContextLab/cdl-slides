@@ -174,6 +174,50 @@ def extract_poster_sections(content: str) -> dict[str, dict[str, str | None]]:
     return sections
 
 
+def _reading_order_labels(layout: dict[str, Any]) -> list[str]:
+    """Return section labels sorted in column-major reading order.
+
+    Sorts by (col_start, row_start) so sections are ordered left-to-right
+    across columns and top-to-bottom within each column — matching the
+    natural reading order of a multi-column academic poster.
+    """
+    areas = layout["areas"]
+    return sorted(
+        layout["labels"],
+        key=lambda lbl: (areas[lbl]["col_start"], areas[lbl]["row_start"]),
+    )
+
+
+def _auto_number_captions(content: str, fig_count: int, tbl_count: int) -> tuple[str, int, int]:
+    """Prepend bold 'Figure X.' / 'Table X.' to caption divs in *content*.
+
+    Only captions with text are numbered; empty caption divs are skipped.
+    Returns (updated_content, new_fig_count, new_tbl_count).
+    """
+
+    def _replace_fig(m: re.Match) -> str:
+        nonlocal fig_count
+        tag = m.group(1)
+        caption_text = m.group(2).strip()
+        if not caption_text:
+            return m.group(0)
+        fig_count += 1
+        return f'<{tag} class="figure-caption"><strong>Figure {fig_count}.</strong> {caption_text}</{tag}>'
+
+    def _replace_tbl(m: re.Match) -> str:
+        nonlocal tbl_count
+        tag = m.group(1)
+        caption_text = m.group(2).strip()
+        if not caption_text:
+            return m.group(0)
+        tbl_count += 1
+        return f'<{tag} class="table-caption"><strong>Table {tbl_count}.</strong> {caption_text}</{tag}>'
+
+    content = re.sub(r'<(div|p) class="figure-caption">(.*?)</(?:div|p)>', _replace_fig, content)
+    content = re.sub(r'<(div|p) class="table-caption">(.*?)</(?:div|p)>', _replace_tbl, content)
+    return content, fig_count, tbl_count
+
+
 def generate_poster_html(
     frontmatter: dict[str, Any],
     layout: dict[str, Any],
@@ -217,9 +261,12 @@ section {{
 }}
 </style>"""
 
+    ordered_labels = _reading_order_labels(layout)
     section_divs = []
     charts_total = 0
-    for label in layout["labels"]:
+    fig_count = 0
+    tbl_count = 0
+    for label in ordered_labels:
         if label not in sections:
             continue
         sec = sections[label]
@@ -230,6 +277,7 @@ section {{
         section_content = sec["content"] or ""
         section_content, chart_count = process_poster_chart_blocks(section_content)
         charts_total += chart_count
+        section_content, fig_count, tbl_count = _auto_number_captions(section_content, fig_count, tbl_count)
         div = f"""<div style="grid-area: {label};" class="{css_class}">
 
 {heading}

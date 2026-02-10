@@ -11,7 +11,7 @@ IIIIIIIIRRRRRRRRRRRRDDDDDDDD
 IIIIIIIIRRRRRRRRRRRRDDDDDDDD
 IIIIIIIIRRRRRRRRRRRRDDDDDDDD
 IIIIIIIIRRRRRRRRRRRRDDDDDDDD
-IIIIIIIIRRRRRRRRRRRRDDDDDDDD
+MMMMMMMMRRRRRRRRRRRRDDDDDDDD
 MMMMMMMMRRRRRRRRRRRRDDDDDDDD
 MMMMMMMMRRRRRRRRRRRRDDDDDDDD
 MMMMMMMMRRRRRRRRRRRREEEAAAAA
@@ -28,7 +28,7 @@ MMMMMMMMRRRRRRRRRRRREEEAAAAA
 
 <div class="note-box" data-title="Orient your audience">
 
-Start with the **broad question** your research addresses and narrow to your specific contribution. Explain why this topic matters and what gap your work fills.
+Start with the **broad question** your research addresses and narrow to your contribution.
 
 </div>
 
@@ -46,6 +46,7 @@ Start with the **broad question** your research addresses and narrow to your spe
 <span class="label">Your approach</span>
 </div>
 </div>
+<div class="figure-caption">Research paradigm: from observation to hypothesis-driven inquiry</div>
 
 <div class="note-box" data-title="Hypotheses">
 
@@ -54,15 +55,7 @@ Start with the **broad question** your research addresses and narrow to your spe
 
 </div>
 
-<div class="note-box" data-title="Background">
-
-Prior work motivates this study; our approach advances the field by addressing key limitations in existing models.
-
-</div>
-
 ## M: Methods [violet]
-
-<div class="scale-90">
 
 <div class="definition-box" data-title="Experimental design">
 
@@ -102,8 +95,7 @@ Prior work motivates this study; our approach advances the field by addressing k
 <span class="label">Visualization</span>
 </div>
 </div>
-
-</div>
+<div class="figure-caption">Analysis toolkit spanning computation, brain imaging, and data visualization</div>
 
 ## R: Results [green]
 
@@ -149,6 +141,8 @@ $$\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon, \quad R^2 = 0.73$$
 | RT (ms) | 342 | 418 | 450 | < 0.05 |
 | F1 Score | 0.85 | 0.68 | 0.60 | < 0.01 |
 
+<div class="table-caption">Performance metrics across experimental groups</div>
+
 <div class="example-box" data-title="Generalization">
 
 Findings **replicate** across datasets and participant groups.
@@ -167,32 +161,23 @@ datasets:
     data: 0.71, 0.74, 0.70, 0.75, 0.73
 xlabel: Cross-validation fold
 ylabel: F1 score
+legend: right
 caption: Generalization across datasets
 ```
 
 <div class="example-box" data-title="Robustness">
 
-Cross-validation (k=5) and bootstrap resampling (1000 iterations) confirm stable effect size (Cohen's d = 0.8). Permutation testing corroborates significance (BF > 10).
+Cross-validation (k=5) and bootstrap resampling (1000 iterations) confirm stable effect size (Cohen's d = 0.8). Permutation testing corroborates significance (BF > 10). Sensitivity analyses varying regularization strength (λ = 0.01–10) show consistent results across parameter choices.
 
 </div>
 
 ## D: Discussion [teal]
-
-<div class="scale-80">
 
 <div class="tip-box" data-title="Key takeaways">
 
 - **Finding 1**: Model outperforms baseline by 15%, supporting H1
 - **Finding 2**: Effect is robust across parameter variations
 - **Finding 3**: Results suggest a new cognitive control mechanism
-
-</div>
-
-<div class="tip-box" data-title="Implications">
-
-- Evidence for predictive coding frameworks in perception
-- Challenges models assuming static representations
-- Opens avenues for computational psychiatry
 
 </div>
 
@@ -211,14 +196,17 @@ caption: Current capabilities vs. planned improvements
 
 - Sample limited to college-age participants
 - Future: longitudinal designs, larger cohorts
-
-</div>
+- Explore transfer learning to clinical populations
+- Incorporate real-time fMRI neurofeedback paradigms
+- Extend to multimodal data (EEG + fMRI fusion)
 
 </div>
 
 ## E: References [orange]
 
-<div class="scale-60">
+<div class="note-box" data-title="">
+
+<div class="scale-50">
 
 1. Author A *et al.* (2023). *J. Neurosci.*
 2. Author C *et al.* (2022). *Nat. Hum. Behav.*
@@ -228,12 +216,22 @@ caption: Current capabilities vs. planned improvements
 
 </div>
 
+</div>
+
 ## A: Acknowledgments [spring]
+
+<div class="note-box" data-title="">
 
 <div class="scale-65">
 
 **NSF EPSCoR** #1632738 · **NIH R01** MH112357 · **NSF CAREER** #1849109
 
-🌐 context-lab.com · 💻 github.com/ContextLab
+📦 Data: github.com/ContextLab
+
+💻 Code: github.com/ContextLab
+
+🌐 PDF: context-lab.com/publications
+
+</div>
 
 </div>

@@ -245,11 +245,36 @@ table th {
 .poster-section > div[class*="scale-"] > .example-box:only-child,
 .poster-section > div[class*="scale-"] > .important-box:only-child {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   min-height: 0;
   overflow: visible;
+}
+
+.poster-section .note-box,
+.poster-section .warning-box,
+.poster-section .tip-box,
+.poster-section .definition-box,
+.poster-section .example-box,
+.poster-section .important-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.poster-section .note-box > :first-child,
+.poster-section .warning-box > :first-child,
+.poster-section .tip-box > :first-child,
+.poster-section .definition-box > :first-child,
+.poster-section .example-box > :first-child,
+.poster-section .important-box > :first-child {
+  margin-top: auto;
+}
+
+.poster-section .note-box > :last-child,
+.poster-section .warning-box > :last-child,
+.poster-section .tip-box > :last-child,
+.poster-section .definition-box > :last-child,
+.poster-section .example-box > :last-child,
+.poster-section .important-box > :last-child {
+  margin-bottom: auto;
 }
 
 .chart-row {
@@ -263,6 +288,10 @@ table th {
 .chart-row > div {
   flex: 1;
   min-width: 0;
+}
+
+.poster-chart {
+  width: 100%;
 }
 
 /* Ensure SVG charts scale to fit their container */
@@ -317,6 +346,9 @@ table th {
   font-size: 1.14em;
   background-color: var(--section-box-bg, var(--box-default-bg));
   border-left: 3mm solid var(--section-box-border, var(--box-default-border));
+  overflow: visible;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .note-box::before, .warning-box::before, .tip-box::before, 
@@ -372,6 +404,17 @@ table th {
 
 [data-title]::before { content: attr(data-title); }
 [data-title=""]::before { display: none; }
+
+/* When a box has no visible title, vertically center the content.
+   The ::before is hidden so we can use justify-content directly. */
+.poster-section .note-box[data-title=""],
+.poster-section .warning-box[data-title=""],
+.poster-section .tip-box[data-title=""],
+.poster-section .definition-box[data-title=""],
+.poster-section .example-box[data-title=""],
+.poster-section .important-box[data-title=""] {
+  justify-content: center;
+}
 
 .poster-color-blue { --section-box-bg: rgba(38, 122, 186, 0.12); --section-box-border: var(--river-blue); --section-box-title: var(--river-navy); }
 .poster-color-green { --section-box-bg: rgba(0, 105, 62, 0.10); --section-box-border: var(--dartmouth-green); --section-box-title: var(--dartmouth-green); }
@@ -475,6 +518,46 @@ p img[alt] {
   font-size: 0.78em;
   font-weight: 500;
   margin-top: 3mm;
+}
+
+.figure-caption {
+  text-align: center;
+  font-size: 0.85em;
+  font-style: italic;
+  color: var(--granite-gray);
+  margin: 2mm 0 4mm;
+  line-height: 1.3;
+}
+
+.figure-caption strong {
+  font-style: normal;
+}
+
+.table-caption {
+  text-align: center;
+  font-size: 0.85em;
+  font-style: italic;
+  color: var(--granite-gray);
+  margin: 1mm 0 4mm;
+  line-height: 1.3;
+}
+
+.table-caption strong {
+  font-style: normal;
+}
+
+/* Captions and figures must be visually consistent across all poster sections,
+   regardless of any scale-* wrapper applied to the parent.  We use a fixed
+   size (24pt ≈ 0.85 × 28pt base) so em-based scaling cannot affect them. */
+.poster-section .figure-caption,
+.poster-section .table-caption {
+  font-size: 24pt;
+}
+
+/* SVG charts inside poster sections should not shrink with scale wrappers */
+.poster-section div[class*="scale-"] svg {
+  max-width: none;
+  width: 100%;
 }
 
 .flow-diagram {

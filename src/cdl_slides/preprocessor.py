@@ -814,6 +814,7 @@ def _parse_chart_block(block_content: str) -> dict:
         "alpha": "0.5",
         "xlabel": "",
         "ylabel": "",
+        "legend": "",
     }
 
     current_dataset = None
@@ -861,6 +862,8 @@ def _parse_chart_block(block_content: str) -> dict:
             config["xlabel"] = stripped[len("xlabel:") :].strip()
         elif stripped.startswith("ylabel:"):
             config["ylabel"] = stripped[len("ylabel:") :].strip()
+        elif stripped.startswith("legend:"):
+            config["legend"] = stripped[len("legend:") :].strip()
         elif stripped.startswith("data:") and current_dataset is None:
             raw = stripped[len("data:") :].strip()
             config["_top_level_data"] = raw
