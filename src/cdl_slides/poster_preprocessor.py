@@ -202,7 +202,7 @@ def _auto_number_captions(content: str, fig_count: int, tbl_count: int) -> tuple
         if not caption_text:
             return m.group(0)
         fig_count += 1
-        return f'<{tag} class="figure-caption"><strong>Figure {fig_count}.</strong> {caption_text}</{tag}>'
+        return f'<{tag} class="figure-caption"><strong>Figure&nbsp;{fig_count}.</strong>&nbsp;{caption_text}</{tag}>'
 
     def _replace_tbl(m: re.Match) -> str:
         nonlocal tbl_count
@@ -211,7 +211,7 @@ def _auto_number_captions(content: str, fig_count: int, tbl_count: int) -> tuple
         if not caption_text:
             return m.group(0)
         tbl_count += 1
-        return f'<{tag} class="table-caption"><strong>Table {tbl_count}.</strong> {caption_text}</{tag}>'
+        return f'<{tag} class="table-caption"><strong>Table&nbsp;{tbl_count}.</strong>&nbsp;{caption_text}</{tag}>'
 
     content = re.sub(r'<(div|p) class="figure-caption">(.*?)</(?:div|p)>', _replace_fig, content)
     content = re.sub(r'<(div|p) class="table-caption">(.*?)</(?:div|p)>', _replace_tbl, content)

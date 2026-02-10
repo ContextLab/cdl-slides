@@ -554,6 +554,14 @@ p img[alt] {
   font-size: 24pt;
 }
 
+/* Captions must never become flex containers (the :last-child rule above would
+   force display:flex on them when they happen to be the last element in a
+   poster-section, turning <strong> into a block-level flex item). */
+.poster-section > .figure-caption,
+.poster-section > .table-caption {
+  display: block;
+}
+
 /* SVG charts inside poster sections should not shrink with scale wrappers */
 .poster-section div[class*="scale-"] svg {
   max-width: none;
