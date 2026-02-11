@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/cdl-slides)](https://pypi.org/project/cdl-slides/)
 [![CI](https://github.com/ContextLab/cdl-slides/actions/workflows/ci.yml/badge.svg)](https://github.com/ContextLab/cdl-slides/actions/workflows/ci.yml)
-[![Downloads](https://img.shields.io/pypi/dm/cdl-slides)](https://pypi.org/project/cdl-slides/)
+[![Downloads](https://static.pepy.tech/badge/cdl-slides/month)](https://pepy.tech/projects/cdl-slides)
 
 Compile Markdown files into beautiful CDL-themed [Marp](https://marp.app/) presentations. Includes the full Contextual Dynamics Lab slide theme with bundled fonts, images, and CSS.
 
